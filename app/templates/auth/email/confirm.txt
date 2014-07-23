@@ -1,0 +1,4 @@
+{{ user.email }}
+confirm:
+{{ url_for('mod_auth.activate', token = token, _external = True) }}
+...............................................................................

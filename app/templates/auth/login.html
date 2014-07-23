@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}
+Log in
+{% endblock %}
+
+{% block content %}
+<h1>Please log in</h1>
+<form action="" method="post">
+	{{ form.hidden_tag() }}
+	<table>
+		<!-- Email -->
+		<tr>
+			<td>{{ form.email.label }}</td>
+			<td>{{ form.email() }}</td>
+		</tr>
+		{% for error in form.errors.email %}
+		<tr>
+			<td></td>
+			<td>{{ error }}</td>
+		</tr>
+		{% endfor %}
+
+		<!-- Password -->
+		<tr>
+			<td>{{ form.password.label }}</td>
+			<td>{{ form.password() }}</td>
+		</tr>
+		{% for error in form.errors.password %}
+		<tr>
+			<td></td>
+			<td>{{ error }}</td>
+		</tr>
+		{% endfor %}
+
+		<!-- Password -->
+		<tr>
+			<td>{{ form.remember.label }}</td>
+			<td>{{ form.remember() }}</td>
+		</tr>
+
+		<!-- Submit -->
+		<tr>
+			<td>{{ form.submit.label }}</td>
+			<td>{{ form.submit() }}</td>
+		</tr>
+
+	</table>
+	<a href="{{ url_for('mod_auth.register') }}">Register Here</a>
+</form>
+
+{% endblock %}

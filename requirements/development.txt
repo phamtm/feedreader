@@ -1,0 +1,4 @@
+-r common.txt
+httpie==0.8.0
+ForgeryPy==0.1
+coverage==3.7.1

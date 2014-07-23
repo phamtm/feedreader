@@ -1,0 +1,4 @@
+{{ user.email }}
+reset:
+{{ url_for('mod_auth.reset_password', token = token, _external = True) }}
+...............................................................................

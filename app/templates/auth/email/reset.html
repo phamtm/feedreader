@@ -1,0 +1,25 @@
+<html>
+	<head>
+
+	</head>
+	<body>
+		<h1>Reset your password</h1>
+
+		<p>
+			Hello you, this is an email from a Flask app
+		</p>
+
+		<p>
+			You have request for a password reset with the email
+			<a href="mailto:{{ user.email }}">{{ user.email }}</a>
+		</p>
+
+		<p>
+			To confirm your account please click on this
+			<a href="{{ url_for('mod_auth.forgot', token = token, _external = True) }}">
+			link
+			</a>
+		</p>
+	</body>
+
+</html>

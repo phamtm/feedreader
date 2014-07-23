@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Manage your subscriptions
+{% endblock %}
+
+{% block content %}
+<h1>Manage your subscriptions</h1>
+
+{% if not rss_sources %}
+	<p>There are no rss source available</p>
+{% else %}
+	<ul>
+	{% for source in rss_sources %}
+		<li>
+			<span><a href="{{ source.href}}">{{ source.name }}</a></span>
+			<a href="{{ url_for('mod_feed.subscribe_feed', source_id = source.id) }}">Subscribe</a>
+			<a href="{{ url_for('mod_feed.unsubscribe_feed', source_id = source.id) }}">Unsubscribe</a>
+		</li>
+	{% endfor %}
+	</ul>
+{% endif %}
+
+
+
+{% endblock %}

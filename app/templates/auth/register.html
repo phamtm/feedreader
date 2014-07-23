@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}
+Register
+{% endblock %}
+
+{% block content %}
+<h1>Register new user</h1>
+<form action="" method="post">
+	{{ form.hidden_tag() }}
+	<table>
+		<!-- Email -->
+		<tr>
+			<td>{{ form.email.label }}</td>
+			<td>{{ form.email() }}</td>
+		</tr>
+		{% for error in form.errors.email %}
+		<tr>
+			<td></td>
+			<td>{{ error }}</td>
+		</tr>
+		{% endfor %}
+
+		<!-- Password -->
+		<tr>
+			<td>{{ form.password.label }}</td>
+			<td>{{ form.password() }}</td>
+		</tr>
+		{% for error in form.errors.password %}
+		<tr>
+			<td></td>
+			<td>{{ error }}</td>
+		</tr>
+		{% endfor %}
+
+		<!-- Password2 -->
+		<tr>
+			<td>{{ form.password2.label }}</td>
+			<td>{{ form.password2() }}</td>
+		</tr>
+		{% for error in form.errors.password2 %}
+		<tr>
+			<td></td>
+			<td>{{ error }}</td>
+		</tr>
+		{% endfor %}
+
+		<tr>
+			<td></td>
+			<td>{{ form.submit() }}</td>
+		</tr>
+	</table>
+</form>
+
+{% endblock %}
