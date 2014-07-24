@@ -2,7 +2,12 @@ from app import db
 
 
 class Connection(db.Model):
-	__tablename__ = 'connection'
+
+	__tablename__ 		= 'connection'
+
+	__table_args__		= (
+			db.UniqueConstraint('user_id', 'provider_id'),
+		)
 
 	id 					= db.Column(db.Integer, primary_key = True)
 	user_id 			= db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -19,7 +24,6 @@ class Connection(db.Model):
 	display_name 		= db.Column(db.String(255), nullable = False)
 	image_url 			= db.Column(db.String(255))
 
-	db.UniqueConstraint('user_id', 'provider_id')
 
 	def __repr__(self):
 		return '<provider_id = %s, provider_user_id = %s, display_name = %s>' % \

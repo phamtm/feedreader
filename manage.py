@@ -42,6 +42,13 @@ def createdb():
 
 
 @manager.command
+def updatefeed():
+	from app.mod_feed import fa
+	fa.update_feed_db()
+
+
+
+@manager.command
 def test():
 	"""Run the unit tests."""
 	import unittest

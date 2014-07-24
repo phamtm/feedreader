@@ -8,10 +8,10 @@ from flask import current_app
 
 from app import db, login_manager
 
-from Base import Base
+from ..Base import Base
+from ..feed import FeedSource,		\
+				   FeedSubscription
 from Role import Role
-from FeedSource import FeedSource
-from FeedSubscription import FeedSubscription
 
 
 

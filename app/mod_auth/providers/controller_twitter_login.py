@@ -46,8 +46,6 @@ def twitter_authorized(response):
 	twitter_screen_name = response['screen_name']
 
 	resp = twitter.get('users/show.json', data = {'screen_name': twitter_screen_name})
-	for k in resp.data:
-		print k, resp.data[k]
 
 	twitter_profile_image_url = resp.data['profile_image_url']
 

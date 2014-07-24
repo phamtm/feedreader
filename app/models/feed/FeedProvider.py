@@ -1,5 +1,5 @@
 from app import db
-from Base import Base
+from ..Base import Base
 import re
 
 

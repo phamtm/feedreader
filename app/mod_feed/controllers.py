@@ -51,8 +51,6 @@ def manage_subscriptions():
 					.filter_by(user_id = None)	\
 					.all()
 
-	print not_subscribed_sources
-
 	return render_template('feed_sources.html',
 							subscribed = subscribed_sources,
 							not_subscribed = not_subscribed_sources)

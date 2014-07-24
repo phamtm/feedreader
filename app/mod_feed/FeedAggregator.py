@@ -15,7 +15,6 @@ class FeedAggregator(object):
 	def update_feed_db(self):
 		entries = self.get_all_feeds()
 		self.add_feed_entries_to_db(entries)
-		db.session.commit()
 
 
 	def get_all_feeds(self):
@@ -64,8 +63,14 @@ class FeedAggregator(object):
 	def add_feed_entry_to_db(self, source_id, entry):
 		article = self.get_feed_article(source_id, entry)
 
-		if article is not None:
+		old_article = FeedArticle.query.filter_by(
+				source_id = article.source_id,
+				link = article.link
+			).first()
+
+		if article is not None and old_article is None:
 			db.session.add(article)
+			db.session.commit()
 
 
 	# Create a FeedArticle from each entry and add to database
