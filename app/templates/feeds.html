@@ -5,16 +5,20 @@ News aggregator
 {% endblock %}
 
 {% block content %}
-{% for entry in rss_entries %}
+<h1>Your Feeds</h1>
+{% if not rss_articles %}
+You have not subscribed to any feeds yet
+{% endif %}
+{% for article in rss_articles %}
 <p>
 	<!-- Title -->
-	<h3>{{ entry.title }}</h3>
-	<span style="display:block"><strong>Summary:</strong> {{entry.summary}}</span>
-	<span style="display:block"><strong>Article's id:</strong> {{ entry.id }}</span>
-	<span style="display:block"><strong>Published at:</strong> {{ entry.published }}</span>
+	<h3>{{ article.title }}</h3>
+	<span style="display:block"><strong>Summary:</strong> {{ article.summary }}</span>
+	<span style="display:block"><strong>Article's DB id:</strong> {{ article.id }}</span>
+	<span style="display:block"><strong>Published at:</strong> {{ article.published }}</span>
 
 	<!-- Links -->
-	<a href="{{ entry.link }}">Go to article</a>
+	<a href="{{ article.link }}">Go to article</a>
 </p>
 {% endfor %}
 {% endblock %}

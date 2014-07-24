@@ -22,7 +22,7 @@ from app.mod_auth.providers import provider_id
 def facebook_login():
 	return facebook.authorize(callback =
 			url_for('mod_auth.facebook_authorized',
-					next = request.args.get('next') or request.referrer or None,
+					next = request.args.get('next') or request.referrer or url_for('mod_main.index'),
 					_external = True
 				)
 		)
@@ -31,7 +31,7 @@ def facebook_login():
 @mod_auth.route('/authorized/facebook')
 @facebook.authorized_handler
 def facebook_authorized(response):
-	next_url = request.args.get('next') or url_for('mod_main.index')
+	next_url = request.args.get('next') or request.referrer or url_for('mod_main.index')
 
 	if response is None:
 		flash('You denied the request to sign in')

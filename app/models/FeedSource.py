@@ -13,7 +13,7 @@ class FeedSource(Base):
 	_href 	: The URL to the rss feed
 	articles: List of articles in from the same source
 	"""
-	name 			= db.Column(db.String(255), nullable = False)
+	name 			= db.Column(db.Unicode(255, convert_unicode = True), nullable = False)
 	_href 			= db.Column(db.String(511), nullable = False)
 	provider_id 	= db.Column(db.Integer, db.ForeignKey('feedprovider.id'))
 	articles 		= db.relationship('FeedArticle', backref = 'source', lazy = 'dynamic')
@@ -38,5 +38,5 @@ class FeedSource(Base):
 
 
 	def __repr__(self):
-		return '<FeedSource %s %s>' % (self.name, self.href)
+		return '<FeedSource %s %s>' % (self.name.encode('utf-8'), self.href.encode('utf-8'))
 

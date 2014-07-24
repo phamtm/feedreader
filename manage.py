@@ -25,7 +25,7 @@ def createdb():
 
 	# Insert feedprovider
 	for site in feed_sources:
-		provider_name = site['name']
+		provider_name = unicode(site['name'])
 		provider_domain = site['domain']
 		provider = FeedProvider(name = provider_name, domain = provider_domain)
 		db.session.add(provider)
@@ -33,7 +33,7 @@ def createdb():
 
 		# Add feedsource
 		for channel_name in site['channels']:
-			source_name = site['name'] + ' - ' + channel_name
+			source_name = unicode(site['name'] + ' - ' + channel_name)
 			source_href = site['channels'][channel_name]
 			fs = FeedSource(name = source_name, href = source_href, provider = provider)
 			db.session.add(fs)

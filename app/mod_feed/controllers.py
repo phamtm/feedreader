@@ -1,16 +1,18 @@
-from flask import url_for, 					\
-				  render_template,			\
-				  session,					\
-				  redirect,					\
-				  flash,					\
+from flask import url_for, 						\
+				  render_template,				\
+				  session,						\
+				  redirect,						\
+				  flash,						\
 				  request
-from flask.ext.login import login_required,	\
+from flask.ext.login import login_required,		\
 							current_user
 
+from app import db
 from app.mod_feed import mod_feed
 from app.mod_feed.sources import feed_sources
-from app.mod_feed.FeedAggregator import FeedAggregator
-from app.models import FeedSource, 			\
+from app.models import FeedSource, 				\
+					   FeedArticle,				\
+					   FeedSubscription,		\
 					   Permission
 from app.utils import Future
 from app.decorators import permission_required
@@ -19,9 +21,14 @@ import feedparser
 
 
 @mod_feed.route('/all')
+@login_required
 def all_feeds():
-	entries = get_all_rss_feeds()
-	return render_template('feeds.html', rss_entries = entries)
+	articles = FeedArticle.query 	\
+		.join(FeedSubscription, FeedSubscription.source_id == FeedArticle.source_id)	\
+		.filter_by(user_id = current_user.id)	\
+		.all()
+
+	return render_template('feeds.html', rss_articles = articles)
 
 
 @mod_feed.route('/subscriptions')
@@ -34,7 +41,21 @@ def manage_subscriptions():
 			'subscribed': False
 		} for source in FeedSource.query.all()]
 
-	return render_template('feed_sources.html', rss_sources = hit_list)
+	subscribed_sources = FeedSource.query	\
+					.outerjoin(FeedSubscription, FeedSource.id == FeedSubscription.source_id)	\
+					.filter_by(user_id = current_user.id)	\
+					.all()
+
+	not_subscribed_sources = FeedSource.query	\
+					.outerjoin(FeedSubscription, FeedSource.id == FeedSubscription.source_id)	\
+					.filter_by(user_id = None)	\
+					.all()
+
+	print not_subscribed_sources
+
+	return render_template('feed_sources.html',
+							subscribed = subscribed_sources,
+							not_subscribed = not_subscribed_sources)
 
 
 @mod_feed.route('/subscribe')
@@ -62,24 +83,5 @@ def unsubscribe_feed():
 @mod_feed.route('/updatedb')
 @permission_required(Permission.ADMIN)
 def update_feeds_db():
-	fa = FeedAggregator()
-	fa.get_all_feeds()
 	return 'updating feeds db'
-
-
-
-
-def get_all_rss_feeds():
-	hit_list = [source.href for source in FeedSource.query.all()]
-
-	# Send out multiple request at once
-	future_calls = [Future(feedparser.parse, rss_url) for rss_url in hit_list]
-	feeds = [future_obj() for future_obj in future_calls]
-
-	# Extract all entries
-	entries = []
-	for feed in feeds:
-		entries.extend(feed['entries'])
-
-	return entries
 

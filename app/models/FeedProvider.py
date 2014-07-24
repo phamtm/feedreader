@@ -8,7 +8,7 @@ class FeedProvider(Base):
 
 	__tablename__ 	= 'feedprovider'
 
-	name 			= db.Column(db.String(255), nullable = False)
+	name 			= db.Column(db.Unicode(255, convert_unicode = True), nullable = False)
 	_domain 		= db.Column(db.String(511), nullable = False)
 	categories 		= db.relationship('FeedSource', backref = 'provider', lazy = 'dynamic')
 
@@ -32,5 +32,5 @@ class FeedProvider(Base):
 
 
 	def __repr__(self):
-		return '<FeedProvider %s %s>' % (self.name, self.domain)
+		return '<FeedProvider %s %s>' % (self.name.encode('utf-8'), self.domain.encode('utf-8'))
 
