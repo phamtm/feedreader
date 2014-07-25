@@ -1,29 +1,50 @@
-<!doctype html>
+<doctype html>
 <html lang="en">
 
 	<head>
 		<title>
 			{% block title %}{% endblock %}
 		</title>
+
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
 	</head>
 
 	<body>
-		<div>
-			<ul>
-				<li><a href="{{ url_for('mod_main.index') }}">Index</a></li>
-				<li><a href="{{ url_for('mod_auth.login') }}">{% if current_user.is_authenticated() %}[-]{% endif %} Log in</a></li>
-				<li><a href="{{ url_for('mod_auth.facebook_login') }}">{% if current_user.is_authenticated() %}[-]{% endif %} Facebook Log in</a></li>
-				<li><a href="{{ url_for('mod_auth.google_login') }}">{% if current_user.is_authenticated() %}[-]{% endif %} Google Log in</a></li>
-				<li><a href="{{ url_for('mod_auth.logout') }}">Log out</a></li>
-				<li><a href="{{ url_for('mod_auth.register') }}">{% if current_user.is_authenticated() %}[-]{% endif %} Register</a></li>
-				<li><a href="{{ url_for('mod_auth.change_password') }}">{% if current_user.register_with_provider %}[-]{% endif %} Change password</a></li>
-				<li><a href="{{ url_for('mod_auth.forgot') }}">{% if current_user.is_authenticated() %}[-]{% endif %} Forgot password?</a></li>
-				<li><a href="{{ url_for('mod_feed.all_feeds') }}">Feeds</a></li>
-				<li><a href="{{ url_for('mod_feed.manage_subscriptions') }}">Manage subscriptions</a></li>
-				<li><a href="{{ url_for('mod_feed.update_feeds_db') }}">Update Feed db</a></li>
+		<ul class='hnav'>
+			<li><a href="{{ url_for('mod_feed.all_feeds') }}"><strong>THOISU</strong></a></li>
+			<li><a href="{{ url_for('mod_feed.all_feeds') }}">Index</a></li>
 
-			</ul>
-		</div>
+			{% if not current_user.is_authenticated() %}
+			<li><a href="{{ url_for('mod_auth.login') }}"> Log in</a></li>
+			{% endif %}
+
+			{% if current_user.is_authenticated() %}
+			{% endif %}
+
+			{% if not current_user.is_authenticated() %}
+			<li><a href="{{ url_for('mod_auth.register') }}">Register</a></li>
+			{% endif %}
+
+			{% if current_user.is_authenticated() %}
+			<li><a href="{{ url_for('mod_auth.forgot') }}">Forgot password?</a></li>
+			{% endif %}
+
+
+			<li><a href="{{ url_for('mod_feed.manage_subscriptions') }}">Manage subscriptions</a></li>
+
+			{% if current_user.is_authenticated() %}
+				<li style="float:right"><a href="{{ url_for('mod_auth.logout') }}">Log out</a></li>
+				<li style="float:right">{{ current_user.email }} |</li>
+			{% endif %}
+		</ul>
+
+		{% if current_user.is_authenticated() %}
+		<ul class='hnav' style="background-color:rgba(3, 141, 171, 0.32)">
+			<li><a href="#" class="active">Vnexpress</a></li>
+			<li><a href="#">BBC Vietnamese</a></li>
+			<li><a href="#">Tien Phong</a></li>
+		</ul>
+		{% endif %}
 
 		<!-- Flahed messages -->
 		{% with messages = get_flashed_messages() %}

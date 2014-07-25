@@ -3,7 +3,7 @@ from flask import redirect, 	\
 				  url_for, 		\
 				  abort
 from flask.ext.login import current_user
-from const import HTTP_FORBIDDEN
+from http_const import HTTP_FORBIDDEN
 
 
 # Require the user to be unauthenticated. If not redirect to homepage

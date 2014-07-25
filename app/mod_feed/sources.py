@@ -12,7 +12,6 @@ feed_sources = [
 			'domain': 'http://vnexpress.net',
 			'channels': {
 				'TRANGCHU': 'http://vnexpress.net/rss/tin-moi-nhat.rss',
-				'DOISONG': 'http://vnexpress.net/rss/doi-song.rss'
 			}
 		},
 
@@ -21,6 +20,14 @@ feed_sources = [
 			'domain': 'http://vietnamnet.vn',
 			'channels': {
 				'TRANGCHU': 'http://vietnamnet.vn/rss/home.rss'
+			}
+		},
+
+		{
+			'name': 'BBC',
+			'domain': 'http://www.bbc.co.uk/',
+			'channels': {
+				'VIETNAMESE': 'http://www.bbc.co.uk/vietnamese/vietnam/index.xml'
 			}
 		}
 

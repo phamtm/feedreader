@@ -19,10 +19,12 @@ manager.add_command('db', MigrateCommand)
 
 @manager.command
 def createdb():
+	print 'creating db..'
 	db.drop_all()
 	db.create_all()
 	Role.insert_roles()
 
+	print 'adding feed sources..'
 	# Insert feedprovider
 	for site in feed_sources:
 		provider_name = unicode(site['name'])
@@ -40,11 +42,15 @@ def createdb():
 
 	db.session.commit()
 
+	print 'add feed articles..'
+	from app.mod_feed import fa
+	fa.update_db()
+
 
 @manager.command
 def updatefeed():
 	from app.mod_feed import fa
-	fa.update_feed_db()
+	fa.update_db()
 
 
 

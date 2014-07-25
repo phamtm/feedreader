@@ -83,9 +83,6 @@ def google_authorized(response):
 
 	login_user(user)
 
-	flash('Login with google id = %s, email = %s, request time = %f' %
-		(user_info['id'], user_info['email'], t2 - t1))
-
 	return redirect(session.get('google_auth_next_url'))
 
 

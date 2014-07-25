@@ -18,7 +18,7 @@ Manage your subscriptions
 	<ul>
 	{% for source in subscribed %}
 		<li>
-			<span><a href="{{ source.href}}">{{ source.name }}</a></span>
+			<span>{{ source.name }}</span>
 			<a href="{{ url_for('mod_feed.unsubscribe_feed', source_id = source.id) }}">Unsubscribe</a>
 		</li>
 	{% endfor %}
@@ -34,7 +34,7 @@ Manage your subscriptions
 	<ul>
 	{% for source in not_subscribed %}
 		<li>
-			<span><a href="{{ source.href}}">{{ source.name }}</a></span>
+			<span>{{ source.name }}</span>
 			<a href="{{ url_for('mod_feed.subscribe_feed', source_id = source.id) }}">Subscribe</a>
 		</li>
 	{% endfor %}

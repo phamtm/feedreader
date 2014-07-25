@@ -1,24 +1,45 @@
 {% extends 'base.html' %}
 
 {% block title %}
-News aggregator
+	{% if current_user.is_authenticated() %}
+		Your feeds
+	{% else %}
+		Public feeds
+	{% endif %}
 {% endblock %}
 
 {% block content %}
-<h1>Your Feeds</h1>
 {% if not rss_articles %}
-You have not subscribed to any feeds yet
+There are no feed to display
 {% endif %}
-{% for article in rss_articles %}
-<p>
-	<!-- Title -->
-	<h3>{{ article.title }}</h3>
-	<span style="display:block"><strong>Summary:</strong> {{ article.summary }}</span>
-	<span style="display:block"><strong>Article's DB id:</strong> {{ article.id }}</span>
-	<span style="display:block"><strong>Published at:</strong> {{ article.published }}</span>
 
-	<!-- Links -->
-	<a href="{{ article.link }}">Go to article</a>
-</p>
-{% endfor %}
+
+<div class="container">
+	<table class="feedentries">
+
+		{% for article in rss_articles %}
+
+			<!-- ID, vote and title -->
+			<tr>
+				<td class="feedid">{{ article.upvote }}&#8593; / {{ article.downvote }}&#8595; / {{ article.wilson_score }}</td>
+				<td class="feedtitle"><a href="{{ article.link }}" target="_blank" >{{ article.title }}</a></td>
+				<td class="feedvote">
+					<a href="{{ url_for('mod_feed.upvote', article_id = article.id) }}">Upvote</a>
+					/
+					<a href="{{ url_for('mod_feed.downvote', article_id = article.id) }}">Downvote</a>
+					/
+					<a href="{{ url_for('mod_feed.remove_vote', article_id = article.id) }}">Remove vote</a>
+				</td>
+			</tr>
+
+			<!-- Subtext -->
+			<tr>
+				<td></td>
+				<td colspan="2" class="feedsubtext">Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</td>
+			</tr>
+
+		{% endfor %}
+
+	</table>
+</div>
 {% endblock %}

@@ -1,0 +1,72 @@
+html {
+}
+
+ul.hnav {
+	list-style: none;
+	background-color: #eed;
+	padding: 8px 10px;
+	margin:0;
+}
+
+ul.hnav li {
+	display: inline;
+	padding: 0 15px 0 0;
+	margin: 0;
+}
+
+ul.hnav a {
+	text-decoration: none;
+	color: black
+}
+
+ul.hnav a.active {
+	text-decoration: underline;
+	color: black
+}
+
+/* Feed entries table */
+/**********************/
+
+table.feedentries {
+	font-family: Helvetica Neue;
+	font-size:15px;
+}
+
+table.feedentries a  {
+	color:black;
+	text-decoration: none;
+}
+
+table.feedentries a:visited  {
+	color:#999;
+	text-decoration: none;
+}
+
+table.feedentries td {
+	padding-top:8px;
+}
+
+td.feedid {
+
+}
+
+td.feedvote a, td.feedvote a:visited {
+	color: black;
+}
+
+td.feedvote a:hover {
+}
+
+td.feedtitle {
+
+}
+
+td.feedsubtext {
+	color:#444;
+	font-size:13px;
+}
+
+/* Footer */
+hr.hrwide {
+	color:#eed;
+}

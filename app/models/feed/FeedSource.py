@@ -1,6 +1,6 @@
 from app import db
 from ..Base import Base
-import re
+from urlparse import urlparse
 
 
 
@@ -18,22 +18,15 @@ class FeedSource(Base):
 	provider_id 	= db.Column(db.Integer, db.ForeignKey('feedprovider.id'))
 	articles 		= db.relationship('FeedArticle', backref = 'source', lazy = 'dynamic')
 
-	source_regex 	= re.compile(r'^http://'
-								 r'([-a-zA-Z0-9]*\.)?'
-								 r'[-a-zA-Z0-9]+'
-							  	 r'\.[a-zA-Z]+'
-							  	 r'(:\d{0,7})?'
-							  	 r'/.+rss?')
-
-
 	@property
 	def href(self):
 		return self._href
 
 	@href.setter
 	def href(self, url):
-		if not FeedSource.source_regex.match(url):
-			raise AttributeError('Invalid RSS URL', url)
+		o = urlparse(url)
+		if not o.path.endswith('.xml') and not o.path.endswith('.rss'):
+			raise AttributeError('Invalid feed URL', url)
 		self._href = url
 
 

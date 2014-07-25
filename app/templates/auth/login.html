@@ -46,6 +46,12 @@ Log in
 		</tr>
 
 	</table>
+
+	<ul>
+		<li><a href="{{ url_for('mod_auth.facebook_login') }}">Facebook Log in</a></li>
+		<li><a href="{{ url_for('mod_auth.google_login') }}">Google Log in</a></li>
+	</ul>
+
 	<a href="{{ url_for('mod_auth.register') }}">Register Here</a>
 </form>
 

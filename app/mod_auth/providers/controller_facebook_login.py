@@ -71,9 +71,6 @@ def facebook_authorized(response):
 
 	login_user(user)
 
-	flash('Logged in as id = %s, name = %s, email = %s, redirect = %s'	% 	\
-			(me.data['id'], me.data['name'], me.data['email'], request.args.get('next')))
-
 	return redirect(next_url)
 
 

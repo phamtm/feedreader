@@ -12,7 +12,7 @@ import feedparser
 
 class FeedAggregator(object):
 
-	def update_feed_db(self):
+	def update_db(self):
 		entries = self.get_all_feeds()
 		self.add_feed_entries_to_db(entries)
 
