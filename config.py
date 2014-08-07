@@ -21,7 +21,7 @@ class Config:
 	# Enable commit after each sql statement
 	SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 
-	MAX_EMAIL_LENGTH = 128
+	MAX_EMAIL_ADDRESS_LENGTH = 128
 
 	# Confirmation token expiration time: 7 days
 	TOKEN_EXPIRATION_TIME = 604800
@@ -38,6 +38,8 @@ class Config:
 
 	TWITTER_APP_TOKEN = 'B8pegoEf0uNRYhcufCA8SkNh2'
 	TWITTER_APP_SECRET = 'StBCTi4EHQYYdxpORXU7QusMgkd41t9IU5S0FkRF2HV0u7f2Q5'
+
+	ARTICLES_PER_PAGE = 10
 
 
 # Development environment configuration

@@ -12,6 +12,7 @@ from breadability.readable import Article
 import urllib2
 import feedparser
 
+import time
 
 class FeedAggregator(object):
 
@@ -24,6 +25,7 @@ class FeedAggregator(object):
 		sources = [(source.id, source.href) for source in FeedSource.query.all()]
 
 		entries = []
+		t0 = time.time()
 		for source in sources:
 			source_id = source[0]
 			source_url = source[1]
@@ -32,6 +34,8 @@ class FeedAggregator(object):
 			if source_entries:
 				entries.append((source_id, source_entries))
 
+		t1 = time.time()
+		print '\tFetching RSS takes: %.3fs' % (t1 - t0)
 		return entries
 
 
@@ -83,12 +87,15 @@ class FeedAggregator(object):
 
 	# Create a FeedArticle from each entry and add to database
 	def add_feed_entries_to_db(self, entries):
+		t0 = time.time()
 		for entry in entries:
 			source_id, source_entries = entry
 			for idx, source_entry in enumerate(source_entries):
 				print '%3d/%d %s' % (idx, len(source_entries), source_entry.link)
 				self.add_feed_entry_to_db(source_id, source_entry)
 
+		t1 = time.time()
+		print 'Article processing takes: %.3fs' % (t1 - t0)
 
 	def __repr__(self):
 		return '<FeedAggregator>'

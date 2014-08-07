@@ -46,6 +46,16 @@ feed_sources = [
 		# 	'timestamp_format': ''
 		# },
 
+
+		# {
+		# 	'name': 'Linkhay',
+		# 	'domain': 'http://linkhay.com',
+		# 	'channels': {
+		# 		'Tat ca': 'http://linkhay.com/te-nan/tin-hot/rss/'
+		# 	},
+		# 	'timestamp_format': ''
+		# },
+
 	]
 
 """

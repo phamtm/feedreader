@@ -71,4 +71,4 @@ def logout():
 # Load user's subscriptions
 @login_required
 def load_subscriptions():
-	session['subscriptions'] = [s.source_id for s in current_user.feed_subscriptions]
+	session['subscriptions'] = sorted([s.source_id for s in current_user.feed_subscriptions])

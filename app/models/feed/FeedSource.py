@@ -26,7 +26,7 @@ class FeedSource(Base):
 	@href.setter
 	def href(self, url):
 		o = urlparse(url)
-		if not o.path.endswith('.xml') and not o.path.endswith('.rss'):
+		if not o.path.endswith('.xml') and not o.path.endswith('.rss') and not o.path.endswith('rss/'):
 			raise AttributeError('Invalid feed URL', url)
 		self._href = url
 

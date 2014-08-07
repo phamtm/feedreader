@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% import 'macros/pagination.html' as pagination_macro %}
 
 {% block title %}
 	{% if current_user.is_authenticated() %}
@@ -15,6 +16,7 @@ There are no feed to display
 
 
 <div class="container">
+	Num articles: {{ rss_articles | length }}
 	<table class="feedentries">
 
 		{% for article in rss_articles %}
@@ -28,9 +30,9 @@ There are no feed to display
 				<td class="feedtitle" colspan="3">
 					<a class="feedlink" href="{{ article.link }}" onclick="openweb('{{ article.link }}'); upviews({{ article.id }}); return false;" target="_blank" >{{ article.title }}</a>
 					<br/>
-					<i>{{ article.source.name }}</i>
+					<i style="color:#999">{{ article.source.name }}</i>
 				</td>
-				<td><a href="{{ url_for('mod_feed.read_article', article_id = article.id) }}">Read More..</a></td>
+				<td class="readmore"><a href="{{ url_for('mod_feed.read_article', article_id = article.id) }}">Read More..</a></td>
 			</tr>
 
 			<tr>
@@ -58,10 +60,11 @@ There are no feed to display
 		{% endfor %}
 
 	</table>
-</div>
 
-<div class="container">
-
+	<h4>Pagination</h4>
+	<div class="pagination">
+		{{ pagination_macro.pagination_widget(pagination, 'mod_feed.index')}}
+	</div>
 </div>
 
 <script type="text/javascript">
