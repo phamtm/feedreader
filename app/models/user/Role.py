@@ -20,7 +20,7 @@ class Role(db.Model):
 	def insert_roles():
 		for r in roles:
 			role = Role.query.filter_by(name = r).first()
-			if role is None:
+			if not role:
 				role = Role(name = r)
 			role.permissions = roles[r][0]
 			role.default = roles[r][1]

@@ -3,8 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 # Default class that implements required methods for User model
-from flask.ext.login import UserMixin, AnonymousUserMixin
 from flask import current_app
+from flask.ext.login import UserMixin, AnonymousUserMixin
 
 from app import db, login_manager
 
@@ -39,7 +39,7 @@ class User(UserMixin, Base):
 	def __init__(self, **kwargs):
 		super(User, self).__init__(**kwargs)
 
-		if self.role is None:
+		if not self.role:
 			# If the email is the same as admin's email, assign admin role
 			if self.email == current_app.config['ADMIN_EMAIL']:
 				self.role = Role.query.filter_by(permissions = 0xff).first()
@@ -99,29 +99,31 @@ class User(UserMixin, Base):
 
 	# Check if the user has permission
 	def has_permissions(self, perm):
-		return self.role is not None and 				\
+		return self.role and 							\
 			   (perm & self.role.permissions) == perm
 
 
 	# Subscribe to a feed source
 	def subscribe_feed(self, source_id):
 		source = FeedSource.query.get(source_id)
-		if source is not None and not self.is_subscribed(source_id):
+		if source and not self.is_subscribed(source_id):
 			sub = FeedSubscription(user_id = self.id, source_id = source_id)
 			db.session.add(sub)
+			db.session.commit()
 
 
 	# Unsubscribe a feed source
 	def unsubscribe_feed(self, source_id):
-		sub = FeedSubscription.query.filter_by(user_id = self.id,source_id = source_id).first()
-		if sub is not None:
+		sub = FeedSubscription.query.filter_by(user_id = self.id, source_id = source_id).first()
+		if sub:
 			db.session.delete(sub)
+			db.session.commit()
 
 
 	# Test if the user subscribed to a feed source
 	def is_subscribed(self, source_id):
 		sub = FeedSubscription.query.filter_by(user_id = self.id, source_id = source_id).first()
-		return sub is not None
+		return sub
 
 
 	def __repr__(self):

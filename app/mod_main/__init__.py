@@ -2,7 +2,7 @@ from flask import Blueprint
 
 mod_main = Blueprint('mod_main', __name__)
 
-import controllers, errors
+import errors
 from app.models import Permission
 
 # Context process: make variables globally available to all templates

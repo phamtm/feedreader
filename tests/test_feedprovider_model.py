@@ -30,7 +30,7 @@ class TestFeedProviderModel(unittest.TestCase):
 			]
 
 		for url in invalid_urls:
-			self.assertTrue(FeedProvider.domain_regex.match(url) is None)
+			self.assertTrue(not FeedProvider.domain_regex.match(url))
 
 
 	def test_valid_source_url(self):
@@ -44,4 +44,4 @@ class TestFeedProviderModel(unittest.TestCase):
 			]
 
 		for url in valid_urls:
-			self.assertTrue(FeedProvider.domain_regex.match(url) is not None)
+			self.assertTrue(FeedProvider.domain_regex.match(url))

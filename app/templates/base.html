@@ -7,12 +7,23 @@
 		</title>
 
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+
+		<script src="{{ url_for('static', filename='js/jquery-2.0.0.min.js') }}"></script>
 	</head>
 
 	<body>
+		<div id="fade">
+		</div>
+
+		<div id="overlay">
+			<a onclick="closemodal();return false;" style="float:right" href="#">Close</a>
+			<iframe id="popup" src="" width="100%" height="100%" frameborder="0"></iframe>
+		</div>
+
+
 		<ul class='hnav'>
-			<li><a href="{{ url_for('mod_feed.all_feeds') }}"><strong>THOISU</strong></a></li>
-			<li><a href="{{ url_for('mod_feed.all_feeds') }}">Index</a></li>
+			<li><a href="{{ url_for('mod_feed.index') }}"><strong>THOISU</strong></a></li>
+			<li><a href="{{ url_for('mod_feed.index') }}">Index</a></li>
 
 			{% if not current_user.is_authenticated() %}
 			<li><a href="{{ url_for('mod_auth.login') }}"> Log in</a></li>
@@ -23,12 +34,8 @@
 
 			{% if not current_user.is_authenticated() %}
 			<li><a href="{{ url_for('mod_auth.register') }}">Register</a></li>
-			{% endif %}
-
-			{% if current_user.is_authenticated() %}
 			<li><a href="{{ url_for('mod_auth.forgot') }}">Forgot password?</a></li>
 			{% endif %}
-
 
 			<li><a href="{{ url_for('mod_feed.manage_subscriptions') }}">Manage subscriptions</a></li>
 
@@ -36,17 +43,21 @@
 				<li style="float:right"><a href="{{ url_for('mod_auth.logout') }}">Log out</a></li>
 				<li style="float:right">{{ current_user.email }} |</li>
 			{% endif %}
+
+			<li><a href="{{ url_for('mod_mock.read') }}">Fetch Article</a></li>
+			<li><a href="{{ url_for('mod_mock.thumbnail') }}">Fetch Thumbnail</a></li>
 		</ul>
 
 		{% if current_user.is_authenticated() %}
 		<ul class='hnav' style="background-color:rgba(3, 141, 171, 0.32)">
-			<li><a href="#" class="active">Vnexpress</a></li>
-			<li><a href="#">BBC Vietnamese</a></li>
-			<li><a href="#">Tien Phong</a></li>
+			{% for source in session.subscriptions %}
+				<li><a href="#">{{ source }}</a></li>
+			{% endfor %}
+			<li>Total: {{ session.subscriptions | length }} sources</li>
 		</ul>
 		{% endif %}
 
-		<!-- Flahed messages -->
+		<!-- Flashed messages -->
 		{% with messages = get_flashed_messages() %}
 		<ul>
 			{% for m in messages %}
@@ -58,6 +69,27 @@
 		<!-- Main content -->
 		{% block content %}
 		{% endblock %}
+
+
+	<script>
+	var openmodal = function () {
+		document.getElementById('overlay').style.display = 'block';
+		document.getElementById('fade').style.display = 'block';
+		$('body').css('overflow', 'hidden');
+	};
+
+	var closemodal = function () {
+		document.getElementById('overlay').style.display = 'none';
+		document.getElementById('fade').style.display = 'none';
+		$('body').css('overflow', '');
+	};
+
+	var openweb = function(href) {
+		document.getElementById('popup').src = href;
+		openmodal();
+	};
+
+	</script>
 
 	</body>
 

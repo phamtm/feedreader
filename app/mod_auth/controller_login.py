@@ -48,7 +48,8 @@ def login():
 
 			# Log the user in, optionally set a cookie to later recover this session
 			login_user(user, remember = form.remember.data)
-			return redirect(request.referrer or url_for('mod_main.index'))
+			load_subscriptions()
+			return redirect(request.referrer or url_for('mod_feed.index'))
 
 		# Redirect to login page with an error message
 		flash('Invalid email, password')
@@ -61,6 +62,13 @@ def login():
 def logout():
 	if current_user.is_authenticated():
 		logout_user()
+		session['subscriptions'] = None
 		flash('You have been logged out')
-	return redirect(url_for('mod_main.index'))
+	return redirect(url_for('mod_feed.index'))
 
+
+
+# Load user's subscriptions
+@login_required
+def load_subscriptions():
+	session['subscriptions'] = [s.source_id for s in current_user.feed_subscriptions]

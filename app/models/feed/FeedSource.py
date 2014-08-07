@@ -17,6 +17,7 @@ class FeedSource(Base):
 	_href 			= db.Column(db.String(511), nullable = False)
 	provider_id 	= db.Column(db.Integer, db.ForeignKey('feedprovider.id'))
 	articles 		= db.relationship('FeedArticle', backref = 'source', lazy = 'dynamic')
+	# timestamp_format = db.Column(db.String(65), nullable = False)
 
 	@property
 	def href(self):

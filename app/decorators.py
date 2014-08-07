@@ -11,7 +11,7 @@ def unauthenticated_required(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
 		if current_user.is_authenticated():
-			return redirect(url_for('mod_main.index'))
+			return redirect(url_for('mod_feed.index'))
 		return f(*args, **kwargs)
 	return decorated_function
 

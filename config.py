@@ -29,6 +29,9 @@ class Config:
 	# Temporary folder path
 	TMP_DIR = os.path.join(BASE_DIR, 'tmp')
 
+	# Thumbnails folder path
+	THUMBNAIL_DIR = os.path.join(BASE_DIR, 'thumbs')
+
 	# Facebook App Key
 	FACEBOOK_APP_ID = '273840802804076',
 	FACEBOOK_APP_SECRET = '41480f4a41cdcb5d08d2c10d68795421'

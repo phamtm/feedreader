@@ -7,15 +7,18 @@ HTTP_REDIRECT 				= 302   # A redirect request was issued
 
 HTTP_BAD_REQUEST            = 400   # The request is invalid or inconsistent
 
-HTTP_UNAUTHORIZED           = 401   # The request does not include 
+HTTP_UNAUTHORIZED           = 401   # The request does not include
                                     # authentication information
 
-HTTP_FORBIDDEN 				= 403   # The authentication credentials sent with 
-                                    # the request are insufficient for the 
+HTTP_FORBIDDEN 				= 403   # The authentication credentials sent with
+                                    # the request are insufficient for the
                                     # request
 
-HTTP_NOT_FOUND 				= 404   # The resource referenced in the URL was 
+HTTP_NOT_FOUND 				= 404   # The resource referenced in the URL was
                                     # not found
+
+HTTP_METHOD_NOT_ALLOWED		= 405	# The request method is not supported for
+									# the resource
 
 HTTP_INTERNAL_SERVER_ERROR 	= 500   # An unexpected error has occurred while
                                     # processing the request

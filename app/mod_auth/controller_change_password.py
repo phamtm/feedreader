@@ -24,7 +24,7 @@ def change_password():
 	# to change his password
 	if current_user.register_with_provider:
 		flash('Registered with a social account, no password is required')
-		return redirect(url_for('mod_main.index'))
+		return redirect(url_for('mod_feed.index'))
 
 	form = ChangePasswordForm()
 

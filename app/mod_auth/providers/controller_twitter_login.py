@@ -29,9 +29,9 @@ def twitter_login():
 @mod_auth.route('/authorized/twitter')
 @twitter.authorized_handler
 def twitter_authorized(response):
-	next_url = request.args.get('next') or url_for('mod_main.index')
+	next_url = request.args.get('next') or url_for('mod_feed.index')
 
-	if response is None:
+	if not response:
 		flash('You denied the request to sign in')
 		return redirect(next_url)
 
@@ -51,7 +51,7 @@ def twitter_authorized(response):
 
 	# If the user is not registered, add him
 	user = User.query.filter_by(email = twitter_screen_name).first()
-	if user is None:
+	if not user:
 		user = User(email = twitter_screen_name, register_with_provider = True)
 		db.session.add(user)
 		db.session.commit()
@@ -62,7 +62,7 @@ def twitter_authorized(response):
 		user_id = user.id,
 		provider_id = provider_id['TWITTER']).first()
 
-	if connection is None:
+	if not connection:
 		connection = Connection(
 				user_id = user.id,
 				provider_id = provider_id['TWITTER'],

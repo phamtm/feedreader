@@ -21,7 +21,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 @unauthenticated_required
 def register():
 	if current_user.is_authenticated():
-		return redirect(url_for('mod_main.index'))
+		return redirect(url_for('mod_feed.index'))
 
 	form = RegisterForm()
 
@@ -38,7 +38,7 @@ def register():
 				   'auth/email/confirm', user = user, token = token)
 
 		flash('An activation email has been sent to your account')
-		return redirect(url_for('mod_main.index'))
+		return redirect(url_for('mod_feed.index'))
 
 	return render_template('auth/register.html', form = form)
 
@@ -52,7 +52,7 @@ def activate(token):
 		data = s.loads(token)
 	except:
 		flash('Invalid or expired token')
-		return redirect(url_for('mod_main.index'))
+		return redirect(url_for('mod_feed.index'))
 
 	user = User.query.get(data['confirm_id'])
 	user.confirmed = True

@@ -87,7 +87,7 @@ class ResetPasswordRequestForm(Form):
 	submit 		= SubmitField(u'Submit')
 
 	def validate_email(self, field):
-		if User.query.filter_by(email = field.data).first() is None:
+		if not User.query.filter_by(email = field.data).first():
 			raise ValidationError('Email doesn\'t exists')
 
 

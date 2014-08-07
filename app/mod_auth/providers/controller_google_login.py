@@ -14,6 +14,7 @@ from app.mod_auth import mod_auth
 from app.decorators import unauthenticated_required
 from app.models import User, 		\
 					   Connection
+from app.mod_auth.controller_login import load_subscriptions
 
 from urllib2 import Request, urlopen, URLError
 
@@ -22,7 +23,7 @@ from urllib2 import Request, urlopen, URLError
 @unauthenticated_required
 def google_login():
 	session['google_auth_next_url'] = request.referrer or			\
-									  url_for('mod_main.index')	or	\
+									  url_for('mod_feed.index')	or	\
 									  request.args.get('next')
 
 
@@ -59,7 +60,7 @@ def google_authorized(response):
 
 
 	user = User.query.filter_by(email = user_info['email']).first()
-	if user is None:
+	if not user:
 		user = User(email = user_info['email'], register_with_provider = True)
 		db.session.add(user)
 		db.session.commit()
@@ -68,7 +69,7 @@ def google_authorized(response):
 			user_id = user.id,
 			provider_id = provider_id['GOOGLE']
 		).first()
-	if connection is None:
+	if not connection:
 		connection = Connection(
 				user_id = user.id,
 				provider_id = provider_id['GOOGLE'],
@@ -82,6 +83,7 @@ def google_authorized(response):
 	db.session.add(connection)
 
 	login_user(user)
+	load_subscriptions()
 
 	return redirect(session.get('google_auth_next_url'))
 

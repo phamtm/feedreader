@@ -2,7 +2,10 @@ from flask import Blueprint
 
 mod_feed = Blueprint('mod_feed', __name__, url_prefix = '/feeds')
 
-import controllers
+import controller_source,	\
+	   controller_user,		\
+	   controller_article
+
 
 from FeedAggregator import FeedAggregator
 fa = FeedAggregator()

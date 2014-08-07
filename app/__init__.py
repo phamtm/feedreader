@@ -77,8 +77,14 @@ def create_app(config_name = 'default'):
 	from mod_main import mod_main
 	from mod_auth import mod_auth
 	from mod_feed import mod_feed
+	from api_1_0 import api as api_1_0_blueprint
 	app.register_blueprint(mod_main)
 	app.register_blueprint(mod_auth)
 	app.register_blueprint(mod_feed)
+	app.register_blueprint(api_1_0_blueprint, url_prefix = '/api/v1.0')
+
+	if config_name != 'production':
+		from mod_mock import mod_mock
+		app.register_blueprint(mod_mock)
 
 	return app

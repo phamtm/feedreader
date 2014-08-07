@@ -10,6 +10,8 @@ tags
 # Temp folder #
 ###############
 tmp/*
+thumbs/*
+logs/*
 
 # Compiled source #
 ###################

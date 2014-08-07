@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}
+	Read article
+{% endblock %}
+
+{% block content %}
+<h3>Original link:</h3>
+<a href="{{ article.link }}" target="_blank">{{ article.link }}</a>
+<div class="containter" style="width:60%">
+	{{ article.readable | safe }}
+</div>
+{% endblock %}

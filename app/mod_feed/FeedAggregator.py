@@ -4,10 +4,13 @@ from app.models import FeedArticle,		\
 					   FeedProvider,	\
 					   FeedSource
 
-import feedparser
+from app.mod_crawler.thumbnail import get_thumbnail_src
+from app.mod_crawler.article import fetch_readable,				\
+									fetch_thumbnail_from_html
 
-# future_calls = [(source.id, Future(feedparser.parse, source['href'])) for source in sources]
-# feeds = [(future_obj[0], future_obj[1]()) for future_obj in future_calls]
+from breadability.readable import Article
+import urllib2
+import feedparser
 
 
 class FeedAggregator(object):
@@ -23,9 +26,10 @@ class FeedAggregator(object):
 		entries = []
 		for source in sources:
 			source_id = source[0]
-			source_href = source[1]
-			source_entries = self.get_feed_entries_from_source(source_href)
-			if source_entries is not None:
+			source_url = source[1]
+			print 'Fetching rss from <%s>' % source_url
+			source_entries = self.get_feed_entries_from_source(source_url)
+			if source_entries:
 				entries.append((source_id, source_entries))
 
 		return entries
@@ -44,6 +48,8 @@ class FeedAggregator(object):
 	# Create a FeedArticle object from a raw (dictionary) entry.
 	# Return None if not a valid entry
 	def get_feed_article(self, source_id, entry):
+		article = None
+
 		if 'title' in entry and 'link' in entry:
 			article = FeedArticle(
 				title = unicode(entry.title),
@@ -54,9 +60,11 @@ class FeedAggregator(object):
 			if 'summary' in entry:
 				article.summary = unicode(entry.summary)
 
-			return article
+			readable = fetch_readable(article.link)
+			article.readable_content = readable
+			article.thumbnail_url = fetch_thumbnail_from_html(readable, article.summary)
 
-		return None
+		return article
 
 
 	# Create a FeedArticle from the entry and add to database
@@ -68,7 +76,7 @@ class FeedAggregator(object):
 				link = article.link
 			).first()
 
-		if article is not None and old_article is None:
+		if article and not old_article:
 			db.session.add(article)
 			db.session.commit()
 
@@ -77,11 +85,10 @@ class FeedAggregator(object):
 	def add_feed_entries_to_db(self, entries):
 		for entry in entries:
 			source_id, source_entries = entry
-			for source_entry in source_entries:
+			for idx, source_entry in enumerate(source_entries):
+				print '%3d/%d %s' % (idx, len(source_entries), source_entry.link)
 				self.add_feed_entry_to_db(source_id, source_entry)
-
 
 
 	def __repr__(self):
 		return '<FeedAggregator>'
-

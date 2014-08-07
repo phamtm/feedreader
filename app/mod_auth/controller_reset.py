@@ -30,7 +30,7 @@ def forgot():
 						'auth/email/reset', user = user, token = token)
 			flash('You can now reset your password')
 			flash('An email has been sent to your email address')
-			return redirect(url_for('mod_main.index'))
+			return redirect(url_for('mod_feed.index'))
 		else:
 			flash('incorrect email / no password for social login')
 
@@ -47,7 +47,7 @@ def reset_password(token):
 		data = s.loads(token)
 	except:
 		flash('Invalid or expired token')
-		return redirect(url_for('mod_main.index'))
+		return redirect(url_for('mod_feed.index'))
 
 	form = ResetPasswordForm()
 
@@ -57,7 +57,7 @@ def reset_password(token):
 		db.session.add(user)
 		db.session.commit()
 		flash('Your password has been successfully changed')
-		return redirect(url_for('mod_main.index'))
+		return redirect(url_for('mod_feed.index'))
 
 	return render_template('auth/reset_password.html', form = form)
 

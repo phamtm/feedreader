@@ -15,6 +15,7 @@ from app.models import User, 				\
 					   Connection
 
 from app.mod_auth.providers import provider_id
+from app.mod_auth.controller_login import load_subscriptions
 
 
 @mod_auth.route('/login/facebook')
@@ -22,7 +23,7 @@ from app.mod_auth.providers import provider_id
 def facebook_login():
 	return facebook.authorize(callback =
 			url_for('mod_auth.facebook_authorized',
-					next = request.args.get('next') or request.referrer or url_for('mod_main.index'),
+					next = request.args.get('next') or request.referrer or url_for('mod_feed.index'),
 					_external = True
 				)
 		)
@@ -31,9 +32,9 @@ def facebook_login():
 @mod_auth.route('/authorized/facebook')
 @facebook.authorized_handler
 def facebook_authorized(response):
-	next_url = request.args.get('next') or request.referrer or url_for('mod_main.index')
+	next_url = request.args.get('next') or request.referrer or url_for('mod_feed.index')
 
-	if response is None:
+	if not response:
 		flash('You denied the request to sign in')
 		return redirect(next_url)
 
@@ -45,7 +46,7 @@ def facebook_authorized(response):
 
 	# If the user is not registered, add him
 	user = User.query.filter_by(email = email).first()
-	if user is None:
+	if not user:
 		user = User(email = email, register_with_provider = True)
 		db.session.add(user)
 		db.session.commit()
@@ -56,7 +57,7 @@ def facebook_authorized(response):
 		user_id = user.id,
 		provider_id = provider_id['FACEBOOK']).first()
 
-	if connection is None:
+	if not connection:
 		connection = Connection(
 				user_id = user.id,
 				provider_id = provider_id['FACEBOOK'],
@@ -70,6 +71,7 @@ def facebook_authorized(response):
 	connection.oauth_token = response['access_token']
 
 	login_user(user)
+	load_subscriptions()
 
 	return redirect(next_url)
 

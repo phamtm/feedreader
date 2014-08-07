@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Fetch thumbnail
+{% endblock %}
+
+{% block content %}
+<div style="width:60%">
+	<h1>Fetch article</h1>
+
+	<form action="" method="post">
+		{{ form.hidden_tag() }}
+		<table>
+			<tr>
+				<td>{{ form.url.label }}</td>
+				<td>{{ form.url() }}</td>
+			</tr>
+			<tr>
+
+				{% for error in form.errors.url %}
+				<tr>
+					<td></td>
+					<td>{{ error }}</td>
+				</tr>
+				{% endfor %}
+
+			</tr>
+			<tr>
+				<td></td>
+				<td>{{ form.submit() }}</td>
+			</tr>
+		</table>
+	</form>
+
+	{% if thumbnail_url %}
+	<img src="{{ thumbnail_url }}" alt="Thumbnail">
+	{% else %}
+	No thumbnail
+	{% endif %}
+</div>
+{% endblock %}
