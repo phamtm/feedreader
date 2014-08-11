@@ -4,6 +4,7 @@ from app.models import Connection, FeedArticle, FeedProvider, FeedSource, FeedSu
 from app.mod_feed.sources import feed_sources
 from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
+import time
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
@@ -16,6 +17,7 @@ def make_shell_context():
 
 manager.add_command("shell", Shell(make_context=make_shell_context))
 manager.add_command('db', MigrateCommand)
+
 
 @manager.command
 def createdb():
@@ -46,12 +48,25 @@ def createdb():
 	from app.mod_feed import fa
 	fa.update_db()
 
+	# tfidf()
+
+
+@manager.command
+def tfidf():
+	print 'computing relevant articles..'
+	t0 = time.time()
+	from app.recommender.related_article import compute_tfidf
+	compute_tfidf()
+	t1 = time.time()
+	print '-- Elapsed time: %.3f' % (t1 - t0)
+	db.session.commit()
+
+
 
 @manager.command
 def updatefeed():
 	from app.mod_feed import fa
 	fa.update_db()
-
 
 
 @manager.command

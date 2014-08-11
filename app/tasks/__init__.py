@@ -1,0 +1,1 @@
+from app.tasks.tasks import add, gen_prime

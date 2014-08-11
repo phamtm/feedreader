@@ -1,148 +1,179 @@
 from app import db
 from app.mod_feed import mod_feed
-from app.models import FeedArticle,		\
-					   FeedVote
+from app.models import (FeedArticle,
+                        FeedVote)
 
-from flask import render_template,		\
-				  abort,				\
-				  redirect,				\
-				  jsonify,				\
-				  request,				\
-				  url_for
-from flask.ext.login import login_required,		\
-							current_user
+from flask import (render_template,
+                   abort,
+                   redirect,
+                   jsonify,
+                   request,
+                   url_for)
+from flask.ext.login import (login_required,
+                             current_user)
 
-"""
-Upvote
-Downvote
-Remove Vote
-Upview
-"""
 
 @mod_feed.route('/article/')
 def read_article():
-	article_id = request.args.get('article_id')
-	if not article_id:
-		return render_template(url_for('mod_feed.index'))
+    """View the readable content of the article."""
 
-	article = FeedArticle.query.get(article_id)
+    article_id = request.args.get('article_id')
+    if not article_id:
+        return render_template(url_for('mod_feed.index'))
 
-	if not article:
-		abort(404)
+    article = FeedArticle.query.get(article_id)
 
-	a = {
-		'link': article.link,
-		'readable': article.readable_content
-	}
+    if not article:
+        abort(404)
 
-	return render_template('read.html', article = a)
+    related_articles = []
+    for docid in article.get_related_articles():
+        doc = FeedArticle.query.get(docid)
+        if doc:
+            related_articles.append({
+                'title': doc.title,
+                'link': doc.link})
+
+    formatted_article = {
+        'title': article.title,
+        'link': article.link,
+        'readable': article.readable_content,
+        'related_articles': related_articles}
+
+    return render_template('read.html', article=formatted_article)
 
 
 @mod_feed.route('/upvote')
 @login_required
 def upvote():
-	article_id = request.args.get('article_id')
+    """Increase the vote of the article."""
 
-	if not article_id:
-		return redirect(url_for('mod_main.all_feeds'))
+    article_id = request.args.get('article_id')
 
-	article = FeedArticle.query.get(article_id)
+    if not article_id:
+        return redirect(url_for('mod_main.all_feeds'))
 
-	# Article does not exist
-	if not article:
-		abort(404)
+    article = FeedArticle.query.get(article_id)
 
-	vote = FeedVote.query.filter_by(user_id = current_user.id, article_id = article_id).first()
+    # Article does not exist
+    if not article:
+        abort(404)
 
-	# No vote from the user yet, add one
-	if not vote:
-		vote = FeedVote(user_id = current_user.id, article_id = article_id, is_upvote = True)
-		article.upvote += 1
-		article.update_wilson_score()
-		db.session.add(vote)
-	else:
-		if not vote.is_upvote:
-			vote.is_upvote = True
-			article.upvote += 1
-			article.downvote -= 1
-			article.update_wilson_score()
+    vote = FeedVote.query.filter_by(
+        user_id=current_user.id,
+        article_id=article_id).first()
 
-	return redirect(url_for('mod_feed.index'))
+    # No vote from the user yet, add one
+    if not vote:
+        vote = FeedVote(
+            user_id=current_user.id,
+            article_id=article_id,
+            is_upvote=True)
+
+        article.upvote += 1
+        article.update_wilson_score()
+        db.session.add(vote)
+    else:
+        if not vote.is_upvote:
+            vote.is_upvote = True
+            article.upvote += 1
+            article.downvote -= 1
+            article.update_wilson_score()
+
+    return redirect(url_for('mod_feed.index'))
 
 
 @mod_feed.route('/downvote')
 @login_required
 def downvote():
-	article_id = request.args.get('article_id')
+    """Decrease the vote of the article."""
 
-	if not article_id:
-		return redirect(url_for('mod_main.all_feeds'))
+    article_id = request.args.get('article_id')
 
-	article = FeedArticle.query.get(article_id)
+    if not article_id:
+        return redirect(url_for('mod_main.all_feeds'))
 
-	# Article does not exist
-	if not article:
-		abort(404)
+    article = FeedArticle.query.get(article_id)
 
-	vote = FeedVote.query.filter_by(user_id = current_user.id, article_id = article_id).first()
+    # Article does not exist
+    if not article:
+        abort(404)
 
-	# No vote from the user yet, add one
-	if not vote:
-		vote = FeedVote(user_id = current_user.id, article_id = article_id, is_upvote = False)
-		article.downvote += 1
-		article.update_wilson_score()
-		db.session.add(vote)
-	else:
-		if vote.is_upvote:
-			vote.is_upvote = False
-			article.upvote -= 1
-			article.downvote += 1
-			article.update_wilson_score()
+    vote = FeedVote.query.filter_by(
+        user_id=current_user.id,
+        article_id=article_id).first()
 
-	return redirect(url_for('mod_feed.index'))
+    # No vote from the user yet, add one
+    if not vote:
+        vote = FeedVote(
+            user_id=current_user.id,
+            article_id=article_id,
+            is_upvote=False)
+        article.downvote += 1
+        article.update_wilson_score()
+        db.session.add(vote)
+    else:
+        if vote.is_upvote:
+            vote.is_upvote = False
+            article.upvote -= 1
+            article.downvote += 1
+            article.update_wilson_score()
+
+    return redirect(url_for('mod_feed.index'))
 
 
 @mod_feed.route('/remove_vote')
 @login_required
 def remove_vote():
-	article_id = request.args.get('article_id')
+    """Remove the user's vote for this article."""
 
-	if not article_id:
-		return redirect(url_for('mod_main.all_feeds'))
+    article_id = request.args.get('article_id')
 
-	article = FeedArticle.query.get(article_id)
+    if not article_id:
+        return redirect(url_for('mod_main.all_feeds'))
 
-	# Article does not exist
-	if not article:
-		abort(404)
+    article = FeedArticle.query.get(article_id)
 
-	if article:
-		vote = FeedVote.query.filter_by(user_id = current_user.id, article_id = article_id).first()
-		if vote:
-			if vote.is_upvote:
-				article.upvote -= 1
-			else:
-				article.downvote -= 1
-			article.update_wilson_score()
-			db.session.delete(vote)
+    # Article does not exist
+    if not article:
+        abort(404)
 
-	return redirect(url_for('mod_feed.index'))
+    if article:
+        vote = FeedVote.query.filter_by(
+            user_id=current_user.id,
+            article_id=article_id).first()
+        if vote:
+            if vote.is_upvote:
+                article.upvote -= 1
+            else:
+                article.downvote -= 1
+            article.update_wilson_score()
+            db.session.delete(vote)
+
+    return redirect(url_for('mod_feed.index'))
 
 
 @mod_feed.route('/upview/')
 def upviews():
+    """Increase the views of the article."""
 
-	article_id = request.args.get('article_id')
+    article_id = request.args.get('article_id')
 
+    if not article_id:
+        return jsonify({
+            'error': 'invalid parameter',
+            'message': 'article_id not provided'})
 
-	if not article_id:
-		return jsonify({'error': 'invalid parameter', 'message': 'article_id not provided'})
+    article = FeedArticle.query.get(article_id)
 
-	article = FeedArticle.query.get(article_id)
+    if not article:
+        return jsonify({
+            'error': 'resource not found',
+            'message': 'no article with that id'})
 
-	if not article:
-		return jsonify({'error': 'resource not found', 'message': 'no article with that id'})
+    article.views += 1
 
-	article.views += 1
+    return jsonify({
+        'article_id': article_id,
+        'article_views': article.views})
 
-	return jsonify({'article_id': article_id, 'article_views': article.views})

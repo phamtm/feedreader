@@ -8,4 +8,4 @@ from app.models import Permission
 # Context process: make variables globally available to all templates
 @mod_main.app_context_processor
 def inject_permissions():
-	return { 'Permission': Permission }
+    return { 'Permission': Permission }

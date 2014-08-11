@@ -47,7 +47,7 @@ class Future:
 
 
 def generate_random_string(length):
-	return ''.join([choice(ascii_letters) for i in range(length)])
+    return ''.join([choice(ascii_letters) for i in range(length)])
 
 
 def wilson_score(pos_ratings, num_ratings):

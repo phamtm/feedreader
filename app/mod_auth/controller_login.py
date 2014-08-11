@@ -1,74 +1,76 @@
-from flask import redirect, 					\
-				  render_template, 				\
-				  flash, 						\
-				  request, 						\
-				  url_for,						\
-				  session,						\
-				  request
+"""
+On a production server, the login route must be made available over secure
+HTTP so that the form data transmitted to the server is encrypted. Without
+the secure HTTP, the login credentials can be intercepted during transit,
+defeating any efforts put into securing passwords in the server.
+"""
 
-from flask.ext.login import login_required, 	\
-							login_user, 		\
-							logout_user, 		\
-							current_user		\
+from flask import redirect,                     \
+                  render_template,              \
+                  flash,                        \
+                  request,                      \
+                  url_for,                      \
+                  session,                      \
+                  request
 
-# from app import facebook
+from flask.ext.login import login_required,     \
+                            login_user,         \
+                            logout_user,        \
+                            current_user        \
+
 from app.models import User
 from app.mod_auth import mod_auth
 from app.forms import LoginForm
 from app.decorators import unauthenticated_required
 
 
-###############################################################################
-# On a production server, the login route must be made available over secure
-# HTTP so that the form data transmitted to the server is encrypted. Without
-# the secure HTTP, the login credentials can be intercepted during transit,
-# defeating any efforts put into securing passwords in the server.
-###############################################################################
-
-# Log in route
-@mod_auth.route('/login', methods = ['GET', 'POST'])
+@mod_auth.route('/login', methods=['GET', 'POST'])
 @unauthenticated_required
 def login():
-	form = LoginForm()
+    """Logging in the user."""
 
-	if form.validate_on_submit():
-		user = User.query.filter_by(email = form.email.data).first()
+    form = LoginForm()
 
-		# Do not allow user who registered with a social account to log
-		# via the login form. Use the social login buttons instead
-		if user is not None and user.register_with_provider:
-			flash('Please login with your social account')
-			return redirect(url_for('mod_auth.login'))
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
 
-		if user is not None and user.verify_password(form.password.data):
-			# The user must be activated
-			if not user.confirmed:
-				flash('You need to activate your account first')
-				return redirect(url_for('mod_auth.login'))
+        # Do not allow user who registered with a social account to log
+        # via the login form. Use the social login buttons instead
+        if user is not None and user.register_with_provider:
+            flash('Please login with your social account')
+            return redirect(url_for('mod_auth.login'))
 
-			# Log the user in, optionally set a cookie to later recover this session
-			login_user(user, remember = form.remember.data)
-			load_subscriptions()
-			return redirect(request.referrer or url_for('mod_feed.index'))
+        if user is not None and user.verify_password(form.password.data):
+            # The user must be activated
+            if not user.confirmed:
+                flash('You need to activate your account first')
+                return redirect(url_for('mod_auth.login'))
 
-		# Redirect to login page with an error message
-		flash('Invalid email, password')
+            # Log the user in
+            login_user(user, remember=form.remember.data)
+            load_subscriptions()
+            return redirect(request.referrer or url_for('mod_feed.index'))
 
-	return render_template('auth/login.html', form = form)
+        # Redirect to login page with an error message
+        flash('Invalid email, password')
+
+    return render_template('auth/login.html', form=form)
 
 
-# Log out route
 @mod_auth.route('/logout')
 def logout():
-	if current_user.is_authenticated():
-		logout_user()
-		session['subscriptions'] = None
-		flash('You have been logged out')
-	return redirect(url_for('mod_feed.index'))
+    """Logging the user out."""
+
+    if current_user.is_authenticated():
+        logout_user()
+        session['subscriptions'] = None
+        flash('You have been logged out')
+    return redirect(url_for('mod_feed.index'))
 
 
-
-# Load user's subscriptions
 @login_required
 def load_subscriptions():
-	session['subscriptions'] = sorted([s.source_id for s in current_user.feed_subscriptions])
+    """Load the feed subscriptions of the current user."""
+
+    subs = sorted([s.source_id for s in current_user.feed_subscriptions])
+    session['subscriptions'] = subs

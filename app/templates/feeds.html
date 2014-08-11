@@ -25,14 +25,14 @@ There are no feed to display
 			<tr>
 				<td class="feedid">{{ article.upvote }}&#8593; / {{ article.downvote }}&#8595;</td>
 				<td>
-					<img src="{{ article.thumbnail_url }}" alt="Thumbnail" width="100" height="60">
+					<img src="{{ article.thumbnail_url }}" alt="Thumbnail" width="100">
 				</td>
 				<td class="feedtitle" colspan="3">
 					<a class="feedlink" href="{{ article.link }}" onclick="openweb('{{ article.link }}'); upviews({{ article.id }}); return false;" target="_blank" >{{ article.title }}</a>
 					<br/>
 					<i style="color:#999">{{ article.source.name }}</i>
 				</td>
-				<td class="readmore"><a href="{{ url_for('mod_feed.read_article', article_id = article.id) }}">Read More..</a></td>
+				<td class="readmore"><a href="{{ url_for('mod_feed.read_article', article_id = article.id) }}" onclick="upviews({{ article.id }});">Read More..</a></td>
 			</tr>
 
 			<tr>

@@ -1,62 +1,61 @@
 feed_sources = [
-		# {
-		# 	'name': 'BBC',
-		# 	'domain': 'http://www.bbc.co.uk/',
-		# 	'channels': {
-		# 		'VIETNAMESE': 'http://www.bbc.co.uk/vietnamese/vietnam/index.xml'
-		# 	},
-		# 	'timestamp_format': ''
-		# },
+    {
+        'name': 'VNEXPRESS',
+        'domain': 'http://vnexpress.net',
+        'channels': {
+            'TRANGCHU': 'http://vnexpress.net/rss/tin-moi-nhat.rss',
+        },
+        'timestamp_format': ''
+    },
 
-		{
-			'name': 'KENH14',
-			'domain': 'http://kenh14.vn',
-			'channels': {
-				'TRANGCHU': 'http://kenh14.vn/home.rss'
-			},
-			'timestamp_format': '%m/%d/%Y %I:%M:%S %p'
+    {
+        'name': 'KENH14',
+        'domain': 'http://kenh14.vn',
+        'channels': {
+            'TRANGCHU': 'http://kenh14.vn/home.rss'
+        },
+        'timestamp_format': '%m/%d/%Y %I:%M:%S %p'
+    },
 
-		},
+    {
+        'name': 'VIETNAMNET',
+        'domain': 'http://vietnamnet.vn',
+        'channels': {
+            'TRANGCHU': 'http://vietnamnet.vn/rss/home.rss'
+        },
+        'timestamp_format': ''
+    },
 
-		# {
-		# 	'name': 'LAODONG',
-		# 	'domain': 'http://laodong.com.vn',
-		# 	'channels': {
-		# 		'TRANGCHU': 'http://laodong.com.vn/rss/home.rss'
-		# 	},
-		# 	'timestamp_format': '%m/%d/%Y %I:%M:%S %p'
+    # {
+    #   'name': 'LAODONG',
+    #   'domain': 'http://laodong.com.vn',
+    #   'channels': {
+    #       'TRANGCHU': 'http://laodong.com.vn/rss/home.rss'
+    #   },
+    #   'timestamp_format': '%m/%d/%Y %I:%M:%S %p'
 
-		# },
+    # },
 
-		{
-			'name': 'VNEXPRESS',
-			'domain': 'http://vnexpress.net',
-			'channels': {
-				'TRANGCHU': 'http://vnexpress.net/rss/tin-moi-nhat.rss',
-			},
-			'timestamp_format': ''
-		},
-
-		# {
-		# 	'name': 'VIETNAMNET',
-		# 	'domain': 'http://vietnamnet.vn',
-		# 	'channels': {
-		# 		'TRANGCHU': 'http://vietnamnet.vn/rss/home.rss'
-		# 	},
-		# 	'timestamp_format': ''
-		# },
+    {
+        'name': 'BBC',
+        'domain': 'http://www.bbc.co.uk/',
+        'channels': {
+            'VIETNAMESE': 'http://www.bbc.co.uk/vietnamese/vietnam/index.xml'
+        },
+        'timestamp_format': ''
+    },
 
 
-		# {
-		# 	'name': 'Linkhay',
-		# 	'domain': 'http://linkhay.com',
-		# 	'channels': {
-		# 		'Tat ca': 'http://linkhay.com/te-nan/tin-hot/rss/'
-		# 	},
-		# 	'timestamp_format': ''
-		# },
+    # {
+    #   'name': 'Linkhay',
+    #   'domain': 'http://linkhay.com',
+    #   'channels': {
+    #       'Tat ca': 'http://linkhay.com/te-nan/tin-hot/rss/'
+    #   },
+    #   'timestamp_format': ''
+    # },
 
-	]
+]
 
 """
 # General news
@@ -75,5 +74,10 @@ http://vneconomy.vn/rss.htm
 
 # Other news aggregators
 http://linkhay.com/rss
+
+tuoitre
+zing
+yan
+elle
 
 """

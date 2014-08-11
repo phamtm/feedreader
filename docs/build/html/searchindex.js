@@ -1,0 +1,1 @@
+Search.setIndex({envversion:42,terms:{index:0,search:0,modul:0,docstr:1,content:0,thi:1,page:0},objtypes:{},objnames:{},filenames:["index","User"],titles:["Welcome to FeedReader&#8217;s documentation!","Documentation for User model"],objects:{},titleterms:{welcom:0,indic:0,user:1,tabl:0,feedread:0,model:1,document:[0,1]}})

@@ -113,6 +113,7 @@ a.feedlink:hover {
 }
 
 #readabilityBody {
-	font-family: Helvetica;
+	/*font-family: Helvetica;*/
+	font-family:arial, verdana, sans-serif;
 	line-height: 1.5em;
 }

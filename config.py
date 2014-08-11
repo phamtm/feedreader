@@ -41,6 +41,11 @@ class Config:
 
 	ARTICLES_PER_PAGE = 10
 
+	# Celery configuration
+	CELERY_BROKER_URL = 'amqp://'
+	CELERY_RESULT_BACKEND = 'amqp://'
+	CELERY_IMPORTS = ('app.tasks', )
+
 
 # Development environment configuration
 class DevConfig(Config):
