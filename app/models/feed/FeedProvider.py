@@ -1,5 +1,6 @@
-from app import db
-from ..Base import Base
+from sqlalchemy import Column, Unicode, String
+from sqlalchemy.orm import relationship, backref
+from app.models.Base import Base
 import re
 
 
@@ -7,10 +8,9 @@ class FeedProvider(Base):
 
     __tablename__ = 'feedprovider'
 
-    name = db.Column(db.Unicode(255, convert_unicode=True),
-                                nullable=False)
-    _domain = db.Column(db.String(511), nullable=False)
-    categories = db.relationship('FeedSource', backref='provider', lazy='dynamic')
+    name = Column(Unicode(255), nullable=False)
+    _domain = Column(String(511), nullable=False)
+    categories = relationship('FeedSource', backref='provider', lazy='dynamic')
 
     domain_regex = re.compile(r'^http://'
                                  r'([-a-zA-Z0-9]*\.)?'

@@ -1,20 +1,14 @@
-# Import Form
 from flask.ext.wtf import Form
-# Import current user
 from flask.ext.login import current_user
-
-# Import Form elements
-from wtforms import StringField,    \
-                    PasswordField,  \
-                    SubmitField,    \
-                    BooleanField
-
-# Import Form validators
-from wtforms.validators import Required,        \
-                               EqualTo,         \
-                               Email,           \
-                               Length,          \
-                               ValidationError
+from wtforms import (StringField,
+                     PasswordField,
+                     SubmitField,
+                     BooleanField)
+from wtforms.validators import (Required,
+                                EqualTo,
+                                Email,
+                                Length,
+                                ValidationError)
 
 from app.models import User
 

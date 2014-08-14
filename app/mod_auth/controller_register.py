@@ -4,15 +4,15 @@ from flask import (redirect,
                    url_for,
                    current_app)
 from flask.ext.login import current_user
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-from app import db
 from app.mod_auth import mod_auth
 from app.forms import RegisterForm
 from app.models import User
 from app.email import send_email
 from app.decorators import unauthenticated_required
+from database import db_session
 
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 
 @mod_auth.route('/register', methods=['GET', 'POST'])
@@ -29,8 +29,8 @@ def register():
         # Register User into database
         user = User(email=form.email.data,
                     password=form.password.data)
-        db.session.add(user)
-        db.session.commit()
+        db_session.add(user)
+        db_session.commit()
 
         # Send email to confirm user
         token = user.generate_confirmation_token()
@@ -59,8 +59,8 @@ def activate(token):
 
     user = User.query.get(data['confirm_id'])
     user.confirmed = True
-    db.session.add(user)
-    db.session.commit()
+    db_session.add(user)
+    db_session.commit()
     flash('Your account is activated')
 
     return redirect(url_for('mod_auth.login'))

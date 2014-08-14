@@ -1,17 +1,17 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 # Generate secure JSON Web Signature with a time expiration
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-
 # Default class that implements required methods for User model
 from flask import current_app
 from flask.ext.login import UserMixin, AnonymousUserMixin
+from sqlalchemy import Column, String, Boolean, Integer, ForeignKey
+from sqlalchemy.orm import relationship, backref
 
-from app import db, login_manager
-
-from ..Base import Base
-from ..feed import FeedSource,      \
-                   FeedSubscription
-from Role import Role
+from app import login_manager
+from app.models.Base import Base
+from app.models.feed import FeedSource, FeedSubscription
+from app.models.user.Role import Role
+from database import db_session, DeclarativeBase
 
 """
 .. module:: User
@@ -31,23 +31,23 @@ class User(UserMixin, Base):
     :param feed_subscriptions: List of user's feed subscriptions
     """
 
-    __tablename__           = 'user'
+    __tablename__ = 'user'
 
     # User name
-    name                    = db.Column(db.String(63), default = 'User')
+    name = Column(String(63), default='User')
 
-    # Authentication data: email and password hash
-    email                   = db.Column(db.String(127), nullable = False, unique = True, index = True)
-    password_hash           = db.Column(db.String(127))
-    confirmed               = db.Column(db.Boolean, default = False)
-    role_id                 = db.Column(db.Integer, db.ForeignKey('role.id'))
-    register_with_provider  = db.Column(db.Boolean, default = False)
+    # Authentication data
+    email = Column(String(127), nullable=False, unique=True, index=True)
+    password_hash = Column(String(127))
+    confirmed = Column(Boolean, default=False)
+    role_id= Column(Integer, ForeignKey('role.id'))
+    register_with_provider = Column(Boolean, default=False)
 
     # Social login connection
-    connections             = db.relationship('Connection', backref = 'user', lazy = 'dynamic')
+    connections = relationship('Connection', backref = 'user', lazy = 'dynamic')
 
     # Subscription to feed sources
-    feed_subscriptions      = db.relationship('FeedSubscription', backref = 'user', lazy = 'dynamic')
+    feed_subscriptions = relationship('FeedSubscription', backref = 'user', lazy = 'dynamic')
 
 
     # Initilization of user's role
@@ -107,7 +107,7 @@ class User(UserMixin, Base):
             return False
 
         self.confirmed = True
-        db.session.add(self)
+        db_session.add(self)
 
         return True
 
@@ -123,16 +123,16 @@ class User(UserMixin, Base):
         source = FeedSource.query.get(source_id)
         if source and not self.is_subscribed(source_id):
             sub = FeedSubscription(user_id = self.id, source_id = source_id)
-            db.session.add(sub)
-            db.session.commit()
+            db_session.add(sub)
+            db_session.commit()
 
 
     # Unsubscribe a feed source
     def unsubscribe_feed(self, source_id):
         sub = FeedSubscription.query.filter_by(user_id = self.id, source_id = source_id).first()
         if sub:
-            db.session.delete(sub)
-            db.session.commit()
+            db_session.delete(sub)
+            db_session.commit()
 
 
     # Test if the user subscribed to a feed source

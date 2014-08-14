@@ -1,14 +1,13 @@
-from app import db
-
-
+from database import DeclarativeBase
+from sqlalchemy import Column, Integer, DateTime, func
 
 # Define a base table for other database tables to inherit
-class Base(db.Model):
+class Base(DeclarativeBase):
 
-    __abstract__    = True
+    __abstract__ = True
 
-    id              = db.Column(db.Integer, primary_key = True)
-    date_created    = db.Column(db.DateTime, default = db.func.current_timestamp())
-    date_modified   = db.Column(db.DateTime,
-                              default = db.func.current_timestamp(),
-                              onupdate = db.func.current_timestamp())
+    id = Column(Integer, primary_key = True)
+    date_created = Column(DateTime, default = func.current_timestamp())
+    date_modified = Column(DateTime,
+                           default = func.current_timestamp(),
+                           onupdate = func.current_timestamp())

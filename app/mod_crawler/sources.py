@@ -26,24 +26,23 @@ feed_sources = [
         'timestamp_format': ''
     },
 
-    # {
-    #   'name': 'LAODONG',
-    #   'domain': 'http://laodong.com.vn',
-    #   'channels': {
-    #       'TRANGCHU': 'http://laodong.com.vn/rss/home.rss'
-    #   },
-    #   'timestamp_format': '%m/%d/%Y %I:%M:%S %p'
-
-    # },
-
     {
-        'name': 'BBC',
-        'domain': 'http://www.bbc.co.uk/',
-        'channels': {
-            'VIETNAMESE': 'http://www.bbc.co.uk/vietnamese/vietnam/index.xml'
-        },
-        'timestamp_format': ''
+      'name': 'LAODONG',
+      'domain': 'http://laodong.com.vn',
+      'channels': {
+          'TRANGCHU': 'http://laodong.com.vn/rss/home.rss'
+      },
+      'timestamp_format': '%m/%d/%Y %I:%M:%S %p'
     },
+
+    # {
+    #     'name': 'BBC',
+    #     'domain': 'http://www.bbc.co.uk/',
+    #     'channels': {
+    #         'VIETNAMESE': 'http://www.bbc.co.uk/vietnamese/vietnam/index.xml'
+    #     },
+    #     'timestamp_format': ''
+    # },
 
 
     # {

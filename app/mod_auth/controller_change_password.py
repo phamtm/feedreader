@@ -2,9 +2,7 @@ from flask import (render_template,
                    flash,
                    redirect,
                    url_for)
-
-from flask.ext.login import (current_user,
-                             login_required)
+from flask.ext.login import current_user, login_required
 
 from app.mod_auth import mod_auth
 from app.forms import ChangePasswordForm

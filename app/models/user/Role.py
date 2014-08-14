@@ -1,9 +1,10 @@
-from app import db
-from Permission import roles
+from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy.orm import relationship, backref
 
+from app.models.user.Permission import roles
+from database import DeclarativeBase, db_session
 
-
-class Role(db.Model):
+class Role(DeclarativeBase):
     """User's role in the application
     :param int id: Id of the role
     :param str name: Name of the role
@@ -12,12 +13,12 @@ class Role(db.Model):
     :param user: List of users having this role
     """
 
-    __tablename__   = 'role'
-    id              = db.Column(db.Integer, primary_key = True)
-    name            = db.Column(db.String(64), unique = True)
-    permissions     = db.Column(db.Integer)
-    default         = db.Column(db.Boolean, default = False)
-    users           = db.relationship('User', backref = 'role', lazy = 'dynamic')
+    __tablename__ = 'role'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(64), unique=True)
+    permissions = Column(Integer)
+    default = Column(Boolean, default=False)
+    users = relationship('User', backref='role', lazy='dynamic')
 
 
     def __repr__(self):
@@ -33,5 +34,5 @@ class Role(db.Model):
                 role = Role(name = r)
             role.permissions = roles[r][0]
             role.default = roles[r][1]
-            db.session.add(role)
-        db.session.commit()
+            db_session.add(role)
+        db_session.commit()

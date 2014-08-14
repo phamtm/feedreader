@@ -5,15 +5,13 @@ from flask import (url_for,
                    redirect)
 from flask.ext.login import login_user
 
-from app import (db,
-                 facebook)
 from app.mod_auth import mod_auth
 from app.decorators import unauthenticated_required
-from app.models import (User,
-                        Connection)
-
+from app.models import User, Connection
 from app.mod_auth.providers import provider_id
 from app.mod_auth.controller_login import load_subscriptions
+from app.mod_auth.providers import facebook
+from database import db_session
 
 
 @mod_auth.route('/login/facebook')
@@ -51,8 +49,8 @@ def facebook_authorized(response):
     user = User.query.filter_by(email=email).first()
     if not user:
         user = User(email=email, register_with_provider=True)
-        db.session.add(user)
-        db.session.commit()
+        db_session.add(user)
+        db_session.commit()
 
     # In any case we update the authentication token in the db
     # If the user has revoked access we will have new token here
@@ -66,9 +64,10 @@ def facebook_authorized(response):
             provider_id=provider_id['FACEBOOK'],
             provider_user_id=fbme.data['id'],
             display_name=fbme.data['name'],
-            image_url='https://graph.facebook.com/%s/picture?type=large' % (fbme.data['id']),
+            image_url='https://graph.facebook.com/%s/picture?type=large' % \
+                (fbme.data['id']),
             user=user)
-        db.session.add(connection)
+        db_session.add(connection)
 
     connection.oauth_token = response['access_token']
 

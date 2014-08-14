@@ -39,12 +39,13 @@ class Config:
 	TWITTER_APP_TOKEN = 'B8pegoEf0uNRYhcufCA8SkNh2'
 	TWITTER_APP_SECRET = 'StBCTi4EHQYYdxpORXU7QusMgkd41t9IU5S0FkRF2HV0u7f2Q5'
 
+	# Pagination
 	ARTICLES_PER_PAGE = 10
 
 	# Celery configuration
 	CELERY_BROKER_URL = 'amqp://'
 	CELERY_RESULT_BACKEND = 'amqp://'
-	CELERY_IMPORTS = ('app.tasks', )
+	CELERY_IMPORTS = ('app.tasks', 'app.mod_crawler.fetch')
 
 
 # Development environment configuration
@@ -56,7 +57,8 @@ class DevConfig(Config):
 	# SQLALCHEMY_ECHO = True
 
 	# Development database
-	SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app-dev.sqlite')
+	# SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app-dev.sqlite')
+	SQLALCHEMY_DATABASE_URI = 'postgresql://minhpham:mac@localhost/feedreader'
 	# DATABASE_CONNECT_OPTIONS = {}
 
 	# Email settings

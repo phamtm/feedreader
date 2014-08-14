@@ -4,16 +4,14 @@ from flask import (redirect,
                    flash,
                    current_app)
 from flask.ext.login import current_user
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-from app import db
-from app.forms import (ResetPasswordRequestForm,
-                       ResetPasswordForm)
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm
 from app.models import User
 from app.email import send_email
 from app.mod_auth import mod_auth
 from app.decorators import unauthenticated_required
-
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from database import db_session
 
 
 @mod_auth.route('/forgot', methods=['GET', 'POST'])
@@ -28,7 +26,7 @@ def forgot():
         if user is not None and not user.register_with_provider:
             token = user.generate_reset_token()
             send_email(user.email, 'Confirm your password request',
-                        'auth/email/reset', user=user, token=token)
+                       'auth/email/reset', user=user, token=token)
             flash('You can now reset your password')
             flash('An email has been sent to your email address')
             return redirect(url_for('mod_feed.index'))
@@ -58,8 +56,8 @@ def reset_password(token):
     if form.validate_on_submit():
         user = User.query.get(data['reset_id'])
         user.password = form.new_password.data
-        db.session.add(user)
-        db.session.commit()
+        db_session.add(user)
+        db_session.commit()
         flash('Your password has been successfully changed')
         return redirect(url_for('mod_feed.index'))
 

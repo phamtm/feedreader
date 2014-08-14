@@ -1,7 +1,7 @@
-from app import db
+from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint
+from database import DeclarativeBase
 
-
-class Connection(db.Model):
+class Connection(DeclarativeBase):
     """The social account connections information for a user
     :param int id: The unique id of this connection
     :param int user_id: The id of the user
@@ -13,26 +13,26 @@ class Connection(db.Model):
     :param str image_url: URL to the user's profile picture
     """
 
-    __tablename__       = 'connection'
+    __tablename__ = 'connection'
 
-    __table_args__      = (
-            db.UniqueConstraint('user_id', 'provider_id'),
-        )
+    __table_args__ = (
+        UniqueConstraint('user_id', 'provider_id'),
+    )
 
-    id                  = db.Column(db.Integer, primary_key = True)
-    user_id             = db.Column(db.Integer, db.ForeignKey('user.id'))
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
 
     # Provider details
-    provider_id         = db.Column(db.Integer, nullable = False)
-    provider_user_id    = db.Column(db.String(255))
+    provider_id = Column(Integer, nullable=False)
+    provider_user_id = Column(String(255))
 
     # Access tokens
-    oauth_token         = db.Column(db.String(255))
-    oauth_secret        = db.Column(db.String(255))
+    oauth_token = Column(String(255))
+    oauth_secret = Column(String(255))
 
     # Social profile
-    display_name        = db.Column(db.String(255), nullable = False)
-    image_url           = db.Column(db.String(255))
+    display_name = Column(String(255), nullable=False)
+    image_url = Column(String(255))
 
 
     def __repr__(self):

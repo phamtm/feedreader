@@ -1,16 +1,15 @@
-from app import db
-from app.mod_feed import mod_feed
-from app.models import (FeedSource,
-                        FeedSubscription)
-from app.mod_auth.controller_login import load_subscriptions
-
 from flask import (render_template,
                    request,
                    flash,
                    redirect,
                    url_for)
-from flask.ext.login import (login_required,
-                             current_user)
+from flask.ext.login import login_required, current_user
+from sqlalchemy import or_
+
+from app.mod_feed import mod_feed
+from app.models import FeedSource, FeedSubscription
+from app.mod_auth.controller_login import load_subscriptions
+from database import db_session
 
 
 @mod_feed.route('/subscriptions')
@@ -31,7 +30,7 @@ def manage_subscriptions():
                         FeedSubscription,
                         FeedSource.id == FeedSubscription.source_id)        \
                     .filter(
-                        db.or_(
+                        or_(
                             FeedSubscription.user_id == None,
                             FeedSubscription.user_id < current_user.id,
                             FeedSubscription.user_id > current_user.id))    \

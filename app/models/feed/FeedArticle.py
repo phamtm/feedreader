@@ -1,42 +1,41 @@
-from app import db
+from sqlalchemy import (Column, Integer, Unicode, UnicodeText, String,
+                        Float, DateTime, ForeignKey, UniqueConstraint, func)
+from sqlalchemy.orm import backref, relationship
+
 from app.utils import wilson_score
-from ..Base import Base
+from app.recommender.vnstemmer import vnstring_to_ascii
+from app.models.Base import Base
+from database import DeclarativeBase
 
-from bs4 import BeautifulSoup
-import urllib2
+class FeedArticle(Base):
 
-MIN_AREA = 250 * 100
+    __tablename__ = 'feedarticle'
 
+    __table_args__ = (
+        UniqueConstraint('link', 'source_id'),
+    )
 
-class FeedArticle(db.Model):
-
-    __tablename__       = 'feedarticle'
-
-    __table_args__      = (
-            db.UniqueConstraint('link', 'source_id'),
-        )
-
-    id                  = db.Column(db.Integer, primary_key = True)
-    title               = db.Column(db.Unicode(255, convert_unicode = True), nullable = False)
-    link                = db.Column(db.String(511))
-    summary             = db.Column(db.UnicodeText(convert_unicode = True))
-    summary_ascii       = db.Column(db.UnicodeText(convert_unicode = True))
-    thumbnail_url       = db.Column(db.String(511))
-    time_published      = db.Column(db.DateTime, default = db.func.current_timestamp())
+    id = Column(Integer, primary_key=True)
+    title = Column(Unicode(255, convert_unicode=True), nullable=False)
+    link = Column(String(511))
+    summary = Column(UnicodeText(convert_unicode=True))
+    summary_ascii = Column(UnicodeText(convert_unicode=True))
+    thumbnail_url = Column(String(511))
+    time_published = Column(DateTime, default=func.current_timestamp())
+    source_id = Column(Integer, ForeignKey('feedsource.id'))
+    source = relationship('FeedSource', backref='article')
 
     # Related articles (csv)
-    related_articles    = db.Column(db.String(127), default = '')
+    related_articles = Column(String(127), default='')
 
     # Readablility processed article
-    readable_content    = db.Column(db.UnicodeText(convert_unicode = True), nullable = True)
+    readable_content = Column(UnicodeText(convert_unicode=True), nullable=True)
 
     # Vote records
-    upvote              = db.Column(db.Integer, default = 0)
-    downvote            = db.Column(db.Integer, default = 0)
-    wilson_score        = db.Column(db.Float, default = 0.0)
-    views               = db.Column(db.Integer, default = 0)
-
-    source_id           = db.Column(db.Integer, db.ForeignKey('feedsource.id'))
+    upvote = Column(Integer, default=0)
+    downvote = Column(Integer, default=0)
+    wilson_score = Column(Float, default=0.0)
+    views = Column(Integer, default=0)
 
 
     def update_wilson_score(self):
@@ -49,7 +48,3 @@ class FeedArticle(db.Model):
 
     def __repr__(self):
         return '<FeedArticle %s %s>' % (self.title.encode('utf-8'), self.link.encode('utf-8'))
-
-
-
-

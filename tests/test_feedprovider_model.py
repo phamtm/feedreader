@@ -1,9 +1,6 @@
 import unittest
 
-from app import db
 from app.models import FeedProvider
-
-
 
 class TestFeedProviderModel(unittest.TestCase):
 	def test_invalid_source_url(self):

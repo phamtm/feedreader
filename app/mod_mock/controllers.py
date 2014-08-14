@@ -1,14 +1,10 @@
-from flask import render_template,      \
-                  url_for,              \
-                  flash
+from wtforms import StringField, SubmitField
+from wtforms.validators import Required
+from flask import render_template, url_for, flash
 from flask.ext.wtf import Form
 
 from app.mod_mock import mod_mock
-from app.mod_crawler.article import fetch_readable, \
-                                    fetch_thumbnail
-
-from wtforms import StringField, SubmitField
-from wtforms.validators import Required
+from app.mod_crawler.article import fetch_html, get_readable
 
 
 class URLForm(Form):
@@ -24,7 +20,8 @@ def read():
 
     readable = None
     if form.validate_on_submit():
-        readable = fetch_readable(form.url.data)
+        html = fetch_html(form.url.data)
+        readable = get_readable(html, form.url.data)
 
     return render_template('tests/fetch_article.html', form = form, readable_content = readable)
 
@@ -37,6 +34,7 @@ def thumbnail():
 
     thumbnail_url = None
     if form.validate_on_submit():
-        thumbnail_url = fetch_thumbnail(form.url.data)
+        # thumbnail_url = fetch_thumbnail(form.url.data)
+        pass
 
     return render_template('tests/fetch_thumbnail.html', form = form, thumbnail_url = thumbnail_url)

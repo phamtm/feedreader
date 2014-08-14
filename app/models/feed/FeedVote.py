@@ -1,23 +1,24 @@
-from app import db
+from sqlalchemy import (Column, Integer, Boolean, DateTime,
+                        ForeignKey, PrimaryKeyConstraint, func)
+
+from database import DeclarativeBase
 
 
+class FeedVote(DeclarativeBase):
 
-class FeedVote(db.Model):
+    __tablename__ = 'feedvote'
+    __table_args__ = (
+        PrimaryKeyConstraint('user_id', 'article_id'),
+    )
 
-    __tablename__   = 'feedvote'
+    user_id = Column(Integer, ForeignKey('user.id'))
+    article_id = Column(Integer, ForeignKey('feedarticle.id'))
+    is_upvote = Column(Boolean, default=True)
 
-    __table_args__  = (
-            db.PrimaryKeyConstraint('user_id', 'article_id'),
-        )
-
-    user_id         = db.Column(db.Integer, db.ForeignKey('user.id'))
-    article_id      = db.Column(db.Integer, db.ForeignKey('feedarticle.id'))
-    is_upvote       = db.Column(db.Boolean, default = True)
-
-    date_created    = db.Column(db.DateTime, default = db.func.current_timestamp())
-    date_modified   = db.Column(db.DateTime,
-                        default = db.func.current_timestamp(),
-                        onupdate = db.func.current_timestamp())
+    date_created = Column(DateTime, default=func.current_timestamp())
+    date_modified = Column(DateTime,
+                           default=func.current_timestamp(),
+                           onupdate=func.current_timestamp())
 
 
     def __repr__(self):

@@ -1,14 +1,14 @@
-from app import db
+from sqlalchemy import Column, Integer, ForeignKey
+from database import DeclarativeBase
 
 
+class FeedSubscription(DeclarativeBase):
 
-class FeedSubscription(db.Model):
+    __tablename__ = 'feedsubscription'
 
-    __tablename__   = 'feedsubscription'
-
-    id              = db.Column(db.Integer, primary_key = True)
-    user_id         = db.Column(db.Integer, db.ForeignKey('user.id'))
-    source_id       = db.Column(db.Integer, db.ForeignKey('feedsource.id'))
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    source_id = Column(Integer, ForeignKey('feedsource.id'))
 
 
     def __repr__(self):

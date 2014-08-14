@@ -1,8 +1,8 @@
-from app import db
-from app.models import FeedArticle
-
-from vnstemmer import vnstring_to_ascii as vna
 from sklearn.feature_extraction.text import TfidfVectorizer
+
+from app.models import FeedArticle
+from database import db_session
+from vnstemmer import vnstring_to_ascii as vna
 
 
 def compute_tfidf(n = 5):
@@ -38,9 +38,8 @@ def compute_tfidf(n = 5):
 		if article:
 			related = ' '.join(map(str, top_n))
 			article.related_articles = related
-			print related
 
-	db.session.commit()
+	db_session.commit()
 
 
 def get_related_article(article_id):
