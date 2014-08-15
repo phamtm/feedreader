@@ -2,12 +2,27 @@ from sqlalchemy import (Column, Integer, Unicode, UnicodeText, String,
                         Float, DateTime, ForeignKey, UniqueConstraint, func)
 from sqlalchemy.orm import backref, relationship
 
-from app.utils import wilson_score
-from app.recommender.vnstemmer import vnstring_to_ascii
+from app import db
 from app.models.Base import Base
-from database import DeclarativeBase
+from app.utils import wilson_score
 
 class FeedArticle(Base):
+    """An article
+    :param int id: The identifier
+    :param title: The unicode title
+    :param summary:
+    :param summary_stemmed:
+    :param thumbnail_url:
+    :param time_published:
+    :param source_id:
+    :param source:
+    :param related_articles:
+    :param html_readable:
+    :param int upvote:
+    :param int downvote:
+    :param float wilson_score:
+    :param int views:
+    """
 
     __tablename__ = 'feedarticle'
 
@@ -18,18 +33,23 @@ class FeedArticle(Base):
     id = Column(Integer, primary_key=True)
     title = Column(Unicode(255, convert_unicode=True), nullable=False)
     link = Column(String(511))
+
     summary = Column(UnicodeText(convert_unicode=True))
-    summary_ascii = Column(UnicodeText(convert_unicode=True))
+    summary_stemmed = Column(UnicodeText(convert_unicode=True))
+
     thumbnail_url = Column(String(511))
+
     time_published = Column(DateTime, default=func.current_timestamp())
+
     source_id = Column(Integer, ForeignKey('feedsource.id'))
-    source = relationship('FeedSource', backref='article')
+    source = relationship('FeedSource', backref='articles')
 
     # Related articles (csv)
     related_articles = Column(String(127), default='')
 
     # Readablility processed article
-    readable_content = Column(UnicodeText(convert_unicode=True), nullable=True)
+    # html = Column(UnicodeText(convert_unicode=True))
+    html_readable = Column(UnicodeText(convert_unicode=True))
 
     # Vote records
     upvote = Column(Integer, default=0)

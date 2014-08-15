@@ -86,3 +86,9 @@ class ResetPasswordForm(Form):
                                              Length(min=8, max=64)])
     new_password2 = PasswordField(u'Confirm password')
     submit = SubmitField(u'Submit')
+
+
+
+class URLForm(Form):
+    url = StringField(u'URL', validators = [Required()])
+    submit = SubmitField(u'Submit')

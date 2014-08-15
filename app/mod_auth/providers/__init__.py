@@ -53,5 +53,5 @@ google = oauth.remote_app(
     consumer_secret='697NMzcRFJsBQPRqdRZOXS9W'
 )
 
-import app.mod_auth.providers.controller_facebook_login, \
-       app.mod_auth.providers.controller_google_login
+import controller_facebook_login, \
+       controller_google_login

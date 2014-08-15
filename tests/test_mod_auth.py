@@ -5,10 +5,9 @@ from flask import url_for
 from sqlalchemy.exc import IntegrityError
 from wtforms.validators import ValidationError
 
-from app import create_app
+from app import create_app, db
 from app.models import User
 from app.forms import RegisterForm
-from database import db_session, init_db, drop_db
 
 
 class ModAuthTestCase(unittest.TestCase):
@@ -16,12 +15,12 @@ class ModAuthTestCase(unittest.TestCase):
 		self.app = create_app('test')
 		self.app_context = self.app.app_context()
 		self.app_context.push()
-		init_db()
+		db.create_all()
 		self.client = self.app.test_client(use_cookies = True)
 
 	def tearDown(self):
-		db_session.remove()
-		drop_db()
+		db.session.remove()
+		db.drop_all()
 		self.app_context.pop()
 
 

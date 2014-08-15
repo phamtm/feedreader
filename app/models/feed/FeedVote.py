@@ -1,10 +1,9 @@
 from sqlalchemy import (Column, Integer, Boolean, DateTime,
                         ForeignKey, PrimaryKeyConstraint, func)
 
-from database import DeclarativeBase
+from app import db
 
-
-class FeedVote(DeclarativeBase):
+class FeedVote(db.Model):
 
     __tablename__ = 'feedvote'
     __table_args__ = (

@@ -32,8 +32,8 @@ Fetch article
 		</table>
 	</form>
 
-	{% if readable_content %}
-	{{ readable_content | safe }}
+	{% if html_readable %}
+	{{ html_readable | safe }}
 	{% else %}
 	No article
 	{% endif %}

@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
+import os
 import urllib
 import urllib2
-import os
 
 from flask import current_app
 from PIL import Image
@@ -11,7 +11,7 @@ Extract the thumbnail for an article
 
 Ignore thumbnail whose:
    width > 3 * height (horizontal strip is likely ads)
-   area < 150 * 100
+   area < 250 * 100
 
 Determine the dimensions:
     First we examine the width and height attribute of each image.
@@ -53,6 +53,7 @@ def get_dimension_attributes(dom):
 
 
 def download_pic(url, filename):
+    # Path to store the thumbnail
     path = os.path.join(current_app.config['THUMBNAIL_DIR'], filename)
     f = urllib.URLopener()
 
@@ -66,28 +67,31 @@ def download_pic(url, filename):
     return None
 
 
-def get_thumbnail_src(html):
+def get_thumbnail_url_from_html(html):
     if not html:
         return None
 
+    # Find all <img> tags
     soup = BeautifulSoup(html, 'lxml')
-
     imgs = soup.findAll('img')
 
+    # Find a good candidate for the thumbnail.
     for img in imgs:
+        # Try reading dimensions attributes
         w, h = get_dimension_attributes(img)
 
+        # Reading attribute failed, download the picture and read locally
         if not w or not h:
-            # Download the image and calculate the dimensions
             path = download_pic(img.get('src'), 'tmp_thumbnail')
             try:
                 im = Image.open(path)
             except:
                 continue
+            else:
+                w, h = im.size
+                im.close()
 
-            w, h = im.size
-
-        # Try to find the dimensions in the width and height attributes
+        # Determine the goodness of this thumbnail candidate
         if is_good_dimensions(w, h):
             return img.get('src')
 

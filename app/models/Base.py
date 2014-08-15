@@ -1,8 +1,8 @@
-from database import DeclarativeBase
+from app import db
 from sqlalchemy import Column, Integer, DateTime, func
 
 # Define a base table for other database tables to inherit
-class Base(DeclarativeBase):
+class Base(db.Model):
 
     __abstract__ = True
 

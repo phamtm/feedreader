@@ -6,9 +6,9 @@ from flask import (render_template,
                    url_for)
 from flask.ext.login import login_required, current_user
 
+from app import db
 from app.mod_feed import mod_feed
 from app.models import FeedArticle, FeedVote
-from database import db_session
 
 
 @mod_feed.route('/article/')
@@ -35,7 +35,7 @@ def read_article():
     formatted_article = {
         'title': article.title,
         'link': article.link,
-        'readable': article.readable_content,
+        'readable': article.html_readable,
         'related_articles': related_articles}
 
     return render_template('read.html', article=formatted_article)
@@ -70,7 +70,7 @@ def upvote():
 
         article.upvote += 1
         article.update_wilson_score()
-        db_session.add(vote)
+        db.session.add(vote)
     else:
         if not vote.is_upvote:
             vote.is_upvote = True
@@ -109,7 +109,7 @@ def downvote():
             is_upvote=False)
         article.downvote += 1
         article.update_wilson_score()
-        db_session.add(vote)
+        db.session.add(vote)
     else:
         if vote.is_upvote:
             vote.is_upvote = False
@@ -146,7 +146,7 @@ def remove_vote():
             else:
                 article.downvote -= 1
             article.update_wilson_score()
-            db_session.delete(vote)
+            db.session.delete(vote)
 
     return redirect(url_for('mod_feed.index'))
 

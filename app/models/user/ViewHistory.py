@@ -1,9 +1,9 @@
 from sqlalchemy import (Column, Integer, DateTime, ForeignKey,
 						PrimaryKeyConstraint, func)
 
-from database import DeclarativeBase
+from app import db
 
-class ViewHistory(DeclarativeBase):
+class ViewHistory(db.Model):
 
 	__tablename__ = 'viewhistory'
 	__table_args__ = (

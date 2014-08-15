@@ -17,6 +17,7 @@ def unauthorized(message):
     return response
 
 
-def method_not_allowed(message) response = jsonify({'error': 'unauthorized', 'message': message})
+def method_not_allowed(message):
+    response = jsonify({'error': 'unauthorized', 'message': message})
     response.status_code = HTTP_METHOD_NOT_ALLOWED
     return response

@@ -4,12 +4,8 @@ from flask import render_template, url_for, flash
 from flask.ext.wtf import Form
 
 from app.mod_mock import mod_mock
-from app.mod_crawler.article import fetch_html, get_readable
-
-
-class URLForm(Form):
-    url = StringField(u'URL', validators = [Required()])
-    submit = SubmitField(u'Submit')
+from app.mod_crawler.parse_article import fetch_html, get_readable
+from app.forms import URLForm
 
 
 @mod_mock.route('/read', methods = ['GET', 'POST'])
@@ -23,7 +19,7 @@ def read():
         html = fetch_html(form.url.data)
         readable = get_readable(html, form.url.data)
 
-    return render_template('tests/fetch_article.html', form = form, readable_content = readable)
+    return render_template('tests/fetch_article.html', form = form, html_readable = readable)
 
 
 # Fetch the article's thumbnail

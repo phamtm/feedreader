@@ -7,11 +7,11 @@ from flask.ext.login import UserMixin, AnonymousUserMixin
 from sqlalchemy import Column, String, Boolean, Integer, ForeignKey
 from sqlalchemy.orm import relationship, backref
 
+from app import db
 from app import login_manager
 from app.models.Base import Base
 from app.models.feed import FeedSource, FeedSubscription
 from app.models.user.Role import Role
-from database import db_session, DeclarativeBase
 
 """
 .. module:: User
@@ -107,7 +107,7 @@ class User(UserMixin, Base):
             return False
 
         self.confirmed = True
-        db_session.add(self)
+        db.session.add(self)
 
         return True
 
@@ -123,16 +123,16 @@ class User(UserMixin, Base):
         source = FeedSource.query.get(source_id)
         if source and not self.is_subscribed(source_id):
             sub = FeedSubscription(user_id = self.id, source_id = source_id)
-            db_session.add(sub)
-            db_session.commit()
+            db.session.add(sub)
+            db.session.commit()
 
 
     # Unsubscribe a feed source
     def unsubscribe_feed(self, source_id):
         sub = FeedSubscription.query.filter_by(user_id = self.id, source_id = source_id).first()
         if sub:
-            db_session.delete(sub)
-            db_session.commit()
+            db.session.delete(sub)
+            db.session.commit()
 
 
     # Test if the user subscribed to a feed source

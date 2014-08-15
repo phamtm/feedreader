@@ -8,13 +8,13 @@ from flask import (url_for,
                    json)
 from flask.ext.login import login_user
 
+from app import db
 from app.mod_auth.providers import provider_id
 from app.mod_auth import mod_auth
 from app.decorators import unauthenticated_required
 from app.models import User, Connection
 from app.mod_auth.controller_login import load_subscriptions
 from app.mod_auth.providers import google
-from database import db_session
 
 
 @mod_auth.route('/login/google')
@@ -63,8 +63,8 @@ def google_authorized(response):
     user = User.query.filter_by(email=user_info['email']).first()
     if not user:
         user = User(email=user_info['email'], register_with_provider=True)
-        db_session.add(user)
-        db_session.commit()
+        db.session.add(user)
+        db.session.commit()
 
     connection = Connection.query.filter_by(
         user_id=user.id,
@@ -80,7 +80,7 @@ def google_authorized(response):
             user=user)
 
     connection.oauth_token = access_token
-    db_session.add(connection)
+    db.session.add(connection)
 
     login_user(user)
     load_subscriptions()

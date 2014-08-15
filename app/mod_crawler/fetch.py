@@ -1,26 +1,29 @@
 import time
 
-from flask import current_app
 from breadability.readable import Article
-import feedparser
 from bs4 import BeautifulSoup
+import feedparser
+from flask import current_app
 
-from app import celery
-from app.utils import Future
+from app import celery, db, cdb
+from app.mod_crawler.parse_article import fetch_html, get_readable
+from app.mod_crawler.parse_thumbnail import get_thumbnail_url_from_html
 from app.models import FeedArticle, FeedProvider, FeedSource
-from app.mod_crawler.thumbnail import get_thumbnail_src
-from app.mod_crawler.article import (fetch_html,
-                                     get_readable,
-                                     get_thumbnail_from_summary)
-from app.recommender.vnstemmer import vnstring_to_ascii
-from database import db_session, cdb_session
+from app.recommender.vnstemmer import VietnameseStemmer
 
 
 @celery.task(ignore_result=True)
-def add_article(readable_content, article):
-    article.readable_content = readable_content
-    cdb_session.add(article)
-    cdb_session.commit()
+def add_article(html_readable, article):
+    article.html_readable = html_readable
+
+    if article.summary:
+        article.thumbnail_url = get_thumbnail_url_from_html(article.summary)
+
+    if not article.thumbnail_url:
+        article.thumbnail_url = get_thumbnail_url_from_html(html_readable)
+
+    cdb.session.add(article)
+    cdb.session.commit()
 
 
 def update_db():
@@ -34,7 +37,7 @@ def update_db():
                     title
                     link
                     summary
-                    summary_ascii
+                    summary_stemmed
 
                     readable -> html
                     thumbnail_url
@@ -48,6 +51,8 @@ def update_db():
     t1 = time.time()
     print 'Fetching entries takes %.3fs' % (t1 - t0)
     print 'Num entries %d' % (len(results))
+
+    stemmer = VietnameseStemmer()
 
     # 2. Fetch articles
     for result in results:

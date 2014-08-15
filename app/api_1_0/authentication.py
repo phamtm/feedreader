@@ -9,6 +9,7 @@ auth = HTTPBasicAuth()
 
 @auth.verify_password
 def verify_password(email, password):
+    """ Verify user via HTTP Authentication. """
     if email == '':
         g.current_user = AnonymousUser()
         return True

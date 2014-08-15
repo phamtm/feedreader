@@ -1,10 +1,11 @@
-from sqlalchemy import Column, Integer, String, Boolean
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy.orm import backref, relationship
 
+from app import db
 from app.models.user.Permission import roles
-from database import DeclarativeBase, db_session
 
-class Role(DeclarativeBase):
+
+class Role(db.Model):
     """User's role in the application
     :param int id: Id of the role
     :param str name: Name of the role
@@ -34,5 +35,5 @@ class Role(DeclarativeBase):
                 role = Role(name = r)
             role.permissions = roles[r][0]
             role.default = roles[r][1]
-            db_session.add(role)
-        db_session.commit()
+            db.session.add(role)
+        db.session.commit()

@@ -1,7 +1,8 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint
-from database import DeclarativeBase
 
-class Connection(DeclarativeBase):
+from app import db
+
+class Connection(db.Model):
     """The social account connections information for a user
     :param int id: The unique id of this connection
     :param int user_id: The id of the user

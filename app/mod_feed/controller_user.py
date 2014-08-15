@@ -6,10 +6,10 @@ from flask import (render_template,
 from flask.ext.login import login_required, current_user
 from sqlalchemy import or_
 
+from app import db
 from app.mod_feed import mod_feed
-from app.models import FeedSource, FeedSubscription
 from app.mod_auth.controller_login import load_subscriptions
-from database import db_session
+from app.models import FeedSource, FeedSubscription
 
 
 @mod_feed.route('/subscriptions')

@@ -1,5 +1,4 @@
 from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from flask.ext.mail import Mail
 
@@ -9,14 +8,18 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from config import config
+from database import SQLAlchemy
+
 
 login_manager = LoginManager()
 mail = Mail()
 celery = Celery()
-
+db = SQLAlchemy()
+cdb = SQLAlchemy()
 
 # Endpoint for login page
 login_manager.login_view = 'mod_auth.login'
+
 
 def create_app(config_name='default'):
 
@@ -29,6 +32,15 @@ def create_app(config_name='default'):
     # Initialize extensions
     login_manager.init_app(app)
     mail.init_app(app)
+    db.init_app(app)
+    cdb.init_app(app)
+
+    # Async celery database session
+    @worker_init.connect
+    def initialize_worker_session(signal, sender):
+        new_engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'],
+                                   convert_unicode=True)
+        cdb.session.configure(bind=new_engine)
 
     # Register blueprint
     from app.mod_main import mod_main
@@ -38,7 +50,7 @@ def create_app(config_name='default'):
     app.register_blueprint(mod_main)
     app.register_blueprint(mod_auth)
     app.register_blueprint(mod_feed)
-    app.register_blueprint(api_1_0_blueprint, url_prefix='/api/v1.0')
+    app.register_blueprint(api_1_0_blueprint)
 
     if config_name != 'production':
         from mod_mock import mod_mock

@@ -1,15 +1,16 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+from app import db
 from app.models import FeedArticle
-from database import db_session
-from vnstemmer import vnstring_to_ascii as vna
+from app.recommender.vnstemmer import VietnameseStemmer
 
+stemmer = VietnameseStemmer()
 
 def compute_tfidf(n = 5):
 
 	# Fetch articles from database
 	articles = FeedArticle.query.all()
-	docs = [' '.join([vna(article.title), article.summary_ascii]) for article in articles]
+	docs = [' '.join([stemmer.stem(article.title), article.summary_stemmed or '']) for article in articles]
 	docids = [article.id for article in articles]
 
 	num_docs = len(docs)
@@ -39,7 +40,7 @@ def compute_tfidf(n = 5):
 			related = ' '.join(map(str, top_n))
 			article.related_articles = related
 
-	db_session.commit()
+	db.session.commit()
 
 
 def get_related_article(article_id):

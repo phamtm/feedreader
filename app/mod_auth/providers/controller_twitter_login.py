@@ -1,18 +1,17 @@
 from flask import (url_for,
                    redirect,
-                   render_template,
                    request,
                    flash,
                    session)
 
-from flask.ext.login import current_user, login_user
+from flask.ext.login import login_user
 
+from app import db
 from app.mod_auth.provider import twitter
 from app.models import User, Connection
 from app.mod_auth import mod_auth
 from app.decorators import unauthenticated_required
 from app.mod_auth.providers import provider_id
-from database import db_session
 
 
 @mod_auth.route('/login/twitter')
@@ -44,16 +43,17 @@ def twitter_authorized(response):
     twitter_user_id = response['user_id']
     twitter_screen_name = response['screen_name']
 
-    resp = twitter.get('users/show.json', data={'screen_name': twitter_screen_name})
+    resp = twitter.get('users/show.json',
+                       data={'screen_name': twitter_screen_name})
 
     twitter_profile_image_url = resp.data['profile_image_url']
 
     # If the user is not registered, add him
-    user = User.query.filter_by(email = twitter_screen_name).first()
+    user = User.query.filter_by(email=twitter_screen_name).first()
     if not user:
         user = User(email=twitter_screen_name, register_with_provider=True)
-        db_session.add(user)
-        db_session.commit()
+        db.session.add(user)
+        db.session.commit()
 
     # In any case we update the authentication token in the db
     # If the user has revoked access we will have new token here
@@ -67,18 +67,19 @@ def twitter_authorized(response):
             provider_id=provider_id['TWITTER'],
             provider_user_id=twitter_user_id,
             display_name=twitter_screen_name,
-            image_url=twitter_profile_image_url ,
+            image_url=twitter_profile_image_url,
             user=user
         )
 
     connection.oauth_token = response['oauth_token'],
     connection.oauth_secret = response['oauth_token_secret'],
-    db_session.add(connection)
+    db.session.add(connection)
 
     login_user(user)
 
-    flash('Logged in as id = %s, name = %s, redirect = %s, image_url = %s'  %   \
-            (connection.provider_user_id, connection.display_name, twitter_profile_image_url, request.args.get('next')))
+    flash('Logged in as id = %s, name = %s, redirect = %s, image_url = %s'  % \
+            (connection.provider_user_id, connection.display_name,
+             twitter_profile_image_url, request.args.get('next')))
 
     return redirect(next_url)
 

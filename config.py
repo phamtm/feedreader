@@ -45,7 +45,9 @@ class Config:
 	# Celery configuration
 	CELERY_BROKER_URL = 'amqp://'
 	CELERY_RESULT_BACKEND = 'amqp://'
-	CELERY_IMPORTS = ('app.tasks', 'app.mod_crawler.fetch')
+	CELERY_IMPORTS = ('app.mod_crawler.fetch',
+					  'app.mod_crawler.parse_article',
+					  'app.mod_crawler.thumbnail')
 
 
 # Development environment configuration
@@ -57,7 +59,6 @@ class DevConfig(Config):
 	# SQLALCHEMY_ECHO = True
 
 	# Development database
-	# SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app-dev.sqlite')
 	SQLALCHEMY_DATABASE_URI = 'postgresql://minhpham:mac@localhost/feedreader'
 	# DATABASE_CONNECT_OPTIONS = {}
 
@@ -81,8 +82,7 @@ class TestConfig(Config):
 	WTF_CSRF_ENABLED = False
 
 	# Test database
-	SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app-test.sqlite')
-	# DATABASE_CONNECT_OPTIONS = {}
+	SQLALCHEMY_DATABASE_URI = 'postgresql://minhpham:mac@localhost/feedreader-test'
 
 	# Disable any email service,
 	NO_SEND_EMAIL = True

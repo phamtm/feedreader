@@ -3,7 +3,7 @@ import time
 
 from flask.ext.script import Manager, Shell
 
-from app import create_app, celery
+from app import celery, create_app, db
 from app.models import (Connection,
 						FeedArticle,
 						FeedProvider,
@@ -13,9 +13,9 @@ from app.models import (Connection,
 						Role,
 						Permission)
 from app.mod_crawler.sources import feed_sources
-from database import db_session, init_db, drop_db
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+db.init_app(app)
 manager = Manager(app)
 
 
@@ -27,8 +27,8 @@ manager.add_command("shell", Shell(make_context=make_shell_context))
 @manager.command
 def createdb():
 	print 'creating db..'
-	drop_db()
-	init_db()
+	db.drop_all()
+	db.create_all()
 	Role.insert_roles()
 
 	print 'adding feed sources..'
@@ -37,17 +37,17 @@ def createdb():
 		provider_name = unicode(site['name'])
 		provider_domain = site['domain']
 		provider = FeedProvider(name = provider_name, domain = provider_domain)
-		db_session.add(provider)
-		db_session.commit()
+		db.session.add(provider)
+		db.session.commit()
 
 		# Add feedsource
 		for channel_name in site['channels']:
 			source_name = unicode(site['name'] + ' - ' + channel_name)
 			source_href = site['channels'][channel_name]
 			fs = FeedSource(name=source_name, url=source_href, provider=provider)
-			db_session.add(fs)
+			db.session.add(fs)
 
-	db_session.commit()
+	db.session.commit()
 
 	print 'add feed articles..'
 	from app.mod_crawler.fetch import update_db
@@ -68,7 +68,7 @@ def testcommit():
 			title=forgery_py.lorem_ipsum.sentence(),
 			link=forgery_py.internet.domain_name() + '/' + s,
 			summary=forgery_py.lorem_ipsum.paragraph(),
-			readable_content=forgery_py.lorem_ipsum.paragraph(),
+			html_readable=forgery_py.lorem_ipsum.paragraph(),
 			source_id=1,
 			thumbnail_url=forgery_py.internet.domain_name() + '/' + s + '.jpg'
 		)
@@ -87,7 +87,7 @@ def tfidf():
 	compute_tfidf()
 	t1 = time.time()
 	print '-- Elapsed time: %.3f' % (t1 - t0)
-	# db_session.commit()
+	# db.session.commit()
 
 
 
