@@ -1,0 +1,86 @@
+- name: BBC.CO.UK
+  domain: http://www.bbc.co.uk
+  favicon: http://www.bbc.co.uk/favicon.ico
+  channels:
+      VIETNAMESE: http://www.bbc.co.uk/vietnamese/vietnam/index.xml
+  timestamp_format:
+
+- name: BOOKHUNTER
+  domain: http://bookhunterclub.com/
+  favicon: http://bookhunterclub.com/wp-content/uploads/2013/12/favicon.jpg
+  channels:
+    TRANGCHU: http://bookhunterclub.com/feed
+  timestamp_format: mm/dd/yyyy
+
+- name: DOISONGPHAPLUAT.COM
+  domain: http://doisongphapluat.com
+  favicon: http://www.doisongphapluat.com/favicon.ico?1
+  channels:
+    TRANGCHU: http://www.doisongphapluat.com/trang-chu.rss
+  timestamp_format:
+
+- name: KENH14
+  domain: http://kenh14.vn/home.rss
+  favicon: http://kenh143.vcmedia.vn/imagesgui/kenh14.vn.ico
+  channels:
+    TRANGCHU: http://kenh14.vn/home.rss
+  timestamp_format:
+
+- name: KIENTHUC.NET.VN
+  domain: http://kienthuc.net.com
+  favicon: http://kienthuc.net.vn/favicon.ico
+  channels:
+    TRANGCHU: http://kienthuc.net.vn/rss/home.rss
+  timestamp_format:
+
+- name: LAODONG.COM.VN
+  domain: http://laodong.com.vn
+  favicon: http://laodong.com.vn/favicon.ico
+  channels:
+    TRANGCHU: http://laodong.com.vn/rss/home.rss
+  timestamp_format:
+
+- name: PHIATRUOC.INFO
+  domain: http://phiatruoc.info
+  favicon: http://phiatruoc.info/wp-content/uploads/2014/01/Phia_Truoc_light_green_logo.png
+  channels:
+    TRANGCHU: http://feeds.feedburner.com/tapchiphiatruoc
+  timestamp_format:
+
+- name: NGOISAO.NET
+  domain: http://ngoisao.net
+  favicon: http://ngoisao.net/favicon.ico
+  channels:
+    TRANGCHU: http://ngoisao.net/rss/showbiz-viet.rss
+  timestamp_format:
+
+- name: NGUOIDUATIN.VN
+  domain: http://www.nguoiduatin.vn
+  favicon: http://www.nguoiduatin.vn/favicon.ico
+  channels:
+    TRANGCHU: http://www.nguoiduatin.vn/trang-chu.rss
+  timestamp_format:
+
+- name: VIETNAMNET.VN
+  domain: http://vietnamnet.vn
+  favicon: http://vietnamnet.vn/favicon.ico
+  channels:
+    TRANGCHU: http://vietnamnet.vn/rss/home.rss
+  timestamp_format:
+
+- name: VNECONOMY.COM
+  domain: http://vneconomy.com
+  favicon: http://staticpress.vcmedia.vn/VNE/Images/VNEv9/vne.ico
+  channels:
+    THOISU: http://vneconomy.vn/rss/thoi-su.rss
+    TAICHINH: http://vneconomy.vn/rss/tai-chinh.rss
+    THEGIOI: http://vneconomy.vn/rss/the-gioi.rss
+    DOANHNHAN: http://vneconomy.vn/rss/doanh-nhan.rss
+  timestamp_format:
+
+- name: VNEXPRESS
+  domain: http://vnexpress.net
+  favicon: http://vnexpress.net/favicon.ico
+  channels:
+    TRANGCHU: http://vnexpress.net/rss/tin-moi-nhat.rss
+  timestamp_format: mm/dd/yyyy

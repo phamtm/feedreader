@@ -81,19 +81,33 @@ def get_thumbnail_url_from_html(html):
         w, h = get_dimension_attributes(img)
 
         # Reading attribute failed, download the picture and read locally
-        if not w or not h:
-            path = download_pic(img.get('src'), 'tmp_thumbnail')
-            try:
-                im = Image.open(path)
-            except:
-                continue
-            else:
-                w, h = im.size
-                im.close()
+        # if not w or not h:
+        #     path = download_pic(img.get('src'), 'tmp_thumbnail')
+        #     try:
+        #         im = Image.open(path)
+        #     except:
+        #         continue
+        #     else:
+        #         w, h = im.size
+        #         im.close()
 
         # Determine the goodness of this thumbnail candidate
         if is_good_dimensions(w, h):
             return img.get('src')
+
+    return None
+
+
+def get_thumbnail_url_from_summary(html):
+    if not html:
+        return None
+
+    # Find all <img> tags
+    soup = BeautifulSoup(html, 'lxml')
+    imgs = soup.findAll('img')
+
+    if len(imgs) > 0:
+        return imgs[0].get('src')
 
     return None
 

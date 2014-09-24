@@ -10,6 +10,7 @@ class FeedProvider(Base):
 
     name = Column(Unicode(255), nullable=False)
     _domain = Column(String(511), nullable=False)
+    favicon = Column(String(511), nullable=True)
     categories = relationship('FeedSource', backref='provider', lazy='dynamic')
 
     domain_regex = re.compile(r'^http://'

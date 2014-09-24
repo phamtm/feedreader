@@ -8,7 +8,6 @@ from sqlalchemy import or_
 
 from app import db
 from app.mod_feed import mod_feed
-from app.mod_auth.controller_login import load_subscriptions
 from app.models import FeedSource, FeedSubscription
 
 
@@ -23,6 +22,7 @@ def manage_subscriptions():
                         FeedSource.id == FeedSubscription.source_id)        \
                     .filter_by(
                         user_id=current_user.id)                            \
+                    .order_by(FeedSource.name.asc())                        \
                     .all()
 
     not_subscribed_sources = FeedSource.query                               \
@@ -34,9 +34,10 @@ def manage_subscriptions():
                             FeedSubscription.user_id == None,
                             FeedSubscription.user_id < current_user.id,
                             FeedSubscription.user_id > current_user.id))    \
+                    .order_by(FeedSource.name.asc())                        \
                     .all()
 
-    return render_template('feed_sources.html',
+    return render_template('subscribe.html',
                            subscribed=subscribed_sources,
                            not_subscribed=not_subscribed_sources)
 
@@ -46,10 +47,9 @@ def manage_subscriptions():
 def subscribe_feed():
     """Subscribe to a feed."""
 
-    source_id = request.args.get('source_id')
+    source_id = request.args.get('source_id', type=int)
     if source_id:
         current_user.subscribe_feed(source_id)
-        load_subscriptions()
         flash('Subscribe successful to source=%s' % source_id)
 
     return redirect(url_for('mod_feed.manage_subscriptions'))
@@ -60,10 +60,9 @@ def subscribe_feed():
 def unsubscribe_feed():
     """Unsubscribe from a feed."""
 
-    source_id = request.args.get('source_id')
+    source_id = request.args.get('source_id', type=int)
     if source_id:
         current_user.unsubscribe_feed(source_id)
-        load_subscriptions()
         flash('Unsubscribe successful source=%s' % source_id)
 
     return redirect(url_for('mod_feed.manage_subscriptions'))

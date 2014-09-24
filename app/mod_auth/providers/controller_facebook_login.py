@@ -6,12 +6,11 @@ from flask import (url_for,
 from flask.ext.login import login_user
 
 from app import db
-from app.mod_auth import mod_auth
 from app.decorators import unauthenticated_required
-from app.models import User, Connection
+from app.mod_auth import mod_auth
 from app.mod_auth.providers import provider_id
-from app.mod_auth.controller_login import load_subscriptions
 from app.mod_auth.providers import facebook
+from app.models import User, Connection, Magazine
 
 
 @mod_auth.route('/login/facebook')
@@ -71,8 +70,12 @@ def facebook_authorized(response):
 
     connection.oauth_token = response['access_token']
 
+    # Create a `Saved` magazine
+    if not Magazine.query.filter_by(name='Saved').first():
+        magazine = Magazine(name='Saved', public=False, user_id=user.id)
+        db.session.add(magazine)
+
     login_user(user)
-    load_subscriptions()
 
     return redirect(next_url)
 

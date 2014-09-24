@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+List of your magazines
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            {% if magazines is defined %}
+            <h4 class="lead">List of magazines</h4>
+            <ol>
+                {% for magazine in magazines %}
+                <li><strong>{{magazine.name}}</strong></li>
+                {% endfor %}
+            </ol>
+            {% else %}
+            <h4 class="lead">You have no magazines</h4>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

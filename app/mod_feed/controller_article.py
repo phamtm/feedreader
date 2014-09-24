@@ -11,7 +11,7 @@ from app.mod_feed import mod_feed
 from app.models import FeedArticle, FeedVote
 
 
-@mod_feed.route('/article/')
+@mod_feed.route('/article')
 def read_article():
     """View the readable content of the article."""
 

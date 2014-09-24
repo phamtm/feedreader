@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Admin - Articles
+{% endblock %}
+
+{% block content %}
+	{% if articles %}
+	<table>
+		{% for article in articles %}
+		<tr>
+			<td><a href="{{ article.link }}">{{ article.title }}</a></td>
+			<td>{{ article.summary }}</td>
+			<td>{{ article.source_id }}</td>
+		</tr>
+		{% endfor %}
+	</table>
+	{% endif %}
+{% endblock %}

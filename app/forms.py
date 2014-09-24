@@ -1,5 +1,5 @@
-from flask.ext.wtf import Form
 from flask.ext.login import current_user
+from flask.ext.wtf import Form
 from wtforms import (StringField,
                      PasswordField,
                      SubmitField,
@@ -91,4 +91,10 @@ class ResetPasswordForm(Form):
 
 class URLForm(Form):
     url = StringField(u'URL', validators = [Required()])
+    submit = SubmitField(u'Submit')
+
+
+class CreateMagazineForm(Form):
+    name = StringField(u'Name', validators = [Required()])
+    public = BooleanField(u'Public')
     submit = SubmitField(u'Submit')

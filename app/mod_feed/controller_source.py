@@ -6,12 +6,12 @@ from flask.ext.login import login_required, current_user
 
 from app.mod_main import mod_main
 from app.mod_feed import mod_feed
-from app.models import FeedArticle, FeedSubscription
+from app.models import FeedArticle, FeedSubscription, FeedSource
 from Pagination import Pagination
 
 
-@mod_main.route('/')
-@mod_feed.route('/')
+@mod_main.route('/all')
+@mod_feed.route('/all')
 @login_required
 def index():
     """Return all the feed articles from the user's subscription."""
@@ -55,18 +55,22 @@ def index():
         pagination=pagination)
 
 
-@mod_feed.route('/source')
+@mod_main.route('/')
+@mod_feed.route('/')
 @login_required
 def feeds_from_source():
     """Return all articles from a source that the user subscribed to."""
-
-    source_id = request.args.get('source_id')
+    source_id = request.args.get('source_id', type=int)
 
     if not source_id or not current_user.is_subscribed(source_id):
-        abort(404)
+        # abort(404)
+        return render_template('feeds.html')
 
-    rss_articles = FeedArticle.query.filter_by(source_id=source_id)
+    rss_articles = FeedArticle.query.filter_by(source_id=source_id) \
+                   .order_by(FeedArticle.time_published.desc())     \
+                   .limit(30)
 
     return render_template(
         'feeds.html',
+        source = FeedSource.query.get(source_id),
         rss_articles=rss_articles)

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+Your magazine - {{magazine.name}}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="lead">{{magazine.name}}</h3>
+
+                {% for article in articles %}
+                <div class="media" style="margin-bottom:5px; line-height:20px">
+                    <a class="pull-left" href="{{article.link}}">
+                        {% if article.thumbnail_url %}
+                        <img class="media-object" width="90" height="90" src="{{article.thumbnail_url}}">
+                        {% else %}
+                        <img class="media-object" data-src="holder.js/90x90">
+                        {% endif %}
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading">{{article.title}}</h4>
+                        {{article.summary}}
+                        <p><a href="{{url_for('mod_user.add_to_magazine', magazine_id=1, article_id='%d' % article.id)}}">Save</a></p>
+                    </div>
+                </div>
+                {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

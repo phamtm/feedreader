@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create a magazine
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12 col-lg-6">
+            <h4 class="lead">Create a Magazine</h4>
+            <form action="" method="post" role="form">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <label for="name">{{form.name.label}}</label>
+                {{ form.name(**{'class':'form-control', 'id':'name', 'placeholder':'Name of Magazine'}) }}
+                {% for error in form.errors.name %}
+                <p class="text-danger">{{ error }}</p>
+                {% endfor %}
+                </div>
+
+                <div class="checkbox">
+                    <label>
+                    {{ form.public(**{'type': 'checkbox'}) }} {{ form.public.label }}
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    {{ form.submit(**{'type':'submit', 'class':'btn btn-default'}) }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

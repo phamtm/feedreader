@@ -1,96 +1,135 @@
 <doctype html>
 <html lang="en">
+    <head>
+        <title>
+            {% block title %}{% endblock %}
+        </title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/simple-sidebar.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/splash.css') }}">
 
-	<head>
-		<title>
-			{% block title %}{% endblock %}
-		</title>
+    </head>
 
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <body ng-app="splashDemo" ng-controller="MainCtrl as main">
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <div id="sidebar-wrapper">
+                <ul class="sidebar-nav">
+                    <li class="sidebar-brand">
+                        <a href="{{ url_for('mod_feed.feeds_from_source') }}">Tôi Đọc Báo</a>
+                    </li>
+                    {% if current_user.is_authenticated() %}
+                        {% for source in current_user.get_subscriptions() %}
+                            <li><a href="{{ url_for('mod_feed.feeds_from_source', source_id='%d' % source.id) }}">{{source.name | truncate(25)}}</a></li>
+                        {% endfor %}
+                    {% endif %}
 
-		<script src="{{ url_for('static', filename='js/jquery-2.0.0.min.js') }}"></script>
-	</head>
+                    {% if not current_user.is_authenticated() %}
+                    <li><a href="{{ url_for('mod_auth.login') }}">Log in<span class="glyphicon glyphicon-log-in"></span></a></li>
+                    <li><a href="{{ url_for('mod_auth.register') }}">Register</a></li>
+                    <li><a href="{{ url_for('mod_auth.forgot') }}">Forgot password?</a></li>
+                    {% endif %}
 
-	<body>
-		<div id="fade">
-		</div>
+                    {% if current_user.is_authenticated() %}
+                    <li><a href="{{ url_for('mod_feed.manage_subscriptions') }}">Manage subscriptions</a></li>
+                    <li><a href="{{ url_for('mod_user.list_magazines') }}">Your Magazines</a></li>
+                    <li><a href="{{ url_for('mod_user.create_magazine') }}">Create a Magazine</a></li>
 
-		<div id="overlay">
-			<a onclick="closemodal();return false;" style="float:right" href="#">Close</a>
-			<iframe id="popup" src="" width="100%" height="100%" frameborder="0"></iframe>
-		</div>
+                    <li><a href="{{ url_for('mod_auth.logout') }}">Log out</a></li>
+                    {% endif %}
 
+                    <li><a href="{{ url_for('mod_mock.read') }}">Fetch Article</a></li>
+                    <li><a href="{{ url_for('mod_mock.thumbnail') }}">Fetch Thumbnail</a></li>
+                    {% if current_user.is_authenticated() %}
+                    <li><a href="{{url_for('mod_user.profile')}}"><span style="color:white">{{current_user.email}}</span></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <!-- /#sidebar-wrapper -->
 
-		<ul class='hnav'>
-			<li><a href="{{ url_for('mod_feed.index') }}"><strong>THOISU</strong></a></li>
-			<li><a href="{{ url_for('mod_feed.index') }}">Index</a></li>
+            <div id="page-content-wrapper">
+                <!-- Flashed messages -->
+                <div class="container-fluid">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                        <ul>
+                            {% for m in messages %}
+                            <li>{{ m }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    {% endwith %}
+                </div>
 
-			{% if not current_user.is_authenticated() %}
-			<li><a href="{{ url_for('mod_auth.login') }}"> Log in</a></li>
-			{% endif %}
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
 
-			{% if current_user.is_authenticated() %}
-			{% endif %}
+        <script src="{{ url_for('static', filename='js/jquery-2.0.0.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/holder.js') }}"></script>
+        <!-- Menu Toggle Script -->
+        <script type="text/javascript">
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+        </script>
+        <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.18/angular.min.js"></script> -->
+        <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.0/ui-bootstrap.min.js"></script> -->
+        <!-- <script src="{{ url_for('static', filename='js/splash.js') }}"></script> -->
+        <script src="{{ url_for('static', filename='js/colibri.js') }}"></script>
+        <script>
 
-			{% if not current_user.is_authenticated() %}
-			<li><a href="{{ url_for('mod_auth.register') }}">Register</a></li>
-			<li><a href="{{ url_for('mod_auth.forgot') }}">Forgot password?</a></li>
-			{% endif %}
+        var rgb_values = function (rgb) {
+            // rgb(123,123,123)
+            var r = parseInt(rgb.slice(4, 7), 10)
+            var g = parseInt(rgb.slice(8, 11), 10)
+            var b = parseInt(rgb.slice(12, 15), 10)
+            return [r, g, b];
+        };
 
-			<li><a href="{{ url_for('mod_feed.manage_subscriptions') }}">Manage subscriptions</a></li>
+        var brightness = function (rgb) {
+            return Math.sqrt(Math.pow(rgb[0], 2) * 0.241
+                             + Math.pow(rgb[1], 2) * 0.691
+                             + Math.pow(rgb[2], 2) * 0.068);
+        }
 
-			{% if current_user.is_authenticated() %}
-				<li style="float:right"><a href="{{ url_for('mod_auth.logout') }}">Log out</a></li>
-				<li style="float:right">{{ current_user.email }} |</li>
-			{% endif %}
+        $(document).ready(function() {
+            var img = $('#testimg')[0];
+            var montage = $('#montage');
+            var gradient, c0, c1;
+            pallete = Colibri.extractImageColors(img, 'css');
+            console.log('pallete len: %s' % pallete.content.length)
+            montage.css('color', pallete.background);
 
-			<li><a href="{{ url_for('mod_mock.read') }}">Fetch Article</a></li>
-			<li><a href="{{ url_for('mod_mock.thumbnail') }}">Fetch Thumbnail</a></li>
-		</ul>
+            if (pallete.content.length > 1) {
+                c0 = pallete.content[0];
+                c1 = pallete.content[1];
+                if (brightness(rgb_values(c0)) < brightness(rgb_values(c1))) {
+                    c0 = pallete.content[1]
+                    c1 = pallete.content[0]
+                }
+                gradient = 'linear-gradient(to bottom, ' + c0 + ' 0,' + c1 + ' 100%)';
+            }
+            else
+                gradient = 'linear-gradient(to bottom, ' + ' white' + ' 0,' + pallete.content[0] + ' 100%)';
 
-		{% if current_user.is_authenticated() %}
-		<ul class='hnav' style="background-color:rgba(3, 141, 171, 0.32)">
-			{% for source in session.subscriptions %}
-				<li><a href="#">{{ source }}</a></li>
-			{% endfor %}
-			<li>Total: {{ session.subscriptions | length }} sources</li>
-		</ul>
-		{% endif %}
+            montage.css('background-image', gradient);
+        });
+        </script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-		<!-- Flashed messages -->
-		{% with messages = get_flashed_messages() %}
-		<ul>
-			{% for m in messages %}
-			<li>{{ m }}</li>
-			{% endfor %}
-		</ul>
-		{% endwith %}
+            ga('create', 'UA-55018153-1', 'auto');
+            ga('send', 'pageview');
 
-		<!-- Main content -->
-		{% block content %}
-		{% endblock %}
-
-
-	<script>
-	var openmodal = function () {
-		document.getElementById('overlay').style.display = 'block';
-		document.getElementById('fade').style.display = 'block';
-		$('body').css('overflow', 'hidden');
-	};
-
-	var closemodal = function () {
-		document.getElementById('overlay').style.display = 'none';
-		document.getElementById('fade').style.display = 'none';
-		$('body').css('overflow', '');
-	};
-
-	var openweb = function(href) {
-		document.getElementById('popup').src = href;
-		openmodal();
-	};
-
-	</script>
-
-	</body>
-
+        </script>
+    </body>
 </html>

@@ -41,6 +41,40 @@ class VietnameseStemmer(object):
 			return ch.lower()
 
 
+	def _lower(self, ch):
+		"""Convert a Vietnamese character into an ASCII character.
+		Ignore all punctuation mark. The rest is converted to lower
+		case character.
+		"""
+
+		ch = unicode(ch)
+		if ch in u'aAáÁàÀảẢãÃạẠăĂắẮằẰẳẲẵẴặẶâÂấẤầẦẩẨẫẪậẬ':
+			return 'a'
+
+		elif ch in u'eEéÉèÈẻẺẽẼẹẸêÊếẾềỀểỂễỄệỆ':
+			return 'e'
+
+		elif ch in u'iIíÍìÌỉỈĩĨịỊ':
+			return 'i'
+
+		elif ch in u'oOóÓòÒỏỎõÕọỌôÔốỐồỒổỔỗỖộỘơƠớỚờỜởỞỡỠợỢ':
+			return 'o'
+
+		elif ch in u'uUúÚùÙủỦũŨụỤưƯứỨừỪửỬữỮựỰ':
+			return 'u'
+
+		elif ch in u'yYýÝỳỲỷỶỹỸỵ':
+			return 'y'
+
+		elif ch in u'dDđĐ':
+			return 'd'
+
+		elif ch in '\'`~!@#$%^&*()_+-=[];,./<>?:"{}\\|"':
+			return ''
+
+		else:
+			# Assume that we only have to deal with Vietnamese and English character
+
 	def stem(self, input_string):
 		"""Convert a Vietnamese input string into an ASCII string."""
 

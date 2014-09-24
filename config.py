@@ -47,7 +47,7 @@ class Config:
 	CELERY_RESULT_BACKEND = 'amqp://'
 	CELERY_IMPORTS = ('app.mod_crawler.fetch',
 					  'app.mod_crawler.parse_article',
-					  'app.mod_crawler.thumbnail')
+					  'app.mod_crawler.parse_thumbnail')
 
 
 # Development environment configuration

@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey
 
 from app import db
 
+
 class FeedSubscription(db.Model):
 
     __tablename__ = 'feedsubscription'

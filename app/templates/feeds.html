@@ -1,96 +1,141 @@
 {% extends 'base.html' %}
-{% import 'macros/pagination.html' as pagination_macro %}
 
 {% block title %}
-	{% if current_user.is_authenticated() %}
-		Your feeds
-	{% else %}
-		Public feeds
-	{% endif %}
+    {% if current_user.is_authenticated() %}
+        Your feeds
+    {% else %}
+        Public feeds
+    {% endif %}
 {% endblock %}
 
 {% block content %}
-{% if not rss_articles %}
-There are no feed to display
-{% endif %}
+<div class="container-fluid">
+    <div class="row" id="montage" style="text-shadow: 0 1px 0 rgba(0,0,0,.1);padding:8px 10px">
+        <span class="lead">
+            {% if source %}
+              <img width="30" height="30" id="testimg" style="margin-right:10px" src="{{source.provider.favicon}}" alt="">{{source.name}}
+            {% else %}
+            Error 404 - Page Not Found
+            {% endif %}
+             - Friday 23rd 2014
+        </span>
+        <button class="btn btn-md btn-success pull-right" ng-click="main.openSplash()">Open splash</button>
+        <a href="#menu-toggle" class="btn btn-default pull-right" id="menu-toggle">Toggle Menu</a>
+    </div>
 
+    <!-- Article -->
+    <div class="row">
+        <div class="col-lg-8" style="padding:10px;border-right:1px solid #eee">
+            {% if source %}
+                {% for article in rss_articles %}
+                <div class="media" style="margin-bottom:5px; line-height:20px">
+                    <a class="pull-left" href="{{article.link}}">
+                        {% if article.thumbnail_url %}
+                        <img class="media-object" width="90" height="90" src="{{article.thumbnail_url}}">
+                        {% else %}
+                        <img class="media-object" data-src="holder.js/90x90">
+                        {% endif %}
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading">{{article.title}}</h4>
+                        {{article.summary}}
+                        <p><a href="{{url_for('mod_user.add_to_magazine', magazine_id=1, article_id='%d' % article.id)}}">Save</a></p>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <pre>
+                          9$$
+                          M$$$&gt;
+                          '$$$$&amp;
+                           $$$$$B
+                           $$$$$$$.
+                          :$$$$$$$$k
+$$$:                      X$$$$$$$$$N..:dN
+9$$$$W                    @$$$$$$$$$$$$$$$&gt;
+ R$$$$$$W              'W$$$$$$$$$R```"R$$$N&gt;
+  R$$$$$$$$$b.       d$$$$$$$$$$$$&gt;     . ^*$$k
+   R$$$$$$$$$$$$u  x$$$$****$$$$$$&amp;    4$$N.'*$$L
+    4$$$$$$$$$$$$$$$$"        '"*$$B   '$$$$K.'R$K
+     '$$$$$$$$$$$$R         :@NW  `$$x  '#$$$$k `$B
+      '$$$$$$$$$$~          X$$$$N  '$N    M$$E  ?$N.uebc
+       '$$$$$$$$&gt;            $$$$$$    Rk    '  .W$$$$$$$$&amp;
+        M$$$$$$R             '$$$$$$L   #N    x@$$$$$$$$$$$$&gt;
+        '$$$$$$~                 $$$$L      d$$$$$$$$$$$$$$$E
+         4$$$$$                  9$$$E     W$$$$$$$$$$$$$$$$E
+         '$$$$$&gt;                  '#$"  :$$$$$$$$$$$$$$$$$$$
+          9$$$$B                        $$$$$$$$$$$$$$$$$$R
+          X$$$$$$u                    d$"M$$$$$$$$$$$$$$$R
+          "$$$$$$$$u                d$#  '$$$$$$$$$$$$$$"
+          X$$$$$$$$$$$e..     ..ud$*"     '$$$$$$$$$$$)..uoe@$$$
+          X$$$$$$$$$$$$$$$$$**F"~                 '$$RF"""""~
+          9$$$$$$$$$$$F``                         W$&amp;......x:.
+         J$$$$$$$$$$"                            9$$$****$$$$*
+        '$$**$$$$$$                             W$$
+             '$$$$&amp;                    :$&gt;    d$$$$$$:
+         :xd@$F"`#$$W:                ##"  d$$$$$$$$$$$$Wu.
+    :d@$$$""     xW$$$$$$Wx&gt;         xuW$$$$$$$$$$$$$$$$$$$$$W&gt;
+  '$$$*"     .d$$*"     ""#*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+                </pre>
+            {% endif %}
+        </div>
+        <!-- End of Article -->
 
-<div class="container">
-	Num articles: {{ rss_articles | length }}
-	<table class="feedentries">
-
-		{% for article in rss_articles %}
-
-			<!-- ID, vote and title -->
-			<tr>
-				<td class="feedid">{{ article.upvote }}&#8593; / {{ article.downvote }}&#8595;</td>
-				<td>
-					<img src="{{ article.thumbnail_url }}" alt="Thumbnail" width="100">
-				</td>
-				<td class="feedtitle" colspan="3">
-					<a class="feedlink" href="{{ article.link }}" onclick="openweb('{{ article.link }}'); upviews({{ article.id }}); return false;" target="_blank" >{{ article.title }}</a>
-					<br/>
-					<i style="color:#999">{{ article.source.name }}</i>
-				</td>
-				<td class="readmore"><a href="{{ url_for('mod_feed.read_article', article_id = article.id) }}" onclick="upviews({{ article.id }});">Read More..</a></td>
-			</tr>
-
-			<tr>
-				<td></td>
-				<td></td>
-				<td class="feedvote">
-					<a href="{{ url_for('mod_feed.upvote', article_id = article.id) }}">Upvote</a>
-					/
-					<a href="{{ url_for('mod_feed.downvote', article_id = article.id) }}">Downvote</a>
-					/
-					<a href="{{ url_for('mod_feed.remove_vote', article_id = article.id) }}">Remove vote</a>
-				</td>
-				<td>Published: {{ article.time_published }}</td>
-				<td>Views: <span id='articleviews{{ article.id }}'>{{ article.views }}</span></td>
-			</tr>
-
-			<!-- Subtext -->
-			<tr>
-				<td colspan="2"></td>
-				<td colspan="3" class="feedsubtext">
-					<!-- {{ article.summary | safe }} -->
-				</td>
-			</tr>
-
-		{% endfor %}
-
-	</table>
-
-	<div class="pagination">
-		{{ pagination_macro.pagination_widget(pagination, 'mod_feed.index')}}
-	</div>
+        <!-- Thumbnail -->
+        <div class="col-lg-4" style="padding-top:10px">
+            <h4>Popular</h4>
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+                  <div class="media">
+                    <a class="pull-left" href="#">
+                      <img class="media-object" data-src="holder.js/40x40">
+                    </a>
+                    <div class="media-body">
+                      <h5 class="media-heading">Media heading</h5>
+                      Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod.
+                    </div>
+                  </div>
+                  <div class="media">
+                    <a class="pull-left" href="#">
+                      <img class="media-object" data-src="holder.js/40x40">
+                    </a>
+                    <div class="media-body">
+                      <h5 class="media-heading">Media heading</h5>
+                      Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod.
+                    </div>
+                  </div>
+                  <div class="media">
+                    <a class="pull-left" href="#">
+                      <img class="media-object" data-src="holder.js/40x40">
+                    </a>
+                    <div class="media-body">
+                      <h5 class="media-heading">Media heading</h5>
+                      Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod.
+                    </div>
+                  </div>
+                  <div class="media">
+                    <a class="pull-left" href="#">
+                      <img class="media-object" data-src="holder.js/40x40">
+                    </a>
+                    <div class="media-body">
+                      <h5 class="media-heading">Media heading</h5>
+                      Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod.
+                    </div>
+                  </div>
+                  <div class="media">
+                    <a class="pull-left" href="#">
+                      <img class="media-object" data-src="holder.js/40x40">
+                    </a>
+                    <div class="media-body">
+                      <h5 class="media-heading">Media heading</h5>
+                      Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod.
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of Thumbnail -->
+    </div>
 </div>
-
-<script type="text/javascript">
-	var upviews = function (article_id) {
-		console.log('upping views of article ' + article_id);
-		$.ajax({
-			async: true,
-			crossDomain: 'false',
-			data: { 'article_id': article_id },
-			dataType: 'json',
-			type: 'GET',
-			url: "{{ url_for('mod_feed.upviews') }}",
-			success: function (json) {
-				console.log('View increased for article ' + article_id);
-
-				if (json.hasOwnProperty('article_id') && json.hasOwnProperty('article_views')) {
-					var dom_id = '#articleviews' + json.article_id;
-					console.log($(dom_id));
-					$(dom_id).html(json.article_views);
-				}
-			},
-			error: function (xhr, ajaxOptions, thrownError) {
-				console.log('Error: View not increased for article ' + article_id);
-				console.log('Error :: ' + thrownError);
-				console.log(xhr);
-			}
-		});
-	};
-</script>
 {% endblock %}

@@ -2,6 +2,7 @@ import os
 import time
 
 from flask.ext.script import Manager, Shell
+import yaml
 
 from app import celery, create_app, db
 from app.models import (Connection,
@@ -9,10 +10,11 @@ from app.models import (Connection,
 						FeedProvider,
 						FeedSource,
 						FeedSubscription,
+						Magazine,
+						MagazineArticle,
 						User,
-						Role,
-						Permission)
-from app.mod_crawler.sources import feed_sources
+						Permission,
+						Role)
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 db.init_app(app)
@@ -32,11 +34,16 @@ def createdb():
 	Role.insert_roles()
 
 	print 'adding feed sources..'
+	with open('sources.yaml', 'r') as f:
+		feed_sources = yaml.load(f)
+
 	# Insert feedprovider
 	for site in feed_sources:
 		provider_name = unicode(site['name'])
 		provider_domain = site['domain']
-		provider = FeedProvider(name = provider_name, domain = provider_domain)
+		provider = FeedProvider(name = provider_name,
+								domain = provider_domain,
+								favicon = site['favicon'])
 		db.session.add(provider)
 		db.session.commit()
 
@@ -55,36 +62,13 @@ def createdb():
 
 	# tfidf()
 
-@manager.command
-def testcommit():
-	import forgery_py
-	num_articles = 4
-	articles = []
-	from random import shuffle
-	from app.mod_crawler.fetch import addarticle
-	s = 'qwertyuiopasdfghjklzxcvbnm'
-	for i in range(num_articles):
-		article = FeedArticle(
-			title=forgery_py.lorem_ipsum.sentence(),
-			link=forgery_py.internet.domain_name() + '/' + s,
-			summary=forgery_py.lorem_ipsum.paragraph(),
-			html_readable=forgery_py.lorem_ipsum.paragraph(),
-			source_id=1,
-			thumbnail_url=forgery_py.internet.domain_name() + '/' + s + '.jpg'
-		)
-		articles.append(article)
-
-	for a in articles:
-		addarticle.delay(a, db)
-
-
 
 @manager.command
 def tfidf():
 	print 'computing relevant articles..'
 	t0 = time.time()
-	from app.recommender.related_article import compute_tfidf
-	compute_tfidf()
+	from app.recommender.related_articles import compute_simmilarity
+	compute_similarity()
 	t1 = time.time()
 	print '-- Elapsed time: %.3f' % (t1 - t0)
 	# db.session.commit()
@@ -92,9 +76,9 @@ def tfidf():
 
 
 @manager.command
-def updatefeed():
-	from app.mod_feed import fa
-	fa.update_db()
+def updatedb():
+	from app.mod_crawler.fetch import update_db
+	update_db()
 
 
 @manager.command
@@ -104,13 +88,14 @@ def test():
 	tests = unittest.TestLoader().discover('tests')
 	unittest.TextTestRunner(verbosity=2).run(tests)
 
-@manager.command
-def listusers():
-	User.query.all()
 
 @manager.command
-def listconnections():
-	Connection.query.all()
+def dumpdb():
+	articles = FeedArticle.query.filter_by(source_id = 2).all()
+	titles = [a.title.encode('utf-8') for a in articles]
+	for idx, title in enumerate(titles):
+		with open('data/%d.txt' % (idx), 'w') as f:
+			f.write(title)
 
 
 if __name__ == '__main__':

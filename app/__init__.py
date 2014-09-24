@@ -43,14 +43,18 @@ def create_app(config_name='default'):
         cdb.session.configure(bind=new_engine)
 
     # Register blueprint
-    from app.mod_main import mod_main
+    from app.mod_admin import mod_admin
+    from app.api_1_0 import api as api_1_0_blueprint
     from app.mod_auth import mod_auth
     from app.mod_feed import mod_feed
-    from app.api_1_0 import api as api_1_0_blueprint
-    app.register_blueprint(mod_main)
+    from app.mod_main import mod_main
+    from app.mod_user import mod_user
+    app.register_blueprint(mod_admin)
+    app.register_blueprint(api_1_0_blueprint)
     app.register_blueprint(mod_auth)
     app.register_blueprint(mod_feed)
-    app.register_blueprint(api_1_0_blueprint)
+    app.register_blueprint(mod_main)
+    app.register_blueprint(mod_user)
 
     if config_name != 'production':
         from mod_mock import mod_mock

@@ -7,7 +7,7 @@ class Base(db.Model):
     __abstract__ = True
 
     id = Column(Integer, primary_key = True)
-    date_created = Column(DateTime, default = func.current_timestamp())
+    date_created = Column(DateTime, default=func.current_timestamp())
     date_modified = Column(DateTime,
-                           default = func.current_timestamp(),
-                           onupdate = func.current_timestamp())
+                           default=func.current_timestamp(),
+                           onupdate=func.current_timestamp())

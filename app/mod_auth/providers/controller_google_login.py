@@ -13,7 +13,6 @@ from app.mod_auth.providers import provider_id
 from app.mod_auth import mod_auth
 from app.decorators import unauthenticated_required
 from app.models import User, Connection
-from app.mod_auth.controller_login import load_subscriptions
 from app.mod_auth.providers import google
 
 
@@ -82,8 +81,12 @@ def google_authorized(response):
     connection.oauth_token = access_token
     db.session.add(connection)
 
+    # Create a `Saved` magazine
+    if not Magazine.query.filter_by(name='Saved').first():
+        magazine = Magazine(name='Saved', public=False, user_id=user.id)
+        db.session.add(magazine)
+
     login_user(user)
-    load_subscriptions()
 
     return redirect(session.get('google_auth_next_url'))
 

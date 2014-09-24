@@ -5,23 +5,23 @@ the secure HTTP, the login credentials can be intercepted during transit,
 defeating any efforts put into securing passwords in the server.
 """
 
-from flask import redirect,                     \
-                  render_template,              \
-                  flash,                        \
-                  request,                      \
-                  url_for,                      \
-                  session,                      \
-                  request
+from flask import (redirect,
+                   render_template,
+                   flash,
+                   request,
+                   url_for,
+                   session,
+                   request)
 
-from flask.ext.login import login_required,     \
-                            login_user,         \
-                            logout_user,        \
-                            current_user        \
+from flask.ext.login import (login_required,
+                             login_user,
+                             logout_user,
+                             current_user)
 
-from app.models import User
-from app.mod_auth import mod_auth
-from app.forms import LoginForm
 from app.decorators import unauthenticated_required
+from app.forms import LoginForm
+from app.mod_auth import mod_auth
+from app.models import FeedSource, FeedSubscription, User
 
 
 @mod_auth.route('/login', methods=['GET', 'POST'])
@@ -48,7 +48,6 @@ def login():
 
             # Log the user in
             login_user(user, remember=form.remember.data)
-            load_subscriptions()
             return redirect(request.referrer or url_for('mod_feed.index'))
 
         # Redirect to login page with an error message
@@ -66,11 +65,3 @@ def logout():
         session['subscriptions'] = None
         flash('You have been logged out')
     return redirect(url_for('mod_feed.index'))
-
-
-@login_required
-def load_subscriptions():
-    """Load the feed subscriptions of the current user."""
-
-    subs = sorted([s.source_id for s in current_user.feed_subscriptions])
-    session['subscriptions'] = subs

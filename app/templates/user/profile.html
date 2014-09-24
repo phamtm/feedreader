@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+User Profile
+{% endblock %}
+
+{% block content %}
+<table class="table table-striped">
+    <tr>
+        <td>Name</td>
+        <td>{{user.name}}</td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td>{{user.email}}</td>
+    </tr>
+    <tr>
+        <td>Registered with Social account</td>
+        <td>{{user.register_with_provider}}</td>
+    </tr>
+    <tr>
+        <td>Password Hash</td>
+        <td>{{user.password_hash}}</td>
+    </tr>
+    <tr>
+        <td>Magazines</td>
+        <td>{{user.magazines}}</td>
+    </tr>
+</table>
+{% endblock %}

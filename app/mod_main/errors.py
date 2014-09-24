@@ -1,6 +1,6 @@
-from flask import render_template,  \
-                  jsonify,          \
-                  request
+from flask import (render_template,
+                   jsonify,
+                   request)
 from app.mod_main import mod_main
 
 ###############################################################################

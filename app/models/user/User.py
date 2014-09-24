@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 # Default class that implements required methods for User model
 from flask import current_app
-from flask.ext.login import UserMixin, AnonymousUserMixin
+from flask.ext.login import UserMixin, AnonymousUserMixin, current_user
 from sqlalchemy import Column, String, Boolean, Integer, ForeignKey
 from sqlalchemy.orm import relationship, backref
 
@@ -44,10 +44,13 @@ class User(UserMixin, Base):
     register_with_provider = Column(Boolean, default=False)
 
     # Social login connection
-    connections = relationship('Connection', backref = 'user', lazy = 'dynamic')
+    connections = relationship('Connection', backref='user', lazy='dynamic')
 
     # Subscription to feed sources
-    feed_subscriptions = relationship('FeedSubscription', backref = 'user', lazy = 'dynamic')
+    feed_subscriptions = relationship('FeedSubscription',
+                                      backref='user',
+                                      lazy='dynamic')
+    magazines = relationship('Magazine', backref='user', lazy='dynamic')
 
 
     # Initilization of user's role
@@ -62,9 +65,9 @@ class User(UserMixin, Base):
                 self.role = Role.query.filter_by(default = True).first()
 
 
-    # Create a set only password property that create a hash
     @property
     def password(self):
+        """Create a set only password property that create a hash"""
         raise AttributeError("Password is not a readable attribute")
 
 
@@ -73,27 +76,27 @@ class User(UserMixin, Base):
         self.password_hash = generate_password_hash(password)
 
 
-    # Check if password can generate password_hash
     def verify_password(self, password):
+        """Check if password can generate password_hash"""
         return check_password_hash(self.password_hash, password)
 
 
-    # Generate a token used for account activation
     def generate_confirmation_token(self, expiration = 3600):
+        """Generate a token used for account activation"""
         s = Serializer(current_app.config['SECRET_KEY'], expires_in = expiration)
         token = s.dumps({'confirm_id': self.id})
         return token
 
 
-    # Generate a token used for account activation
     def generate_reset_token(self, expiration = 3600):
+        """Generate a token used for account activation"""
         s = Serializer(current_app.config['SECRET_KEY'], expires_in = expiration)
         token = s.dumps({'reset_id': self.id})
         return token
 
 
-    # Confirm the token and activate the account
     def confirm(self, token):
+        """Confirm the token and activate the account"""
         s = Serializer(current_app.config['SECRET_KEY'])
 
         try:
@@ -112,14 +115,14 @@ class User(UserMixin, Base):
         return True
 
 
-    # Check if the user has permission
     def has_permissions(self, perm):
+        """Check if the user has permission"""
         return self.role and                            \
                (perm & self.role.permissions) == perm
 
 
-    # Subscribe to a feed source
     def subscribe_feed(self, source_id):
+        """Subscribe to a feed source"""
         source = FeedSource.query.get(source_id)
         if source and not self.is_subscribed(source_id):
             sub = FeedSubscription(user_id = self.id, source_id = source_id)
@@ -127,18 +130,30 @@ class User(UserMixin, Base):
             db.session.commit()
 
 
-    # Unsubscribe a feed source
     def unsubscribe_feed(self, source_id):
+        """Unsubscribe a feed source"""
         sub = FeedSubscription.query.filter_by(user_id = self.id, source_id = source_id).first()
         if sub:
             db.session.delete(sub)
             db.session.commit()
 
 
-    # Test if the user subscribed to a feed source
     def is_subscribed(self, source_id):
+        """Test if the user subscribed to a feed source"""
         sub = FeedSubscription.query.filter_by(user_id = self.id, source_id = source_id).first()
         return sub
+
+
+    def get_subscriptions(self):
+        """Return a list of the user's subscriptions"""
+        subs = FeedSource.query               \
+            .join(                                                  \
+                FeedSubscription,                                   \
+                FeedSubscription.source_id == FeedSource.id)        \
+            .filter_by(user_id=self.id)                             \
+            .order_by(FeedSource.name.asc()).all()
+
+        return subs
 
 
     def __repr__(self):

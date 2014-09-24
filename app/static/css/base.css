@@ -1,6 +1,3 @@
-html {
-}
-
 #overlay {
     display: none; /* ensures it’s invisible until it’s called */
     position: absolute; /* makes the div go into a position that’s absolute to the browser viewing area */
@@ -113,7 +110,29 @@ a.feedlink:hover {
 }
 
 #readabilityBody {
-	/*font-family: Helvetica;*/
 	font-family:arial, verdana, sans-serif;
 	line-height: 1.5em;
+}
+
+ul.articles-list {
+    list-style:none;
+}
+
+ul.articles-list li {
+    border-bottom:1px solid #ccc;
+    line-height: 20px;
+    padding:8px 0;
+}
+
+ul.articles-list li a {
+    text-decoration: none;
+    color: black;
+}
+
+ul.articles-list li a:visited {
+    color: #555;
+}
+
+ul.articles-list li a:hover {
+    color: #333;
 }

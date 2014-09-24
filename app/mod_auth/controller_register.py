@@ -7,12 +7,11 @@ from flask.ext.login import current_user
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from app import db
-from app.mod_auth import mod_auth
-from app.forms import RegisterForm
-from app.models import User
-from app.email import send_email
 from app.decorators import unauthenticated_required
-
+from app.email import send_email
+from app.forms import RegisterForm
+from app.mod_auth import mod_auth
+from app.models import User, Magazine
 
 
 @mod_auth.route('/register', methods=['GET', 'POST'])
@@ -36,6 +35,10 @@ def register():
         token = user.generate_confirmation_token()
         send_email(user.email, 'Confirm your Account',
                    'auth/email/confirm', user=user, token=token)
+
+        # Create a `Saved` magazine
+        magazine = Magazine(name='Saved', public=False, user_id=user.id)
+        db.session.add(magazine)
 
         flash('An activation email has been sent to your account')
         return redirect(url_for('mod_feed.index'))

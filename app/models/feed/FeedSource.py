@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship, backref
 
 from app.models.Base import Base
 
+
 class FeedSource(Base):
 
     """
@@ -17,7 +18,6 @@ class FeedSource(Base):
     name = Column(Unicode(255, convert_unicode=True), nullable=False)
     _url = Column(String(511), nullable=False)
     provider_id = Column(Integer, ForeignKey('feedprovider.id'))
-    # articles = relationship('FeedArticle', backref='source', lazy='dynamic')
     # timestamp_format = Column(String(65), nullable=False)
 
     @property
@@ -26,9 +26,6 @@ class FeedSource(Base):
 
     @url.setter
     def url(self, url):
-        o = urlparse(url)
-        if not o.path.endswith('.xml') and not o.path.endswith('.rss') and not o.path.endswith('rss/'):
-            raise AttributeError('Invalid feed URL', url)
         self._url = url
 
 

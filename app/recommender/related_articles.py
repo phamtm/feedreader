@@ -1,4 +1,5 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.cluster import KMeans
 
 from app import db
 from app.models import FeedArticle
@@ -6,24 +7,22 @@ from app.recommender.vnstemmer import VietnameseStemmer
 
 stemmer = VietnameseStemmer()
 
-def compute_tfidf(n = 5):
+def compute_similarity(n = 3):
 
 	# Fetch articles from database
 	articles = FeedArticle.query.all()
-	docs = [' '.join([stemmer.stem(article.title), article.summary_stemmed or '']) for article in articles]
+	docs = [' '.join([stemmer.stem(article.title), article.summary]) for article in articles]
 	docids = [article.id for article in articles]
 
 	num_docs = len(docs)
 	print docids
 
+	tfidf = compute_tfidf(docs)
+
 	# Map from docid to index in the similarity matrix
-	id_idx = {docids[i]: i for i in range(num_docs)}
 	idx_id = {i: docids[i] for i in range(num_docs)}
 	print idx_id
 
-	# Compute tfidf and cosine similarity
-	vect = TfidfVectorizer(min_df = 1)
-	tfidf = vect.fit_transform(docs)
 	similarity = (tfidf * tfidf.T).A
 
 	# Return top n results for each document
@@ -43,5 +42,7 @@ def compute_tfidf(n = 5):
 	db.session.commit()
 
 
-def get_related_article(article_id):
-	pass
+def compute_tfidf(docs):
+	# Compute tfidf and cosine similarity
+	vect = TfidfVectorizer(min_df = 1)
+	tfidf = vect.fit_transform(docs)

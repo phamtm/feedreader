@@ -11,7 +11,6 @@ class FeedArticle(Base):
     :param int id: The identifier
     :param title: The unicode title
     :param summary:
-    :param summary_stemmed:
     :param thumbnail_url:
     :param time_published:
     :param source_id:
@@ -30,12 +29,10 @@ class FeedArticle(Base):
         UniqueConstraint('link', 'source_id'),
     )
 
-    id = Column(Integer, primary_key=True)
     title = Column(Unicode(255, convert_unicode=True), nullable=False)
     link = Column(String(511))
 
     summary = Column(UnicodeText(convert_unicode=True))
-    summary_stemmed = Column(UnicodeText(convert_unicode=True))
 
     thumbnail_url = Column(String(511))
 
@@ -48,8 +45,8 @@ class FeedArticle(Base):
     related_articles = Column(String(127), default='')
 
     # Readablility processed article
-    # html = Column(UnicodeText(convert_unicode=True))
-    html_readable = Column(UnicodeText(convert_unicode=True))
+    html = Column(UnicodeText(convert_unicode=True))
+    # html_readable = Column(UnicodeText(convert_unicode=True))
 
     # Vote records
     upvote = Column(Integer, default=0)
