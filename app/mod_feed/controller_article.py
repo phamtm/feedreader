@@ -57,9 +57,7 @@ def upvote():
     if not article:
         abort(404)
 
-    vote = FeedVote.query.filter_by(
-        user_id=current_user.id,
-        article_id=article_id).first()
+    vote = FeedVote.query.get((current_user.id, article_id))
 
     # No vote from the user yet, add one
     if not vote:
@@ -97,9 +95,7 @@ def downvote():
     if not article:
         abort(404)
 
-    vote = FeedVote.query.filter_by(
-        user_id=current_user.id,
-        article_id=article_id).first()
+    vote = FeedVote.query.get((user_id, article_id))
 
     # No vote from the user yet, add one
     if not vote:
@@ -137,9 +133,7 @@ def remove_vote():
         abort(404)
 
     if article:
-        vote = FeedVote.query.filter_by(
-            user_id=current_user.id,
-            article_id=article_id).first()
+        vote = FeedVote.query.get((user_id, article_id))
         if vote:
             if vote.is_upvote:
                 article.upvote -= 1
@@ -174,4 +168,3 @@ def upviews():
     return jsonify({
         'article_id': article_id,
         'article_views': article.views})
-

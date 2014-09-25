@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}
+List users
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h3 class="lead">List Users</h3>
+        <h4>All Users</h4>
+        <ul>
+            {% for user in users %}
+            <li>
+                {{user.email}}
+                <a href="{{url_for('mod_user.add_friend', user_id=user.id)}}">Add friend</a>
+                <a href="{{url_for('mod_user.follow_user', user_id=user.id)}}">Follow</a>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <h4>Friends</h4>
+        <ul>
+            {% for user in friends %}
+            <li>
+                {{user.email}}
+                <a href="{{url_for('mod_user.remove_friend', user_id=user.id)}}">Remove friend</a>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <h4>Followers</h4>
+        <ul>
+            {% for user in followers %}
+            <li>
+                {{user.email}}
+                <a href="{{url_for('mod_user.add_friend', user_id=user.id)}}">Add friend</a>
+                <a href="{{url_for('mod_user.follow_user', user_id=user.id)}}">Follow</a>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <h4>Followings</h4>
+        <ul>
+            {% for user in followings %}
+            <li>
+                {{user.email}}
+                <a href="{{url_for('mod_user.add_friend', user_id=user.id)}}">Add friend</a>
+                <a href="{{url_for('mod_user.unfollow_user', user_id=user.id)}}">Unfollow</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

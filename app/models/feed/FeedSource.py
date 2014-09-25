@@ -18,6 +18,7 @@ class FeedSource(Base):
     name = Column(Unicode(255, convert_unicode=True), nullable=False)
     _url = Column(String(511), nullable=False)
     provider_id = Column(Integer, ForeignKey('feedprovider.id'))
+    details = Column(Unicode(511, convert_unicode=True), nullable=True)
     # timestamp_format = Column(String(65), nullable=False)
 
     @property

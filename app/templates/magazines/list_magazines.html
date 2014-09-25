@@ -5,20 +5,26 @@ List of your magazines
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-8">
-            {% if magazines is defined %}
-            <h4 class="lead">List of magazines</h4>
-            <ol>
-                {% for magazine in magazines %}
-                <li><strong>{{magazine.name}}</strong></li>
-                {% endfor %}
-            </ol>
-            {% else %}
-            <h4 class="lead">You have no magazines</h4>
-            {% endif %}
-        </div>
+<div class="row">
+    <div class="col-md-8">
+        {% if magazines is defined %}
+        <h4 class="lead">List of magazines</h4>
+        <ol>
+            {% for magazine in magazines %}
+            <li>
+                <strong>{{magazine.name}}</strong>
+                {% if not magazine.public %}
+                <span class="label label-primary">Private</span>
+                {% endif %}
+                <a href="{{url_for('mod_user.view_magazine', magazine_id=magazine.id)}}">View</a>
+                <a href="{{url_for('mod_user.edit_magazine', magazine_id=magazine.id)}}">Edit</a>
+                <a href="{{url_for('mod_user.remove_magazine', magazine_id=magazine.id)}}">Remove</a>
+            </li>
+            {% endfor %}
+        </ol>
+        {% else %}
+        <h4 class="lead">You have no magazines</h4>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

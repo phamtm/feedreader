@@ -1,3 +1,4 @@
+# import flask.ext.whooshalchemy as whooshalchemy
 from sqlalchemy import (Column, Integer, Unicode, UnicodeText, String,
                         Float, DateTime, ForeignKey, UniqueConstraint, func)
 from sqlalchemy.orm import backref, relationship
@@ -28,6 +29,8 @@ class FeedArticle(Base):
     __table_args__ = (
         UniqueConstraint('link', 'source_id'),
     )
+
+    __searchable__ = ['title']
 
     title = Column(Unicode(255, convert_unicode=True), nullable=False)
     link = Column(String(511))
@@ -65,3 +68,6 @@ class FeedArticle(Base):
 
     def __repr__(self):
         return '<FeedArticle %s %s>' % (self.title.encode('utf-8'), self.link.encode('utf-8'))
+
+
+# whooshalchemy.whoose_index(app, FeedArticle)

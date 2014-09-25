@@ -43,6 +43,8 @@ def index():
             FeedArticle.views.desc(),
             FeedArticle.time_published.desc()).count()
 
+    popular_articles = get_popular_articles()
+
     # error_out=False
     pagination = Pagination(
         page=page,
@@ -52,6 +54,7 @@ def index():
     return render_template(
         'feeds.html',
         rss_articles=rss_articles,
+        popular_articles=popular_articles,
         pagination=pagination)
 
 
@@ -61,16 +64,32 @@ def index():
 def feeds_from_source():
     """Return all articles from a source that the user subscribed to."""
     source_id = request.args.get('source_id', type=int)
+    popular_articles = get_popular_articles()
 
     if not source_id or not current_user.is_subscribed(source_id):
-        # abort(404)
-        return render_template('feeds.html')
+        return render_template('feeds.html',
+                               popular_articles=popular_articles)
 
-    rss_articles = FeedArticle.query.filter_by(source_id=source_id) \
-                   .order_by(FeedArticle.time_published.desc())     \
-                   .limit(30)
+    rss_articles = FeedArticle.query.                   \
+        filter_by(source_id=source_id)                  \
+        .order_by(FeedArticle.time_published.desc())    \
+        .limit(30)
+
 
     return render_template(
         'feeds.html',
         source = FeedSource.query.get(source_id),
-        rss_articles=rss_articles)
+        rss_articles=rss_articles,
+        popular_articles=popular_articles)
+
+
+def get_popular_articles():
+    articles = FeedArticle.query                    \
+        .order_by(
+            FeedArticle.views.desc(),
+            FeedArticle.wilson_score.desc(),
+            FeedArticle.time_published.desc())      \
+        .limit(10)
+
+    return articles
+

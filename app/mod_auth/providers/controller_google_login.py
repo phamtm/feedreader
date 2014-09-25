@@ -12,7 +12,7 @@ from app import db
 from app.mod_auth.providers import provider_id
 from app.mod_auth import mod_auth
 from app.decorators import unauthenticated_required
-from app.models import User, Connection
+from app.models import User, Connection, Magazine
 from app.mod_auth.providers import google
 
 

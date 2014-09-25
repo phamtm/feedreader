@@ -1,17 +1,15 @@
-from werkzeug.security import generate_password_hash, check_password_hash
-# Generate secure JSON Web Signature with a time expiration
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-# Default class that implements required methods for User model
 from flask import current_app
 from flask.ext.login import UserMixin, AnonymousUserMixin, current_user
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from sqlalchemy import Column, String, Boolean, Integer, ForeignKey
 from sqlalchemy.orm import relationship, backref
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db
 from app import login_manager
 from app.models.Base import Base
 from app.models.feed import FeedSource, FeedSubscription
-from app.models.user.Role import Role
+from app.models.user import FollowUser, FollowMagazine, Friendship, Role
 
 """
 .. module:: User
@@ -141,7 +139,14 @@ class User(UserMixin, Base):
     def is_subscribed(self, source_id):
         """Test if the user subscribed to a feed source"""
         sub = FeedSubscription.query.filter_by(user_id = self.id, source_id = source_id).first()
-        return sub
+        return sub is not None
+
+
+    def own_magazine(self, magazine_id):
+        """Test if the user own a magazine"""
+        magazine = Magazine.query.filter_by(magazine_id=magazine_id,
+                                            user_id=self.id)
+        return magazine is not None
 
 
     def get_subscriptions(self):
@@ -154,6 +159,71 @@ class User(UserMixin, Base):
             .order_by(FeedSource.name.asc()).all()
 
         return subs
+
+
+    def add_friend(self, friend_id):
+        """Add friendship between two people"""
+        if not User.query.get(friend_id):
+            return
+
+        friendship = Friendship.query.get((self.id, friend_id))
+        following = FollowUser.query.get((self.id, friend_id))
+
+        if not friendship:
+            friendship1 = Friendship(user_id1=self.id, user_id2=friend_id)
+            friendship2 = Friendship(user_id1=friend_id, user_id2=self.id)
+            if following:
+                db.session.delete(following)
+            db.session.add_all([friendship1, friendship2])
+            db.session.commit()
+
+
+    def remove_friend(self, friend_id):
+        """Remove friendship between two people"""
+        friendship1 = Friendship.query.get((self.id, friend_id))
+        friendship2 = Friendship.query.get((friend_id, self.id))
+
+        if friendship1 and friendship2:
+            db.session.delete(friendship1)
+            db.session.delete(friendship2)
+            db.session.commit()
+
+
+    def follow_user(self, user_id):
+        """Folow a user. You are not the friend with the followee"""
+        following = FollowUser.query.get((self.id, user_id))
+        friendship = Friendship.query.get((self.id, user_id))
+        if not following and not friendship:
+            follow_user = FollowUser(user_id1=self.id, user_id2=user_id)
+            db.session.add(follow_user)
+            db.session.commit()
+
+
+    def unfollow_user(self, user_id):
+        """Unfolow a user"""
+        follow_user = FollowUser.query.get((self.id, user_id))
+        db.session.delete(follow_user)
+        db.session.commit()
+
+
+    def follow_magazine(self, magazine_id):
+        """Follow a magazine"""
+        magazine = Magazine.query.get(magazine_id)
+        follow_magazine = FollowMagazine.query.get((self.id, magazine_id))
+        if magazine.public and not follow_magazine:
+            follow_magazine = FollowMagazine(user_id=self.id,
+                                             magazine_id=magazine_id)
+            db.session.add(follow_magazine)
+            db.session.commit()
+
+
+    def unfollow_magazine(self, magazine_id):
+        """Unfollow a magazine"""
+        follow_magazine = FollowMagazine.query.get((self.id, magazine_id))
+        if follow_magazine:
+            db.session.delete(follow_magazine)
+            db.session.commit()
+
 
 
     def __repr__(self):

@@ -5,45 +5,41 @@ Log in
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
+<div class="col-sm-4">
+	<h2>Please log in</h2>
 
-	<div class="col-sm-4">
-		<h2>Please log in</h2>
+	<form action="" method="post" role="form">
+		{{ form.hidden_tag() }}
 
-		<form action="" method="post" role="form">
-			{{ form.hidden_tag() }}
+		<div class="form-group">
+			<label for="email">{{ form.email.label }}</label>
+			{{ form.email(**{'type':'email', 'class':'form-control', 'id':'email', 'placeholder':'Email address'}) }}
+			{% for error in form.errors.email %}
+			<p class="text-danger">{{ error }}</p>
+			{% endfor %}
+		</div>
 
-			<div class="form-group">
-				<label for="email">{{ form.email.label }}</label>
-				{{ form.email(**{'type':'email', 'class':'form-control', 'id':'email', 'placeholder':'Email address'}) }}
-				{% for error in form.errors.email %}
-				<p class="text-danger">{{ error }}</p>
-				{% endfor %}
-			</div>
+		<div class="form-group">
+			<label for="password">{{ form.password.label }}</label>
+			{{ form.password(**{'type':'password', 'class':'form-control', 'id':'password', 'placeholder':'Password'}) }}
+			{% for error in form.errors.password %}
+			<p class="text-danger">{{ error }}</p>
+			{% endfor %}
+		</div>
 
-			<div class="form-group">
-				<label for="password">{{ form.password.label }}</label>
-				{{ form.password(**{'type':'password', 'class':'form-control', 'id':'password', 'placeholder':'Password'}) }}
-				{% for error in form.errors.password %}
-				<p class="text-danger">{{ error }}</p>
-				{% endfor %}
-			</div>
+		<div class="checkbox">
+			<label>
+				{{ form.remember(**{'type': 'checkbox'}) }} {{ form.remember.label }}
+			</label>
+		</div>
 
-			<div class="checkbox">
-				<label>
-					{{ form.remember(**{'type': 'checkbox'}) }} {{ form.remember.label }}
-				</label>
-			</div>
+		<div class="form-group">
+			{{ form.submit(**{'type':'submit', 'class':'btn btn-default'}) }}
+			<button type="button" class="btn btn-primary"><a style="color:white !important" href="{{ url_for('mod_auth.facebook_login') }}">Facebook Log in</a></button>
+			<button type="button" class="btn btn-danger"><a style="color:white !important"  href="{{ url_for('mod_auth.google_login') }}">Google Log in</a></button>
+		</div>
 
-			<div class="form-group">
-				{{ form.submit(**{'type':'submit', 'class':'btn btn-default'}) }}
-				<button type="button" class="btn btn-primary"><a style="color:white !important" href="{{ url_for('mod_auth.facebook_login') }}">Facebook Log in</a></button>
-				<button type="button" class="btn btn-danger"><a style="color:white !important"  href="{{ url_for('mod_auth.google_login') }}">Google Log in</a></button>
-			</div>
-
-			<a href="{{ url_for('mod_auth.register') }}">Register Here</a>
-		</form>
+		<a href="{{ url_for('mod_auth.register') }}">Register Here</a>
+	</form>
 	</div>
-
-</div>
 {% endblock %}

@@ -1,7 +1,7 @@
 # Define the application directory
 import os
-DIR_NAME = os.path.dirname(__file__)
-BASE_DIR = os.path.abspath(DIR_NAME)
+dirname = os.path.dirname(__file__)
+basedir = os.path.abspath(dirname)
 
 
 # The base configuration class that is inherited by others
@@ -27,10 +27,10 @@ class Config:
 	TOKEN_EXPIRATION_TIME = 604800
 
 	# Temporary folder path
-	TMP_DIR = os.path.join(BASE_DIR, 'tmp')
+	TMP_DIR = os.path.join(basedir, 'tmp')
 
 	# Thumbnails folder path
-	THUMBNAIL_DIR = os.path.join(BASE_DIR, 'thumbs')
+	THUMBNAIL_DIR = os.path.join(basedir, 'thumbs')
 
 	# Facebook App Key
 	FACEBOOK_APP_ID = '273840802804076',
@@ -48,6 +48,9 @@ class Config:
 	CELERY_IMPORTS = ('app.mod_crawler.fetch',
 					  'app.mod_crawler.parse_article',
 					  'app.mod_crawler.parse_thumbnail')
+
+	# WhooseAlchemy - Full-text search
+	WHOOSH_BASE = os.path.join(basedir, 'search.db')
 
 
 # Development environment configuration
@@ -82,7 +85,7 @@ class TestConfig(Config):
 	WTF_CSRF_ENABLED = False
 
 	# Test database
-	SQLALCHEMY_DATABASE_URI = 'postgresql://minhpham:mac@localhost/feedreader-test'
+	SQLALCHEMY_DATABASE_URI = 'postgresql://minhpham:mac@localhost/feedreader_test'
 
 	# Disable any email service,
 	NO_SEND_EMAIL = True
@@ -96,7 +99,7 @@ class TestConfig(Config):
 # Production environment configuration
 class ProductionConfig(Config):
 	# Production database
-	SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app-production.sqlite')
+	SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app-production.sqlite')
 	# DATABASE_CONNECT_OPTIONS = {}
 
 	# Disable any email service,

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit magazine
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h3 class="lead">Edit Magazine</h3>
+        <h4>{{magazine.name}}</h4>
+        <form action="" method="post" role="form">
+            {{form.hidden_tag()}}
+
+            <div class="form-group">
+                <label for="name">{{ form.name.label }}</label>
+                {{ form.name(**{'class':'form-control', 'id':'name', 'value':magazine.name}) }}
+                {% for error in form.errors.name%}
+                    <p class="text-danger">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="checkbox">
+                <label>
+                {% if magazine.public %}
+                {{ form.public(**{'type': 'checkbox', 'checked':'true'}) }} {{ form.public.label }}
+                {% else %}
+                {{ form.public(**{'type': 'checkbox'}) }} {{ form.public.label }}
+                {% endif %}
+                </label>
+            </div>
+
+            <div class="form-group">
+                {{ form.submit(**{'type':'submit', 'class':'btn btn-default'}) }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

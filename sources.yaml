@@ -84,3 +84,35 @@
   channels:
     TRANGCHU: http://vnexpress.net/rss/tin-moi-nhat.rss
   timestamp_format: mm/dd/yyyy
+
+
+# # General news
+# http://vnexpress.net/rss
+# http://laodong.com.vn/rss/
+
+# # Showbiz news
+# http://kenh14.vn/home.rss
+
+# # Critical views
+# http://www.bbc.co.uk/vietnamese/vietnam/index.xml
+
+# # Business
+# http://cafebiz.vn/rss.chn
+# http://vneconomy.vn/rss.htm
+
+# # Other news aggregators
+# http://linkhay.com/rss
+
+# tuoitre, http://tuoitre.vn/Rss, http://tuoitre.vn/Pages/RssFeeds.aspx?ChannelID=3, http://tuoitre.vn/Pages/RssFeeds.aspx?ChannelID=2
+# http://tuoitre.vn/Pages/RssFeeds.aspx?ChannelID=11, http://tuoitre.vn/Pages/RssFeeds.aspx?ChannelID=10
+# http://tuoitre.vn/Pages/RssFeeds.aspx?ChannelID=7, http://tuoitre.vn/Pages/RssFeeds.aspx?ChannelID=13
+# zing
+# yan
+# elle
+# http://www.webtretho.com
+# http://hn.24h.com.vn/guest/RSS/
+# http://www.doisongphapluat.com/rss.html, http://www.doisongphapluat.com/trang-chu.rss
+# http://kienthuc.net.vn/rss.html, http://kienthuc.net.vn/rss/home.rss
+# http://www.nguoiduatin.vn/rss.html, http://www.nguoiduatin.vn/trang-chu.rss
+# http://ngoisao.net/rss/, http://ngoisao.net/rss/24h.rss, http://ngoisao.net/rss/showbiz-viet.rss
+# http://feeds.feedburner.com/tinhte

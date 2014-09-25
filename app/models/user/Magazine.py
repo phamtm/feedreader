@@ -12,10 +12,11 @@ class Magazine(Base):
 
     user_id = Column(Integer, ForeignKey('user.id'))
     name = Column(Unicode(255, convert_unicode=True), nullable=False)
-    public = Column(Boolean, default=True)
+    public = Column(Boolean, default=False)
     article_ids = relationship('MagazineArticle',
                                backref='magazine',
                                lazy='dynamic')
+    removable = Column(Boolean, default=True)
 
 
     def get_articles(self):
@@ -23,7 +24,7 @@ class Magazine(Base):
         articles = FeedArticle.query                            \
             .join(MagazineArticle,                              \
                   MagazineArticle.article_id == FeedArticle.id) \
-            .filter_by(magazine_id = magazine_id)
+            .filter_by(magazine_id=self.id)
 
         return articles
 
@@ -38,6 +39,9 @@ class Magazine(Base):
                                      article_id=article_id)
             db.session.add(magart)
             db.session.commit()
+            return True
+
+        return False
 
 
     def remove_article(self, article_id):
@@ -46,7 +50,8 @@ class Magazine(Base):
         if MagazineArticle.query.filter_by(
             magazine_id=self.id,
             article_id=article_id).first():
-            magart = MagazineArticle(magazine_id=self.id,
-                                     article_id=article_id)
-            db.session.remove(magart)
+            magart = MagazineArticle.query.filter_by(
+                magazine_id=self.id,
+                article_id=article_id).first()
+            db.session.delete(magart)
             db.session.commit()

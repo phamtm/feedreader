@@ -5,45 +5,42 @@ Manage your subscriptions
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-sm-6">
-			<h2>Manage your subscriptions</h2>
-			{% if not subscribed and not not_subscribed %}
-			<p>There are no rss source available</p>
-			{% else %}
-			<!-- Subscribed -->
-			<h3>Subscribed Sources</h3>
-			{% if not subscribed %}
-			<p>You have not subscribed to any source</p>
-			{% endif %}
-			<ul>
-				{% for source in subscribed %}
-				<li>
-					<span>{{ source.name }}</span>
-					<a href="{{ url_for('mod_feed.unsubscribe_feed', source_id = source.id) }}">Unsubscribe</a>
-				</li>
-				{% endfor %}
-			</ul>
+<div class="row">
+	<div class="col-sm-6">
+		<h2>Manage your subscriptions</h2>
+		{% if not subscribed and not not_subscribed %}
+		<p>There are no rss source available</p>
+		{% else %}
+		<!-- Subscribed -->
+		<h3>Subscribed Sources</h3>
+		{% if not subscribed %}
+		<p>You have not subscribed to any source</p>
+		{% endif %}
+		<ul>
+			{% for source in subscribed %}
+			<li>
+				<span>{{ source.name }}</span>
+				<a href="{{ url_for('mod_feed.unsubscribe_feed', source_id = source.id) }}">Unsubscribe</a>
+			</li>
+			{% endfor %}
+		</ul>
 
 
-			<!-- Not Subscribed -->
-			<h3>Not Subscribed Sources</h3>
-			{% if not not_subscribed %}
-			<p>You have subscribed to all sources</p>
-			{% endif %}
+		<!-- Not Subscribed -->
+		<h3>Not Subscribed Sources</h3>
+		{% if not not_subscribed %}
+		<p>You have subscribed to all sources</p>
+		{% endif %}
 
-			<ul>
-				{% for source in not_subscribed %}
-				<li>
-					<span>{{ source.name }}</span>
-					<a href="{{ url_for('mod_feed.subscribe_feed', source_id = source.id) }}">Subscribe</a>
-				</li>
-				{% endfor %}
-			</ul>
-			{% endif %}
-		</div>
+		<ul>
+			{% for source in not_subscribed %}
+			<li>
+				<span>{{ source.name }}</span>
+				<a href="{{ url_for('mod_feed.subscribe_feed', source_id = source.id) }}">Subscribe</a>
+			</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
 	</div>
-</div>
-
+	</div>
 {% endblock %}

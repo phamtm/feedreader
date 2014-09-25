@@ -5,26 +5,24 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-sm-6">
-			<h3>{{ article.title }}</h3>
-			<h5 style="color:#666">Original link: <a href="{{ article.link }}" target="_blank">{{ article.link }}</a></h5>
-			<div>
-				<h4>Related links</h4>
-				{% if article.related_articles %}
-				<ul>
-					{% for doc in article.related_articles %}
-					<li style="display:box"><a href="{{ doc.link }}">{{ doc.title }}</a></li>
-					{% endfor %}
-				</ul>
-				{% else %}
-				No related
-				{% endif %}
-			</div>
-			{{ article.readable | safe }}
-			<div style="margin:0 auto">------------- Hết -------------</div>
+<div class="row">
+	<div class="col-sm-6">
+		<h3>{{ article.title }}</h3>
+		<h5 style="color:#666">Original link: <a href="{{ article.link }}" target="_blank">{{ article.link }}</a></h5>
+		<div>
+			<h4>Related links</h4>
+			{% if article.related_articles %}
+			<ul>
+				{% for doc in article.related_articles %}
+				<li style="display:box"><a href="{{ doc.link }}">{{ doc.title }}</a></li>
+				{% endfor %}
+			</ul>
+			{% else %}
+			No related
+			{% endif %}
 		</div>
+		{{ article.readable | safe }}
+		<div style="margin:0 auto">------------- Hết -------------</div>
 	</div>
 </div>
 {% endblock %}

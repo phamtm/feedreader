@@ -5,11 +5,12 @@ Your magazine - {{magazine.name}}
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <h3 class="lead">{{magazine.name}}</h3>
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="lead">{{magazine.name}}</h3>
 
+            {% with articles = magazine.get_articles() %}
+            {% if articles %}
                 {% for article in articles %}
                 <div class="media" style="margin-bottom:5px; line-height:20px">
                     <a class="pull-left" href="{{article.link}}">
@@ -22,11 +23,14 @@ Your magazine - {{magazine.name}}
                     <div class="media-body">
                         <h4 class="media-heading">{{article.title}}</h4>
                         {{article.summary}}
-                        <p><a href="{{url_for('mod_user.add_to_magazine', magazine_id=1, article_id='%d' % article.id)}}">Save</a></p>
+                        <p><a href="{{url_for('mod_user.remove_article', magazine_id=magazine.id, article_id='%d' % article.id)}}">Remove</a></p>
                     </div>
                 </div>
                 {% endfor %}
-        </div>
+            {% else %}
+            There is no article in this magazine
+            {% endif %}
+            {% endwith %}
     </div>
 </div>
 {% endblock %}

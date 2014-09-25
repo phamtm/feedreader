@@ -98,3 +98,10 @@ class CreateMagazineForm(Form):
     name = StringField(u'Name', validators = [Required()])
     public = BooleanField(u'Public')
     submit = SubmitField(u'Submit')
+
+
+class EditMagazineForm(Form):
+    name = StringField(u'Name', validators = [Required()])
+    public = BooleanField(u'Public')
+    submit = SubmitField(u'Submit')
+

@@ -1,14 +1,14 @@
-from flask import (render_template,
+from flask import (redirect,
+                   render_template,
                    flash,
                    request,
                    url_for)
-
-from flask.ext.login import login_required, current_user
+from flask.ext.login import current_user, login_required
 
 from app import db
-from app.models import FeedArticle, Magazine, MagazineArticle, User
+from app.models import FollowUser, Friendship, User
 from app.mod_user import mod_user
-from app.forms import CreateMagazineForm
+
 
 @mod_user.route('/profile')
 def profile():
@@ -23,89 +23,77 @@ def profile():
     return render_template('user/profile.html', user=user)
 
 
+@mod_user.route('/list_users')
 @login_required
-@mod_user.route('/magazine')
-def list_magazines():
-    """View the current user's magazines."""
-    magazines = Magazine.query.filter_by(user_id=current_user.id)
+def list_users():
+    """View the list of all users"""
+    users = User.query.filter(User.id!=current_user.id)
+    friends = User.query                                    \
+        .join(Friendship, User.id == Friendship.user_id2)   \
+        .filter(Friendship.user_id1==current_user.id)       \
+        .all()
 
-    return render_template('magazines/list_magazines.html',
-                           magazines=magazines)
+    followers = User.query                          \
+        .join(FollowUser, User.id == FollowUser.user_id1)   \
+        .filter(FollowUser.user_id2==current_user.id)   \
+        .all()
+
+    followings = User.query                         \
+        .join(FollowUser, User.id == FollowUser.user_id2)   \
+        .filter(FollowUser.user_id1==current_user.id)   \
+        .all()
+
+    return render_template(
+        'user/list_users.html',
+        users=users,
+        friends=friends,
+        followers=followers,
+        followings=followings)
 
 
-@mod_user.route('/magazine/view')
-def view_magazine():
-    """View the articles saved inside the magazine."""
-    magazine_id = request.args.get('magazine_id', type=int)
-
-    magazine = Magazine.query.get(magazine_id)
-
-    if not magazine:
-        flash('Magazine does not exist')
-        abort(404)
-
-    if not magazine.public and current_user.is_authenticated() and current_user.id != magazine.user_id:
-        flash('This magazine is private')
-        abort(404)
-
-    return render_template('magazines/view_magazine.html',
-                           magazine=magazine)
-
+@mod_user.route('/add_friend')
 @login_required
-@mod_user.route('/magazine/create', methods=['GET', 'POST'])
-def create_magazine():
-    form = CreateMagazineForm()
+def add_friend():
+    """Add a friend"""
+    user_id = request.args.get('user_id', type=int)
 
-    if form.validate_on_submit():
-        magazine = Magazine(user_id=current_user.id,
-                            name=form.name.data,
-                            public=form.public.data)
-        db.session.add(magazine)
-        flash('You have successfully created a magazine')
+    if user_id:
+        current_user.add_friend(user_id)
 
-    return render_template('magazines/create_magazine.html', form=form)
+    return redirect(url_for('mod_user.list_users'))
 
 
+@mod_user.route('/remove_friend')
+@login_required
+def remove_friend():
+    """Remove a friend"""
+    user_id = request.args.get('user_id', type=int)
 
-@mod_user.route('/magazine/add_article')
-def add_to_magazine():
-    article_id = request.args.get('article_id', type=int)
-    magazine_id = request.args.get('magazine_id', type=int)
+    if user_id:
+        current_user.remove_friend(user_id)
 
-    if not article_id or not magazine_id:
-        abort(404)
-
-    magazine = Magazine.query.filter_by(
-        user_id=current_user.id,
-        id=magazine_id).first()
-
-    if not magazine:
-        abort(404)
-
-    # Don't add an existing entry
-    magazine.add_article(article_id)
-    flash('article saved')
-
-    return render_template('feeds.html')
+    return redirect(url_for('mod_user.list_users'))
 
 
-@mod_user.route('/magazine/remove_article')
-def remove_from_magazine():
-    article_id = request.args.get('article_id', type=int)
-    magazine_id = request.args.get('magazine_id', type=int)
+@mod_user.route('/follow_user')
+@login_required
+def follow_user():
+    """FollowUser a user. Followers are not friend with followee"""
+    user_id = request.args.get('user_id', type=int)
 
-    if not article_id or not magazine_id:
-        abort(404)
+    if user_id:
+        current_user.follow_user(user_id)
 
-    magazine = Magazine.query.filter_by(
-        user_id=current_user.id,
-        id=magazine_id).first()
+    return redirect(url_for('mod_user.list_users'))
 
-    if not magazine:
-        abort(404)
 
-    # Don't add an existing entry
-    magazine.remove_article(article_id)
+@mod_user.route('/unfollow_user')
+@login_required
+def unfollow_user():
+    """Unfollow a user"""
+    user_id = request.args.get('user_id', type=int)
 
-    return render_template('feeds.html')
+    if user_id:
+        current_user.unfollow_user(user_id)
 
+    return redirect(url_for('mod_user.list_users'))

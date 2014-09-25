@@ -16,7 +16,6 @@ class SQLAlchemy(object):
         self.Model.query = self.session.query_property()
 
     def init_app(self, app):
-        # if isinstance(app, Flask):
         # Set up the connection
         self.engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'],
                                     convert_unicode=True)

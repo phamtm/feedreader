@@ -12,8 +12,10 @@ from app.models import (Connection,
 						FeedSubscription,
 						Magazine,
 						MagazineArticle,
-						User,
+						FollowUser,
+						Friendship,
 						Permission,
+						User,
 						Role)
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')

@@ -37,7 +37,8 @@ def register():
                    'auth/email/confirm', user=user, token=token)
 
         # Create a `Saved` magazine
-        magazine = Magazine(name='Saved', public=False, user_id=user.id)
+        magazine = Magazine(name='Saved', public=False,
+                            user_id=user.id, removable=False)
         db.session.add(magazine)
 
         flash('An activation email has been sent to your account')
