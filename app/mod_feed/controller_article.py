@@ -20,7 +20,6 @@ def read_article():
         return render_template(url_for('mod_feed.index'))
 
     article = FeedArticle.query.get(article_id)
-
     if not article:
         abort(404)
 
@@ -52,8 +51,6 @@ def upvote():
         return redirect(url_for('mod_main.all_feeds'))
 
     article = FeedArticle.query.get(article_id)
-
-    # Article does not exist
     if not article:
         abort(404)
 
@@ -90,8 +87,6 @@ def downvote():
         return redirect(url_for('mod_main.all_feeds'))
 
     article = FeedArticle.query.get(article_id)
-
-    # Article does not exist
     if not article:
         abort(404)
 
@@ -127,12 +122,9 @@ def remove_vote():
         return redirect(url_for('mod_main.all_feeds'))
 
     article = FeedArticle.query.get(article_id)
-
-    # Article does not exist
     if not article:
         abort(404)
-
-    if article:
+    else:
         vote = FeedVote.query.get((user_id, article_id))
         if vote:
             if vote.is_upvote:
@@ -143,28 +135,3 @@ def remove_vote():
             db.session.delete(vote)
 
     return redirect(url_for('mod_feed.index'))
-
-
-@mod_feed.route('/upview/')
-def upviews():
-    """Increase the views of the article."""
-
-    article_id = request.args.get('article_id')
-
-    if not article_id:
-        return jsonify({
-            'error': 'invalid parameter',
-            'message': 'article_id not provided'})
-
-    article = FeedArticle.query.get(article_id)
-
-    if not article:
-        return jsonify({
-            'error': 'resource not found',
-            'message': 'no article with that id'})
-
-    article.views += 1
-
-    return jsonify({
-        'article_id': article_id,
-        'article_views': article.views})

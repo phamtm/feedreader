@@ -58,7 +58,7 @@ class User(UserMixin, Base):
         if not self.role:
             # If the email is the same as admin's email, assign admin role
             if self.email == current_app.config['ADMIN_EMAIL']:
-                self.role = Role.query.filter_by(permissions = 0xff).first()
+                self.role = Role.query.filter_by(permissions=0xff).first()
             else:
                 self.role = Role.query.filter_by(default = True).first()
 
@@ -79,18 +79,36 @@ class User(UserMixin, Base):
         return check_password_hash(self.password_hash, password)
 
 
-    def generate_confirmation_token(self, expiration = 3600):
+    def generate_confirmation_token(self, expiration=3600):
         """Generate a token used for account activation"""
-        s = Serializer(current_app.config['SECRET_KEY'], expires_in = expiration)
+        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
         token = s.dumps({'confirm_id': self.id})
         return token
 
 
-    def generate_reset_token(self, expiration = 3600):
+    def generate_reset_token(self, expiration=3600):
         """Generate a token used for account activation"""
-        s = Serializer(current_app.config['SECRET_KEY'], expires_in = expiration)
+        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
         token = s.dumps({'reset_id': self.id})
         return token
+
+
+    def generate_auth_token(self, expiration=3600):
+        """Generate a token used for API access."""
+        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+        token = s.dumps({'auth_id': self.id})
+        return token
+
+
+    @staticmethod
+    def verify_auth_token(token):
+        """Verify the authentication token"""
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        return User.query.get(data['auth_id'])
 
 
     def confirm(self, token):

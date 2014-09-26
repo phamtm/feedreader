@@ -16,7 +16,6 @@ def profile():
     user_id = request.args.get('user_id', current_user.id, type=int)
 
     user = User.query.get(user_id)
-
     if not user:
         abort(404)
 

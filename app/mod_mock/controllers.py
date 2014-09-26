@@ -1,11 +1,11 @@
-from wtforms import StringField, SubmitField
-from wtforms.validators import Required
 from flask import render_template, url_for, flash
 from flask.ext.wtf import Form
+from wtforms import StringField, SubmitField
+from wtforms.validators import Required
 
-from app.mod_mock import mod_mock
 from app.mod_crawler.parse_article import fetch_html, get_readable
 from app.forms import URLForm
+from app.mod_mock import mod_mock
 
 
 @mod_mock.route('/read', methods = ['GET', 'POST'])

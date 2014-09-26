@@ -122,10 +122,7 @@ def add_article():
     article_id = request.args.get('article_id', type=int)
     magazine_id = request.args.get('magazine_id', type=int)
 
-    if not article_id or not magazine_id:
-        abort(404)
-
-    if not FeedArticle.query.get(article_id):
+    if not article_id or not magazine_id or not FeedArticle.query.get(article_id):
         abort(404)
 
     magazine = Magazine.query.filter_by(
