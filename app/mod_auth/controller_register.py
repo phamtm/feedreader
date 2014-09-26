@@ -40,6 +40,8 @@ def register():
         magazine = Magazine(name='Saved', public=False,
                             user_id=user.id, removable=False)
         db.session.add(magazine)
+        db.session.commit()
+        user.saved_magazine = magazine.id
 
         flash('An activation email has been sent to your account')
         return redirect(url_for('mod_feed.index'))

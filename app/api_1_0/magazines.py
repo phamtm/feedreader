@@ -1,7 +1,7 @@
-from flask import abort, g, jsonify
+from flask import abort, g, jsonify, request
 
 from app.api_1_0 import api
-from app.models import Magazine
+from app.models import FeedArticle, Magazine
 
 
 @api.route('/magazine/list_magazines')

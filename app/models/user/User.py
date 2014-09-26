@@ -40,6 +40,7 @@ class User(UserMixin, Base):
     confirmed = Column(Boolean, default=False)
     role_id= Column(Integer, ForeignKey('role.id'))
     register_with_provider = Column(Boolean, default=False)
+    saved_magazine = Column(Integer)
 
     # Social login connection
     connections = relationship('Connection', backref='user', lazy='dynamic')

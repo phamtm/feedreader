@@ -92,19 +92,24 @@ $('.article-upvote').click(function() {
 $('.article-downvote').click(function() {
   var article_id = $(this).data('id');
   downvote(article_id, function() {create_notice('Article downvoted')});
-  $(this).html('Downvoted')
   return false;
 });
 
 $('.article-remove-vote').click(function() {
   var article_id = $(this).data('id');
   remove_vote(article_id, function() {create_notice('Vote removed')});
-  $(this).html('Vote removed')
+  return false;
+});
+
+$('.article-save').click(function() {
+  var article_id = $(this).data('article-id');
+  var magazine_id = $(this).data('magazine-id');
+  add_article_to_magazine(article_id, 1, function() {create_notice('Article saved')});
   return false;
 });
 
 var create_notice = function (message) {
-  notice = new PNotify({text:message, type:'info', opacity:.6});
+  notice = new PNotify({text:message, type:'info', opacity:.8});
   notice.get().click(function() {
     notice.remove();
   });

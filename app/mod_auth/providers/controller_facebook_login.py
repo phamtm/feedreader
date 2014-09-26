@@ -74,6 +74,8 @@ def facebook_authorized(response):
     if not Magazine.query.filter_by(name='Saved').first():
         magazine = Magazine(name='Saved', public=False, user_id=user.id)
         db.session.add(magazine)
+        db.session.commit()
+        user.saved_magazine = magazine.id
 
     login_user(user)
 

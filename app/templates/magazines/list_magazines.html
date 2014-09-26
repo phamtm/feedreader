@@ -13,12 +13,12 @@ List of your magazines
             {% for magazine in magazines %}
             <li>
                 <strong>{{magazine.name}}</strong>
-                {% if not magazine.public %}
-                <span class="label label-primary">Private</span>
-                {% endif %}
                 <a href="{{url_for('mod_user.view_magazine', magazine_id=magazine.id)}}">View</a>
                 <a href="{{url_for('mod_user.edit_magazine', magazine_id=magazine.id)}}">Edit</a>
                 <a href="{{url_for('mod_user.remove_magazine', magazine_id=magazine.id)}}">Remove</a>
+                {% if not magazine.public %}
+                <span class="label label-primary">Private</span>
+                {% endif %}
             </li>
             {% endfor %}
         </ol>

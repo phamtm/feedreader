@@ -41,7 +41,7 @@
                     </h4>
                     {{article.summary}}
                     <p>
-                      <a href="{{url_for('mod_user.add_article', magazine_id=1, article_id='%d' % article.id)}}">Save</a>
+                      <a href="#" class="article-save" data-article-id="{{article.id}}" data-magazine-id="{{current_user.saved_magazine}}">Save</a>
                       <a href="#" class="article-upvote text-success" data-id="{{article.id}}">Upvote</a>
                       <a href="#" class="article-downvote text-danger" data-id="{{article.id}}">Downvote</a>
                       <a href="#" class="article-remove-vote text-warning" data-id="{{article.id}}">Remove vote</a>
