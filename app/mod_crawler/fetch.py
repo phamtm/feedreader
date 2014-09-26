@@ -13,7 +13,7 @@ from app.models import FeedArticle, FeedProvider, FeedSource
 
 @celery.task(ignore_result=True)
 def add_article(article):
-    if article.summary:
+    if article.summary and not article.thumbnail_url:
         article.thumbnail_url = get_thumbnail_url_from_summary(article.html)
 
     # if not article.thumbnail_url:
@@ -62,6 +62,17 @@ def update_db():
                 source_id=source_id,
                 html=entry.summary
             )
+
+            if 'media_thumbnail' in entry:
+                article.thumbnail_url = entry['media_thumbnail'][0]['url']
+
+            if not article.thumbnail_url and 'links' in entry:
+                links = entry['links']
+                for link in links:
+                    if 'type' in link and link['type'].startswith('image'):
+                        if 'href' in link:
+                            article.thumbnail_url = link['href']
+                            break
 
             # chain = fetch_html.s(entry.link) |          \
             #         get_readable.s(entry.link) |        \

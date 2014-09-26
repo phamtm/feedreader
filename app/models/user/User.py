@@ -243,6 +243,31 @@ class User(UserMixin, Base):
             db.session.commit()
 
 
+    def upvoted_article(self, article_id):
+        """Return true if the user has upvoted the article"""
+        upvote = FeedVote.query.filter_by(
+            user_id=self.id,
+            article_id=article_id,
+            is_upvote=True).first()
+        return upvote is not None
+
+
+    def downvoted_article(self, article_id):
+        """Return true if the user has downvoted the article"""
+        downvote = FeedVote.query.filter_by(
+            user_id=self.id,
+            article_id=article_id,
+            is_upvote=False).first()
+        return downvote is not None
+
+
+    def voted_article(self, article_id):
+        """Return true if the user has voted for the article"""
+        vote = FeedVote.query.filter_by(
+            user_id=self.id,
+            article_id=article_id).first()
+        return vote is not None
+
 
     def __repr__(self):
         return '<user %r %r>' % (self.id, self.email)

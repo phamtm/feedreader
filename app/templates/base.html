@@ -9,10 +9,11 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/simple-sidebar.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/splash.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/pnotify.custom.min.css') }}">
 
     </head>
 
-    <body ng-app="splashDemo" ng-controller="MainCtrl as main">
+    <body>
         <div class="navbar navbar-static navbar-default navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -38,14 +39,12 @@
                         <li><a href="{{ url_for('mod_user.list_magazines') }}">Your Magazines</a></li>
                         <li><a href="{{ url_for('mod_user.create_magazine') }}">Create a Magazine</a></li>
                         <li><a href="{{ url_for('mod_user.list_users') }}">List of Users</a></li>
-
-                        <li><a href="{{ url_for('mod_auth.logout') }}">Log out</a></li>
                         {% endif %}
 
                         <li><a href="{{ url_for('mod_mock.read') }}">Fetch Article</a></li>
                         <!-- <li><a href="{{ url_for('mod_mock.thumbnail') }}">Fetch Thumbnail</a></li> -->
                         {% if current_user.is_authenticated() %}
-                        <li><a href="{{url_for('mod_user.profile')}}"><span style="color:white">{{current_user.email}}</span></a></li>
+                        <li><a href="{{ url_for('mod_auth.logout') }}">Log out</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -60,6 +59,7 @@
                         {% for source in current_user.get_subscriptions() %}
                             <li><a href="{{ url_for('mod_feed.feeds_from_source', source_id='%d' % source.id) }}">{{source.name | truncate(25)}}</a></li>
                         {% endfor %}
+                        <li>{{current_user.email}}</li>
                     {% endif %}
 
                 </ul>
@@ -97,52 +97,47 @@
             $("#wrapper").toggleClass("toggled");
         });
         </script>
-        <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.18/angular.min.js"></script> -->
-        <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.0/ui-bootstrap.min.js"></script> -->
-        <!-- <script src="{{ url_for('static', filename='js/splash.js') }}"></script> -->
         <script src="{{ url_for('static', filename='js/colibri.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/fr.js') }}"></script>
         <script>
+            var rgb_values = function (rgb) {
+                // rgb(123,123,123)
+                var r = parseInt(rgb.slice(4, 7), 10)
+                var g = parseInt(rgb.slice(8, 11), 10)
+                var b = parseInt(rgb.slice(12, 15), 10)
+                return [r, g, b];
+            };
 
-        var rgb_values = function (rgb) {
-            // rgb(123,123,123)
-            var r = parseInt(rgb.slice(4, 7), 10)
-            var g = parseInt(rgb.slice(8, 11), 10)
-            var b = parseInt(rgb.slice(12, 15), 10)
-            return [r, g, b];
-        };
-
-        var brightness = function (rgb) {
-            return Math.sqrt(Math.pow(rgb[0], 2) * 0.241
-                             + Math.pow(rgb[1], 2) * 0.691
-                             + Math.pow(rgb[2], 2) * 0.068);
-        }
-
-        $(document).ready(function() {
-            if (typeof(img) == 'undefined')
-                return;
-
-            var img = $('#testimg')[0];
-            var montage = $('#montage');
-            var gradient, c0, c1;
-            pallete = Colibri.extractImageColors(img, 'css');
-            console.log('pallete len: %s' % pallete.content.length)
-            montage.css('color', pallete.background);
-
-            if (pallete.content.length > 1) {
-                c0 = pallete.content[0];
-                c1 = pallete.content[1];
-                if (brightness(rgb_values(c0)) < brightness(rgb_values(c1))) {
-                    c0 = pallete.content[1]
-                    c1 = pallete.content[0]
-                }
-                gradient = 'linear-gradient(to bottom, ' + c0 + ' 0,' + c1 + ' 100%)';
+            var brightness = function (rgb) {
+                return Math.sqrt(Math.pow(rgb[0], 2) * 0.241
+                                 + Math.pow(rgb[1], 2) * 0.691
+                                 + Math.pow(rgb[2], 2) * 0.068);
             }
-            else
-                gradient = 'linear-gradient(to bottom, ' + ' white' + ' 0,' + pallete.content[0] + ' 100%)';
 
-            montage.css('background-image', gradient);
-        });
+            $(document).ready(function() {
+                if (typeof(img) == 'undefined')
+                    return;
+
+                var img = $('#testimg')[0];
+                var montage = $('#montage');
+                var gradient, c0, c1;
+                pallete = Colibri.extractImageColors(img, 'css');
+                console.log('pallete len: %s' % pallete.content.length)
+                montage.css('color', pallete.background);
+
+                if (pallete.content.length > 1) {
+                    c0 = pallete.content[0];
+                    c1 = pallete.content[1];
+                    if (brightness(rgb_values(c0)) < brightness(rgb_values(c1))) {
+                        c0 = pallete.content[1]
+                        c1 = pallete.content[0]
+                    }
+                    gradient = 'linear-gradient(to bottom, ' + c0 + ' 0,' + c1 + ' 100%)';
+                }
+                else
+                    gradient = 'linear-gradient(to bottom, ' + ' white' + ' 0,' + pallete.content[0] + ' 100%)';
+
+                montage.css('background-image', gradient);
+            });
         </script>
         <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -159,5 +154,7 @@
             AUTH_TOKEN = '{{current_user.generate_auth_token(expiration=3600)}}';
         </script>
         {% endif %}
+        <script type="text/javascript" src="{{url_for('static', filename='js/pnotify.custom.min.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/fr.js') }}"></script>
     </body>
 </html>

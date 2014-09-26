@@ -104,7 +104,7 @@ def downvote():
     if not article:
         abort(404)
 
-    vote = FeedVote.query.get((user_id, article_id))
+    vote = FeedVote.query.get((g.current_user.id, article_id))
 
     # No vote from the user yet, add one
     if not vote:
@@ -125,7 +125,7 @@ def downvote():
     db.session.commit()
     return jsonify({
         'article_id': article_id,
-        'upvote': article.upvote})
+        'downvote': article.downvote})
 
 
 @api.route('/article/remove_vote')
@@ -141,7 +141,7 @@ def remove_vote():
     if not article:
         abort(404)
     else:
-        vote = FeedVote.query.get((user_id, article_id))
+        vote = FeedVote.query.get((g.current_user.id, article_id))
         if vote:
             if vote.is_upvote:
                 article.upvote -= 1

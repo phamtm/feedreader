@@ -47,7 +47,7 @@ def facebook_authorized(response):
     # If the user is not registered, add him
     user = User.query.filter_by(email=email).first()
     if not user:
-        user = User(email=email, register_with_provider=True)
+        user = User(email=email, register_with_provider=True, confirmed=True)
         db.session.add(user)
         db.session.commit()
 

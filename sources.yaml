@@ -40,6 +40,13 @@
     TRANGCHU: http://laodong.com.vn/rss/home.rss
   timestamp_format:
 
+- name: LINKHAY.COM
+  domain: http://linkhay.com
+  favicon: http://linkhay.com/favicon.ico
+  channels:
+    TRANGCHU: http://feeds.feedburner.com/TinHot-Linkhay
+  timestamp_format:
+
 - name: PHIATRUOC.INFO
   domain: http://phiatruoc.info
   favicon: http://phiatruoc.info/wp-content/uploads/2014/01/Phia_Truoc_light_green_logo.png

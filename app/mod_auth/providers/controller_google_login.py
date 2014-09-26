@@ -61,7 +61,9 @@ def google_authorized(response):
 
     user = User.query.filter_by(email=user_info['email']).first()
     if not user:
-        user = User(email=user_info['email'], register_with_provider=True)
+        user = User(email=user_info['email'],
+                    register_with_provider=True,
+                    confirmed=True)
         db.session.add(user)
         db.session.commit()
 
