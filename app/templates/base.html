@@ -101,6 +101,7 @@
         <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.0/ui-bootstrap.min.js"></script> -->
         <!-- <script src="{{ url_for('static', filename='js/splash.js') }}"></script> -->
         <script src="{{ url_for('static', filename='js/colibri.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/fr.js') }}"></script>
         <script>
 
         var rgb_values = function (rgb) {
@@ -118,6 +119,9 @@
         }
 
         $(document).ready(function() {
+            if (typeof(img) == 'undefined')
+                return;
+
             var img = $('#testimg')[0];
             var montage = $('#montage');
             var gradient, c0, c1;
@@ -150,5 +154,10 @@
             ga('send', 'pageview');
 
         </script>
+        {% if current_user.is_authenticated() %}
+        <script>
+            AUTH_TOKEN = '{{current_user.generate_auth_token(expiration=3600)}}';
+        </script>
+        {% endif %}
     </body>
 </html>

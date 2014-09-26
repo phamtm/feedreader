@@ -86,10 +86,10 @@ def feeds_from_source():
 def get_popular_articles():
     articles = FeedArticle.query                    \
         .order_by(
-            FeedArticle.views.desc(),
             FeedArticle.wilson_score.desc(),
+            FeedArticle.views.desc(),
             FeedArticle.time_published.desc())      \
-        .limit(10)
+        .limit(10).all()
 
     return articles
 

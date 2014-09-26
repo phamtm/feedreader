@@ -26,7 +26,7 @@
         {% if source %}
             {% for article in rss_articles %}
             <div class="media" style="margin-bottom:5px; line-height:20px">
-                <a class="pull-left" href="{{article.link}}" target="_blank">
+                <a class="pull-left article-upview" href="{{article.link}}" data-id="{{article.id}}" target="_blank">
                     {% if article.thumbnail_url %}
                     <img class="media-object" width="90" height="90" src="{{article.thumbnail_url}}">
                     {% else %}
@@ -35,14 +35,16 @@
                 </a>
                 <div class="media-body">
                     <h4 class="media-heading">
-                        {{article.title}}
-                        <small class="sub">({{article.upvote}} | {{article.downvote}})</small>
+                        <a href="{{article.link}}" class="article-upview" data-id="{{article.id}}">{{article.title}}</a>
+                        <small class="sub">Vote: ({{article.upvote}} | {{article.downvote}})</small>
+                        <small class="sub">Views: {{article.views}}</small>
                     </h4>
                     {{article.summary}}
                     <p>
                       <a href="{{url_for('mod_user.add_article', magazine_id=1, article_id='%d' % article.id)}}">Save</a>
-                      <a href="{{url_for('mod_feed.upvote', article_id=article.id)}}">Upvote</a>
-                      <a href="{{url_for('mod_feed.downvote', article_id=article.id)}}">Downvote</a>
+                      <a href="#" class="article-upvote text-success" data-id="{{article.id}}">Upvote</a>
+                      <a href="#" class="article-downvote text-danger" data-id="{{article.id}}">Downvote</a>
+                      <a href="#" class="article-remove-vote text-warning" data-id="{{article.id}}">Remove vote</a>
                     </p>
                 </div>
             </div>
@@ -68,12 +70,20 @@
             <div class="col-md-12">
               {% for article in popular_articles %}
               <div class="media">
-                <a class="pull-left" href="{{article.link}}">
+                <a class="pull-left article-upview" href="{{article.link}}" data-id="{{article.id}}">
                   <img class="media-object" width="40" height="40" src="{{article.thumbnail_url}}">
                 </a>
                 <div class="media-body">
-                  <h5 class="media-heading">{{article.title}}</h5>
-                  {{article.summary | truncate(60)}}
+                    <h5 class="media-heading">
+                        <a href="{{article.link}}" class="article-upview" data-id="{{article.id}}">
+                            {{article.title}}
+                        </a>
+                    </h5>
+                    <small class="sub">Vote: ({{article.upvote}} | {{article.downvote}})</small>
+                    <small class="sub">Views: {{article.views}}</small>
+                    <p>
+                        {{article.summary | truncate(60)}}
+                    </p>
                 </div>
               </div>
               {% endfor %}

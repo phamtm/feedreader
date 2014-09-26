@@ -55,3 +55,10 @@ class Magazine(Base):
                 article_id=article_id).first()
             db.session.delete(magart)
             db.session.commit()
+
+
+    def to_json(self):
+        """Return the JSON representation of the magazine"""
+        return {
+            'name':self.name,
+            'id':self.id}

@@ -66,6 +66,16 @@ class FeedArticle(Base):
         return map(int, self.related_articles.split())
 
 
+    def to_json(self):
+        """Return JSON representation of the article"""
+        return {
+            'id':self.id,
+            'title':self.title,
+            'link':self.link,
+            'summary':self.summary
+        }
+
+
     def __repr__(self):
         return '<FeedArticle %s %s>' % (self.title.encode('utf-8'), self.link.encode('utf-8'))
 

@@ -2,7 +2,9 @@ from flask import abort, jsonify, request, g
 
 from app.api_1_0 import api
 from app.api_1_0.authentication import auth
+from app import db
 from app.models import FeedArticle, FeedVote, Magazine
+from app.mod_feed.controller_source import get_popular_articles
 
 
 @api.route('/article/get')
@@ -22,28 +24,11 @@ def get_article():
         'summary':article.summary})
 
 
-@api.route('/article/add_to_magazine')
-def add_to_magazine():
-    article_id = request.args.get('article_id', type=int)
-    magazine_id = request.args.get('magazine_id', type=int)
-
-    if not article_id or not magazine_id or not FeedArticle.query.get(article_id):
-        abort(404)
-
-    magazine = Magazine.query.filter_by(
-        user_id=g.current_user.id,
-        id=magazine_id).first()
-
-    if not magazine:
-        abort(404)
-
-    res = magazine.add_article(article_id)
-    if res:
-        response = jsonify({'result':'success'})
-    else:
-        response = jsonify({'result':'error'})
-
-    return response
+@api.route('/article/popular')
+def popular_articles():
+    popular_articles = get_popular_articles()
+    popular_articles_json = [a.to_json() for a in popular_articles]
+    return jsonify({'articles':popular_articles_json})
 
 
 @api.route('/article/upview')
@@ -61,6 +46,7 @@ def upview():
         abort(404)
 
     article.views += 1
+    db.session.commit()
 
     return jsonify({
         'article_id': article_id,
@@ -85,7 +71,7 @@ def upvote():
     # No vote from the user yet, add one
     if not vote:
         vote = FeedVote(
-            user_id=current_user.id,
+            user_id=g.current_user.id,
             article_id=article_id,
             is_upvote=True)
 
@@ -98,6 +84,7 @@ def upvote():
             article.upvote += 1
             article.downvote -= 1
             article.update_wilson_score()
+    db.session.commit()
 
     return jsonify({
         'article_id': article_id,
@@ -122,7 +109,7 @@ def downvote():
     # No vote from the user yet, add one
     if not vote:
         vote = FeedVote(
-            user_id=current_user.id,
+            user_id=g.current_user.id,
             article_id=article_id,
             is_upvote=False)
         article.downvote += 1
@@ -135,6 +122,7 @@ def downvote():
             article.downvote += 1
             article.update_wilson_score()
 
+    db.session.commit()
     return jsonify({
         'article_id': article_id,
         'upvote': article.upvote})
@@ -162,6 +150,7 @@ def remove_vote():
             article.update_wilson_score()
             db.session.delete(vote)
 
+    db.session.commit()
     return jsonify({
         'article_id': article_id,
         'downvote': article.downvote,
