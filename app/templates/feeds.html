@@ -35,7 +35,7 @@
                 </a>
                 <div class="media-body">
                     <h4 class="media-heading">
-                        <a href="{{article.link}}" class="article-upview" data-id="{{article.id}}">{{article.title}}</a>
+                        <a href="{{article.link}}" class="article-upview" data-id="{{article.id}}" target="_blank">{{article.title}}</a>
                         <small class="sub">Vote: ({{article.upvote}} | {{article.downvote}})</small>
                         <small class="sub">Views: {{article.views}}</small>
                     </h4>
@@ -60,12 +60,12 @@
             <div class="col-md-12">
               {% for article in popular_articles %}
               <div class="media">
-                <a class="pull-left article-upview" href="{{article.link}}" data-id="{{article.id}}">
+                <a class="pull-left article-upview" href="{{article.link}}" data-id="{{article.id}}" target="_blank">
                   <img class="media-object" width="40" height="40" src="{{article.thumbnail_url}}">
                 </a>
                 <div class="media-body">
                     <h5 class="media-heading">
-                        <a href="{{article.link}}" class="article-upview" data-id="{{article.id}}">
+                        <a href="{{article.link}}" class="article-upview" data-id="{{article.id}}" target="_blank">
                             {{article.title}}
                         </a>
                     </h5>
