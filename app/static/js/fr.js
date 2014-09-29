@@ -2,6 +2,8 @@ PNotify.prototype.options.delay ? (function() {
     PNotify.prototype.options.delay -= 6000;
 }()) : (alert('Timer is already at zero.'))
 
+var base_url = 'http://' + window.location.host
+
 var call_async = function (url, requestType, requestData, callback) {
   if (typeof(AUTH_TOKEN) == 'undefined')
     AUTH_TOKEN = ''
@@ -31,48 +33,48 @@ var call_async = function (url, requestType, requestData, callback) {
 };
 
 var upview = function (article_id, callback) {
-  call_async('http://localhost:5000/api/v1.0/article/upview',
+  call_async(base_url + '/api/v1.0/article/upview',
              'GET',
              {'article_id':article_id},
              callback);
 };
 
 var upview = function (article_id, callback) {
-  call_async('http://localhost:5000/api/v1.0/article/upview',
+  call_async(base_url + '/api/v1.0/article/upview',
              'GET',
              {'article_id':article_id},
              callback);
 };
 
 var upvote = function (article_id, callback) {
-  call_async('http://localhost:5000/api/v1.0/article/upvote',
+  call_async(base_url + '/api/v1.0/article/upvote',
              'GET',
              {'article_id':article_id},
              callback);
 };
 
 var downvote = function (article_id, callback) {
-  call_async('http://localhost:5000/api/v1.0/article/downvote',
+  call_async(base_url + '/api/v1.0/article/downvote',
              'GET',
              {'article_id':article_id},
              callback);
 };
 
 var remove_vote = function (article_id, callback) {
-  call_async('http://localhost:5000/api/v1.0/article/remove_vote',
+  call_async(base_url + '/api/v1.0/article/remove_vote',
              'GET',
              {'article_id':article_id},
              callback);
 };
 
 var list_magazines = function () {
-  call_async('http://localhost:5000/api/v1.0/magazine/list_magazines',
+  call_async(base_url + '/api/v1.0/magazine/list_magazines',
              'GET',
              {'article_id':article_id});
 };
 
 var add_article_to_magazine = function (article_id, magazine_id, callback) {
-  call_async('http://localhost:5000/api/v1.0/magazine/add_article',
+  call_async(base_url + '/api/v1.0/magazine/add_article',
              'GET',
              {'article_id':article_id, 'magazine_id':magazine_id},
              callback);
