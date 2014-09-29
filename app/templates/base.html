@@ -38,13 +38,24 @@
                         <li><a href="{{ url_for('mod_feed.manage_subscriptions') }}">Manage subscriptions</a></li>
                         <li><a href="{{ url_for('mod_user.list_magazines') }}">Your Magazines</a></li>
                         <li><a href="{{ url_for('mod_user.create_magazine') }}">Create a Magazine</a></li>
-                        <li><a href="{{ url_for('mod_user.list_users') }}">List of Users</a></li>
                         {% endif %}
 
-                        <li><a href="{{ url_for('mod_mock.read') }}">Fetch Article</a></li>
-                        <!-- <li><a href="{{ url_for('mod_mock.thumbnail') }}">Fetch Thumbnail</a></li> -->
                         {% if current_user.is_authenticated() %}
-                        <li><a href="{{ url_for('mod_auth.logout') }}">Log out</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{current_user.email}} <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <!-- <span class="glyphicon glyphicon-user"></span> -->
+                                    <a href="{{url_for('mod_user.profile')}}">Profile</a>
+                                </li>
+                                <li><a href="{{ url_for('mod_user.list_users') }}">List of Users</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{{url_for('mod_mock.read')}}">Fetch Article</a></li>
+                                <li><a href="{{ url_for('mod_mock.thumbnail') }}">Fetch Thumbnail</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{{url_for('mod_auth.logout')}}"><span class="glyphicon glyphicon-logout"></span> Logout</a></li>
+                            </ul>
+                        </li>
                         {% endif %}
                     </ul>
                 </div>
@@ -67,18 +78,6 @@
             <!-- /#sidebar-wrapper -->
 
             <div id="page-content-wrapper">
-                <!-- Flashed messages -->
-                <div class="container-fluid">
-                    {% with messages = get_flashed_messages() %}
-                        {% if messages %}
-                        <ul>
-                            {% for m in messages %}
-                            <li>{{ m }}</li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-                    {% endwith %}
-                </div>
 
                 <div class="container-fluid">
                     {% block content %}
@@ -118,8 +117,11 @@
                     return;
 
                 var img = $('#testimg')[0];
+                var src = $('#testimg')[0].src;
                 var montage = $('#montage');
                 var gradient, c0, c1;
+                var pallete;
+                img = new Image();
                 pallete = Colibri.extractImageColors(img, 'css');
                 console.log('pallete len: %s' % pallete.content.length)
                 montage.css('color', pallete.background);
@@ -156,5 +158,15 @@
         {% endif %}
         <script type="text/javascript" src="{{url_for('static', filename='js/pnotify.custom.min.js')}}"></script>
         <script src="{{ url_for('static', filename='js/fr.js') }}"></script>
+        <!-- Flashed messages -->
+        {% with messages = get_flashed_messages() %}
+        <script>
+            {% if messages %}
+                {% for m in messages %}
+                create_notice('{{ m }}');
+                {% endfor %}
+            {% endif %}
+        </script>
+        {% endwith %}
     </body>
 </html>

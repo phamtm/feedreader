@@ -19,19 +19,20 @@ Your magazine - {{magazine.name}}
                     {% else %}
                     <img class="media-object" data-src="holder.js/90x90">
                     {% endif %}
-                </a>
-                <div class="media-body">
-                    <h4 class="media-heading">
-                        <a href="{{article.link}}" class="article-upview" data-id="{{article.id}}">{{article.title}}</a>
-                        <small class="sub">Vote: ({{article.upvote}} | {{article.downvote}})</small>
-                        <small class="sub">Views: {{article.views}}</small>
-                    </h4>
-                    {{article.summary}}
-                    <p>
-                      <a href="#" class="article-upvote text-success" data-id="{{article.id}}">Upvote</a>
-                      <a href="#" class="article-downvote text-danger" data-id="{{article.id}}">Downvote</a>
-                      <a href="#" class="article-remove-vote text-warning" data-id="{{article.id}}">Remove vote</a>
-                    </p>
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading">
+                            <a href="{{article.link}}" class="article-upview" data-id="{{article.id}}">{{article.title}}</a>
+                            <small class="sub">Vote: ({{article.upvote}} | {{article.downvote}})</small>
+                            <small class="sub">Views: {{article.views}}</small>
+                        </h4>
+                        {{article.summary}}
+                        <p>
+                          <a href="#" class="article-upvote text-success" data-id="{{article.id}}">Upvote</a>
+                          <a href="#" class="article-downvote text-danger" data-id="{{article.id}}">Downvote</a>
+                          <a href="#" class="article-remove-vote text-warning" data-id="{{article.id}}">Remove vote</a>
+                        </p>
+                    </div>
                 </div>
                 {% endfor %}
             {% else %}

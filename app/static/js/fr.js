@@ -1,10 +1,12 @@
 PNotify.prototype.options.delay ? (function() {
-    PNotify.prototype.options.delay -= 7000;
+    PNotify.prototype.options.delay -= 6000;
 }()) : (alert('Timer is already at zero.'))
 
 var call_async = function (url, requestType, requestData, callback) {
+  if (typeof(AUTH_TOKEN) == 'undefined')
+    AUTH_TOKEN = ''
   $.ajax({
-    crossDomain: 'true',
+    crossDomain: true,
     dataType: 'json',
     headers: {
       'Authorization': 'Basic ' + btoa(AUTH_TOKEN + ':')
@@ -34,7 +36,6 @@ var upview = function (article_id, callback) {
              {'article_id':article_id},
              callback);
 };
-
 
 var upview = function (article_id, callback) {
   call_async('http://localhost:5000/api/v1.0/article/upview',

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}
+Toi Doc Bao
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <pre>
+  _______    _       _              _
+ |__   __|  (_)     | |            | |
+    | | ___  _    __| | ___   ___  | |__   __ _  ___
+    | |/ _ \| |  / _` |/ _ \ / __| | '_ \ / _` |/ _ \
+    | | (_) | | | (_| | (_) | (__  | |_) | (_| | (_) |
+    |_|\___/|_|  \__,_|\___/ \___| |_.__/ \__,_|\___/
+
+    <span id="weather-info" class="text-success" style="font-size:1.2em"></span>
+        </pre>
+
+        <h4 class="lead">Popular Keywords</h4>
+        <ul>
+        {% for keyword in popular_keywords %}
+            <li><mark>#{{keyword}}</mark></li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    <div class="col-lg-4" style="padding-top:10px">
+        <h4>Popular</h4>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+              {% for article in popular_articles %}
+              <div class="media">
+                <a class="pull-left article-upview" href="{{article.link}}" data-id="{{article.id}}">
+                  <img class="media-object" width="40" height="40" src="{{article.thumbnail_url}}">
+                </a>
+                <div class="media-body">
+                    <h5 class="media-heading">
+                        <a href="{{article.link}}" class="article-upview" data-id="{{article.id}}">
+                            {{article.title}}
+                        </a>
+                    </h5>
+                    <small class="sub">Vote: ({{article.upvote}} | {{article.downvote}})</small>
+                    <small class="sub">Views: {{article.views}}</small>
+                    <p>
+                        {{article.summary | truncate(60)}}
+                    </p>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // // Get weather information
+    // navigator.geolocation.getCurrentPosition(load_weather);
+    // function load_weather(location) {
+    //   var lat = location.coords.latitude,
+    //       lon = location.coords.longitude;
+    //   requestData = {
+    //     lat: lat,
+    //     lon: lon,
+    //     units: 'metric'
+    //   };
+
+    //   $.ajax({
+    //     crossDomain: true,
+    //     dataType: 'json',
+    //     async: true,
+    //     data: requestData,
+    //     type: 'GET',
+    //     url: 'http://api.openweathermap.org/data/2.5/weather',
+    //     success: fill_weather_data,
+    //     error: function (xhr, ajaxOptions, thrownError) {
+    //       console.log(requestData);
+    //       console.log('Error :: ' + thrownError);
+    //     }
+    //   })
+    // };
+
+    // var fill_weather_data = function (json) {
+    //   country = json.sys.country;
+    //   weather_description = json.weather[0].main;
+    //   temp = json.main.temp
+    //   $('#weather-info').html('Weather of ' + country + ': ' + weather_description + ' ' + temp + '&deg;  ');
+    // };
+</script>
+{% endblock %}
+

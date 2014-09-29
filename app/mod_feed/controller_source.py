@@ -1,19 +1,22 @@
-from flask import (render_template,
+from flask import (abort,
                    current_app,
+                   redirect,
+                   render_template,
                    request,
-                   abort)
+                   url_for)
 from flask.ext.login import login_required, current_user
 
 from app.mod_main import mod_main
 from app.mod_feed import mod_feed
 from app.models import FeedArticle, FeedSubscription, FeedSource
+from app.recommender.popular_keywords import get_popular_keywords
 from Pagination import Pagination
 
 
 @mod_main.route('/all')
 @mod_feed.route('/all')
 @login_required
-def index():
+def index2():
     """Return all the feed articles from the user's subscription."""
 
     page = request.args.get('page', 1, type=int)
@@ -60,10 +63,29 @@ def index():
 
 @mod_main.route('/')
 @mod_feed.route('/')
+def index():
+    """The homepage"""
+    popular_keywords = get_popular_keywords()
+    popular_articles = get_popular_articles()
+
+    return render_template(
+        'index.html',
+        popular_keywords=popular_keywords,
+        popular_articles=popular_articles)
+
+
+@mod_feed.route('/view')
 @login_required
 def feeds_from_source():
     """Return all articles from a source that the user subscribed to."""
     source_id = request.args.get('source_id', type=int)
+    page = request.args.get('page', 1, type=int)
+    if not source_id:
+        return redirect(url_for('mod_feed.index'))
+
+    start_idx = current_app.config['ARTICLES_PER_PAGE'] * (page - 1)
+    stop_idx = start_idx + current_app.config['ARTICLES_PER_PAGE']
+
     popular_articles = get_popular_articles()
 
     if not source_id or not current_user.is_subscribed(source_id):
