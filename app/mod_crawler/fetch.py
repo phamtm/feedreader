@@ -23,6 +23,7 @@ def add_article(article):
     cdb.session.commit()
 
 
+@celery.task(ignore_result=True)
 def update_db():
     """
     Updatedb steps:

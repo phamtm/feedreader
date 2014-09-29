@@ -168,5 +168,11 @@
             {% endif %}
         </script>
         {% endwith %}
+
+        {% if not current_user.is_authenticated() %}
+        <script>
+            $("#wrapper").toggleClass("toggled");
+        </script>
+        {% endif %}
     </body>
 </html>

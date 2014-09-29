@@ -5,7 +5,12 @@ User Profile
 {% endblock %}
 
 {% block content %}
-<img src="{{current_user.connections.first().image_url}}" alt="" class="thumbnail">
+{% with connection = current_user.connections.first() %}
+{% if connection %}
+<img src="{{connection.image_url}}" alt="" class="thumbnail">
+{% endif %}
+{% endwith %}
+
 <table class="table table-striped">
     <tr>
         <td>Name</td>

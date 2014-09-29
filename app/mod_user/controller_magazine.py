@@ -82,6 +82,7 @@ def create_magazine():
                             public=form.public.data)
         db.session.add(magazine)
         flash('You have successfully created a magazine')
+        return redirect(url_for('mod_user.list_magazines'))
 
     return render_template('magazines/create_magazine.html', form=form)
 
