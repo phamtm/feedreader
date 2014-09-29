@@ -5,6 +5,8 @@
             {% block title %}{% endblock %}
         </title>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/simple-sidebar.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
@@ -34,10 +36,9 @@
                         <li><a href="{{ url_for('mod_auth.forgot') }}">Forgot password?</a></li>
                         {% endif %}
 
+                        <li><a href="{{ url_for('mod_feed.index') }}">Popular</a></li>
                         {% if current_user.is_authenticated() %}
-                        <li><a href="{{ url_for('mod_feed.manage_subscriptions') }}">Manage subscriptions</a></li>
-                        <li><a href="{{ url_for('mod_user.list_magazines') }}">Your Magazines</a></li>
-                        <li><a href="{{ url_for('mod_user.create_magazine') }}">Create a Magazine</a></li>
+                        <li><a href="{{ url_for('mod_feed.manage_subscriptions') }}">Subscriptions</a></li>
                         {% endif %}
 
                         {% if current_user.is_authenticated() %}
@@ -52,6 +53,8 @@
                                 <li class="divider"></li>
                                 <li><a href="{{url_for('mod_mock.read')}}">Fetch Article</a></li>
                                 <li><a href="{{ url_for('mod_mock.thumbnail') }}">Fetch Thumbnail</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{{ url_for('mod_user.list_magazines') }}">Magazines</a></li>
                                 <li class="divider"></li>
                                 <li><a href="{{url_for('mod_auth.logout')}}"><span class="glyphicon glyphicon-logout"></span> Logout</a></li>
                             </ul>

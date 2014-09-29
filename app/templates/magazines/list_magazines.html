@@ -6,7 +6,7 @@ List of your magazines
 
 {% block content %}
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-12">
         {% if magazines is defined %}
         <h4 class="lead">List of magazines</h4>
         <ol>
@@ -25,6 +25,8 @@ List of your magazines
         {% else %}
         <h4 class="lead">You have no magazines</h4>
         {% endif %}
+
+        <a href="{{url_for('mod_user.create_magazine')}}">Create a new magazine</a>
     </div>
 </div>
 {% endblock %}
