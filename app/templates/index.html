@@ -9,29 +9,29 @@ Toi Doc Bao
     <div class="col-md-7">
         <h4 class="lead">Popular</h4>
         <hr>
-        <div class="row">
-            <div class="col-md-12">
-              {% for article in popular_articles %}
-              <div class="media">
-                <a class="pull-left article-upview" href="{{article.link}}" data-id="{{article.id}}" target="_blank">
-                  <img class="media-object" width="40" height="40" src="{{article.thumbnail_url}}">
-                </a>
-                <div class="media-body">
-                    <h5 class="media-heading">
-                        <a href="{{article.link}}" class="article-upview" data-id="{{article.id}}" target="_blank">
-                            {{article.title}}
-                        </a>
-                    </h5>
-                    <small class="sub">Vote: ({{article.upvote}} | {{article.downvote}})</small>
-                    <small class="sub">Views: {{article.views}}</small>
-                    <p>
-                        {{article.summary | truncate(60)}}
-                    </p>
-                </div>
-              </div>
-              {% endfor %}
+        {% for article in popular_articles %}
+        <div class="media" style="margin-bottom:5px; line-height:20px">
+            <a class="pull-left article-upview" href="{{article.link}}" data-id="{{article.id}}" target="_blank">
+                {% if article.thumbnail_url %}
+                <img class="media-object" width="60" height="60" src="{{article.thumbnail_url}}">
+                {% else %}
+                <img class="media-object" data-src="holder.js/60x60">
+                {% endif %}
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading">
+                    <a href="{{article.link}}" class="article-upview" data-id="{{article.id}}" target="_blank">
+                        {{article.title}}
+                    </a>
+                </h4>
+                <small class="sub">Vote: ({{article.upvote}} | {{article.downvote}})</small>
+                <small class="sub">Views: {{article.views}}</small>
+                <p>
+                    {{article.summary | truncate(60)}}
+                </p>
             </div>
         </div>
+        {% endfor %}
     </div>
 
     <div class="col-md-3">
@@ -43,6 +43,7 @@ Toi Doc Bao
         {% endfor %}
         </ul>
     </div>
+</div>
 
 </div>
 

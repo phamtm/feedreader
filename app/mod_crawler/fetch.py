@@ -1,4 +1,6 @@
 import time
+import urllib
+from urllib2 import urlopen, HTTPError, URLError
 
 from breadability.readable import Article
 from bs4 import BeautifulSoup
@@ -12,12 +14,31 @@ from app.models import FeedArticle, FeedProvider, FeedSource
 
 
 @celery.task(ignore_result=True)
-def add_article(article):
+def add_article(source_id, entry):
+    if FeedArticle.query.filter_by(link=entry.link, source_id=source_id).first():
+        return
+
+    summary = BeautifulSoup(entry.summary, 'lxml').get_text()
+    article = FeedArticle(
+        link=entry.link,
+        title=entry.title,
+        summary=summary,
+        source_id=source_id,
+        html=entry.summary)
+
+    if 'media_thumbnail' in entry:
+        article.thumbnail_url = entry['media_thumbnail'][0]['url']
+
+    if not article.thumbnail_url and 'links' in entry:
+        links = entry['links']
+        for link in links:
+            if 'type' in link and link['type'].startswith('image'):
+                if 'href' in link:
+                    article.thumbnail_url = link['href']
+                    break
+
     if article.summary and not article.thumbnail_url:
         article.thumbnail_url = get_thumbnail_url_from_summary(article.html)
-
-    # if not article.thumbnail_url:
-    #     article.thumbnail_url = get_thumbnail_url_from_html(html_readable)
 
     cdb.session.add(article)
     cdb.session.commit()
@@ -25,88 +46,39 @@ def add_article(article):
 
 @celery.task(ignore_result=True)
 def update_db():
-    """
-    Updatedb steps:
-        1. fetch_entries
-            [(src_id, entry)]
-        2. fetch_article
-            [
-                article:
-                    title
-                    link
-                    summary
-                    summary_stemmed
-
-                    readable -> html
-                    thumbnail_url
-            ]
-        3. add_to_db
-    """
-
     # 1. Fetch all entries
-    t0 = time.time()
-    results = fetch_all_entries()
-    t1 = time.time()
-    print 'Fetching entries takes %.3fs' % (t1 - t0)
-    print 'Num entries %d' % (len(results))
-
-    # 2. Fetch articles
-    for result in results:
-        source_id, entry = result
-
-        if not FeedArticle.query.filter_by(link=entry.link, source_id=source_id).first():
-            summary = BeautifulSoup(entry.summary, 'lxml').get_text()
-            article = FeedArticle(
-                link=entry.link,
-                title=entry.title,
-                summary=summary,
-                source_id=source_id,
-                html=entry.summary
-            )
-
-            if 'media_thumbnail' in entry:
-                article.thumbnail_url = entry['media_thumbnail'][0]['url']
-
-            if not article.thumbnail_url and 'links' in entry:
-                links = entry['links']
-                for link in links:
-                    if 'type' in link and link['type'].startswith('image'):
-                        if 'href' in link:
-                            article.thumbnail_url = link['href']
-                            break
-
-            # chain = fetch_html.s(entry.link) |          \
-            #         get_readable.s(entry.link) |        \
-            #         add_article.s(article)
-            # chain.apply_async()
-
-            add_article.delay(article)
-
-
-def fetch_all_entries():
     sources = FeedSource.query.all()
-
-    print 'nsources: %d' % len(sources)
-
-    asyncs = []
+    # 2. Fetch articles
     for source in sources:
-        print 'Fetching from source <%s>' % source.url
-        async = fetch_entries_from_source.delay(source.url)
-        asyncs.append((source.id, async))
-
-    all_entries = []
-    for tup in asyncs:
-        source_id, async = tup
-        entries = async.wait()
-        if entries:
-            all_entries.extend([(source_id, entry) for entry in entries])
-
-    return all_entries
+        chain = fetch_url_data.s(source.id, source.url) | parse_feed.s()
+        chain.apply_async()
 
 
 @celery.task
-def fetch_entries_from_source(url):
-    feeds = feedparser.parse(url)
+def fetch_url_data(source_id, url):
+    data = None
+
+    try:
+        file_object = urlopen(url)
+    except (ValueError, URLError, HTTPError) as e:
+        print e, url
+        return None
+
+    try:
+        data = file_object.read()
+    except Exception:
+        return None
+
+    retval = {
+        'source_id': source_id,
+        'data': data}
+
+    return retval
+
+
+@celery.task
+def parse_feed(data):
+    feeds = feedparser.parse(data['data'])
 
     # TODO: Deal with not well-formed xml detection (feeds.bozo == 1)
 
@@ -115,4 +87,7 @@ def fetch_entries_from_source(url):
     #     print '\tCannot fetch from source <%s>' % url
     #     return None
 
-    return feeds.entries
+    if 'entries' in feeds:
+        for entry in feeds.entries:
+            add_article.delay(data['source_id'], entry)
+

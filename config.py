@@ -55,7 +55,7 @@ class Config:
     CELERYBEAT_SCHEDULE = {
         'update-db-every-thirty-minutes': {
             'task': 'app.mod_crawler.fetch.update_db',
-            'schedule': timedelta(seconds=30*60),
+            'schedule': timedelta(seconds=60),
             'args': ()
         },
     }

@@ -34,9 +34,17 @@ Log in
 		</div>
 
 		<div class="form-group">
-			{{ form.submit(**{'type':'submit', 'class':'btn btn-default'}) }}
-			<a style="color:white !important" href="{{ url_for('mod_auth.facebook_login') }}"><button type="button" class="btn btn-primary">Facebook Log in</button></a>
-			<a style="color:white !important"  href="{{ url_for('mod_auth.google_login') }}"><button type="button" class="btn btn-danger">Google Log in</button></a>
+			<div class="row">
+				<div class="col-xs-12 col-md-4">
+					{{ form.submit(**{'type':'submit', 'class':'btn btn-default btn-block'}) }}
+				</div>
+				<div class="col-xs-12 col-md-4">
+					<a style="color:white !important" href="{{ url_for('mod_auth.facebook_login') }}"><button type="button" class="btn btn-primary btn-block">Facebook Log in</button></a>
+				</div>
+				<div class="col-xs-12 col-md-4">
+					<a style="color:white !important"  href="{{ url_for('mod_auth.google_login') }}"><button type="button" class="btn btn-danger btn-block">Google Log in</button></a>
+				</div>
+			</div>
 		</div>
 
 		<a href="{{ url_for('mod_auth.register') }}">Register Here</a>

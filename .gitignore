@@ -1,5 +1,6 @@
 run.py
 config.py
+celerybeat.pid
 
 # Ctags #
 #########
@@ -44,6 +45,7 @@ logs/*
 *.log
 *.sql
 *.sqlite
+*.db
 
 # OS generated files #
 ######################
