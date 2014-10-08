@@ -2,7 +2,8 @@ PNotify.prototype.options.delay ? (function() {
     PNotify.prototype.options.delay -= 6000;
 }()) : (alert('Timer is already at zero.'))
 
-var base_url = 'http://' + window.location.host
+var base_url = 'http://' + window.location.host;
+var AUTH_STRING = 'Basic ' + btoa(AUTH_TOKEN + ':');
 
 var call_async = function (url, requestType, requestData, callback) {
   if (typeof(AUTH_TOKEN) == 'undefined')
@@ -11,7 +12,7 @@ var call_async = function (url, requestType, requestData, callback) {
     crossDomain: true,
     dataType: 'json',
     headers: {
-      'Authorization': 'Basic ' + btoa(AUTH_TOKEN + ':')
+      'Authorization': AUTH_STRING
     },
     async: true,
     data: requestData,
@@ -117,3 +118,34 @@ var create_notice = function (message) {
     notice.remove();
   });
 };
+
+(function() {
+  var app = angular.module('feed', []);
+
+  app.controller('sourceCtrl', ['$http', function($http) {
+    var source = this;
+    source.articles = [];
+    source.api_url = base_url + '/api/v1.0/article/source?source_id=4';
+    var config = {
+      headers: {'Authorization': AUTH_STRING}
+    };
+
+    $http.get(source.api_url, config).success(function(data) {
+      source.articles = data.articles;
+    });
+  }]);
+
+  app.controller('popularCtrl', ['$http', function($http) {
+    var source = this;
+    source.articles = [];
+    source.api_url = base_url + '/api/v1.0/article/popular';
+    var config = {
+      headers: {'Authorization': AUTH_STRING}
+    };
+
+    $http.get(source.api_url, config).success(function(data) {
+      source.articles = data.articles;
+    });
+  }]);
+
+})();

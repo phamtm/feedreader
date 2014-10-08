@@ -70,9 +70,13 @@ class FeedArticle(Base):
         """Return JSON representation of the article"""
         return {
             'id':self.id,
-            'title':self.title,
             'link':self.link,
-            'summary':self.summary
+            'summary':self.summary,
+            'title':self.title,
+            'thumbnail_url':self.thumbnail_url,
+            'upvote':self.upvote,
+            'downvote':self.downvote,
+            'views':self.views
         }
 
 

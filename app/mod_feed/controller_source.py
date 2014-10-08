@@ -83,19 +83,16 @@ def feeds_from_source():
     if not source_id:
         return redirect(url_for('mod_feed.index'))
 
-    start_idx = current_app.config['ARTICLES_PER_PAGE'] * (page - 1)
-    stop_idx = start_idx + current_app.config['ARTICLES_PER_PAGE']
-
     popular_articles = get_popular_articles()
 
     if not source_id or not current_user.is_subscribed(source_id):
         return render_template('feeds.html',
                                popular_articles=popular_articles)
 
-    rss_articles = FeedArticle.query.                   \
-        filter_by(source_id=source_id)                  \
-        .order_by(FeedArticle.time_published.desc())    \
-        .limit(30)
+    rss_articles = FeedArticle.query                    \
+        .filter_by(source_id=source_id)                 \
+        .order_by(FeedArticle.time_published.desc())
+        # .limit(30)
 
 
     return render_template(

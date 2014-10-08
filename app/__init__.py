@@ -1,6 +1,7 @@
 from flask import Flask
 from flask.ext.login import LoginManager
 from flask.ext.mail import Mail
+from flask.ext.triangle import Triangle
 
 from celery import Celery
 from celery.signals import worker_init
@@ -34,6 +35,7 @@ def create_app(config_name='default'):
     mail.init_app(app)
     db.init_app(app)
     cdb.init_app(app)
+    Triangle(app)
 
     # Async celery database session
     @worker_init.connect

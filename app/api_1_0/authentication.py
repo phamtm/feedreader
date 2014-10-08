@@ -40,7 +40,7 @@ def auth_error():
 @api.route('/token')
 @auth.login_required
 def get_token():
-    if g.current_user.is_anonymous() or g.token_used:
+    if g.current_user.is_anonymous or g.token_used:
         return unauthorized('Invalid credentials')
     return jsonify({
         'token':g.current_user.generate_auth_token(expiration=3600),
@@ -50,5 +50,5 @@ def get_token():
 @api.before_request
 @auth.login_required
 def before_request():
-    if not g.current_user.is_anonymous or not g.current_user.confirmed:
+    if not g.current_user.is_anonymous and not g.current_user.confirmed:
         return forbidden('Unconfirmed account')

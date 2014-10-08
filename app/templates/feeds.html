@@ -20,62 +20,51 @@
 </div>
 
 <!-- Article -->
-<div class="row">
-    <div class="col-lg-8" style="padding:10px;border-right:1px solid #eee">
-        {% if source %}
-            {% for article in rss_articles %}
-            <div class="media" style="margin-bottom:5px; line-height:20px">
-                <a class="pull-left article-upview" href="{{article.link}}" data-id="{{article.id}}" target="_blank">
-                    {% if article.thumbnail_url %}
-                    <img class="media-object" width="90" height="90" src="{{article.thumbnail_url}}">
-                    {% else %}
-                    <img class="media-object" data-src="holder.js/90x90">
-                    {% endif %}
-                </a>
-                <div class="media-body">
-                    <h4 class="media-heading">
-                        <a href="{{article.link}}" class="article-upview" data-id="{{article.id}}" target="_blank">{{article.title}}</a>
-                        <small class="sub">Vote: ({{article.upvote}} | {{article.downvote}})</small>
-                        <small class="sub">Views: {{article.views}}</small>
-                    </h4>
-                    {{article.summary}}
-                    <p>
-                      <a href="#" class="article-save" data-article-id="{{article.id}}" data-magazine-id="{{current_user.saved_magazine}}">Save</a>
-                      <a href="#" class="article-upvote text-success" data-id="{{article.id}}">Upvote</a>
-                      <a href="#" class="article-downvote text-danger" data-id="{{article.id}}">Downvote</a>
-                      <a href="#" class="article-remove-vote text-warning" data-id="{{article.id}}">Remove vote</a>
-                    </p>
-                </div>
+<div class="row" ng-app="feed" ng-cloak>
+    <div class="col-lg-8" style="padding:10px;border-right:1px solid #eee" ng-controller="sourceCtrl as source">
+        <div class="media" style="margin-bottom:5px; line-height:20px" ng-repeat="article in source.articles">
+            <a class="pull-left article-upview" href="{{article.link|angular}}" data-id="{{article.id|angular}}" target="_blank">
+                <img class="media-object" width="90" height="90" ng-src="{{article.thumbnail_url|angular}}">
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading">
+                    <a href="{{article.link|angular}}" class="article-upview" data-id="{{article.id|angular}}" target="_blank">{{article.title|angular}}</a>
+                    <small class="sub">Vote: ({{article.upvote|angular}} | {{article.downvote|angular}})</small>
+                    <small class="sub">Views: {{article.views|angular}}</small>
+                </h4>
+                {{ article.summary | angular }}
+                <p>
+                    <a href="#" class="article-save" data-article-id="{{article.id|angular}}" data-magazine-id="1">Save</a>
+                    <a href="#" class="article-upvote text-success" data-id="{{article.id|angular}}">Upvote</a>
+                    <a href="#" class="article-downvote text-danger" data-id="{{article.id|angular}}">Downvote</a>
+                    <a href="#" class="article-remove-vote text-warning" data-id="{{article.id|angular}}">Remove vote</a>
+                </p>
             </div>
-            {% endfor %}
-        {% else %}
-        {% endif %}
+        </div>
     </div>
 
-    <div class="col-lg-4" style="padding-top:10px">
+    <div class="col-lg-4" style="padding-top:10px" ng-controller="popularCtrl as popular">
         <h4>Popular</h4>
         <hr>
         <div class="row">
-            <div class="col-md-12">
-              {% for article in popular_articles %}
+            <div class="col-md-12" ng-repeat="article in popular.articles">
               <div class="media">
-                <a class="pull-left article-upview" href="{{article.link}}" data-id="{{article.id}}" target="_blank">
-                  <img class="media-object" width="40" height="40" src="{{article.thumbnail_url}}">
+                <a class="pull-left article-upview" href="{{article.link | angular}}" data-id="{{article.id | angular}}" target="_blank">
+                  <img class="media-object" width="40" height="40" ng-src="{{article.thumbnail_url | angular}}">
                 </a>
                 <div class="media-body">
                     <h5 class="media-heading">
-                        <a href="{{article.link}}" class="article-upview" data-id="{{article.id}}" target="_blank">
-                            {{article.title}}
+                        <a href="{{article.link | angular}}" class="article-upview" data-id="{{article.id | angular}}" target="_blank">
+                            {{article.title | angular}}
                         </a>
                     </h5>
-                    <small class="sub">Vote: ({{article.upvote}} | {{article.downvote}})</small>
-                    <small class="sub">Views: {{article.views}}</small>
+                    <small class="sub">Vote: ({{article.upvote | angular}} | {{article.downvote | angular}})</small>
+                    <small class="sub">Views: {{article.views | angular}}</small>
                     <p>
-                        {{article.summary | truncate(60)}}
+                        {{article.summary | truncate(60) | angular}}
                     </p>
                 </div>
               </div>
-              {% endfor %}
             </div>
         </div>
     </div>

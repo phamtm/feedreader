@@ -99,6 +99,10 @@ def dumpdb():
 		with open('data/%d.txt' % (idx), 'w') as f:
 			f.write(title)
 
+@manager.command
+def run():
+    app.run(debug=True)
+
 
 if __name__ == '__main__':
 	manager.run()

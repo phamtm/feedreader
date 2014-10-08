@@ -1,6 +1,6 @@
 - name: BBC.CO.UK
   domain: http://www.bbc.co.uk
-  favicon: http://www.bbc.co.uk/favicon.ico
+  favicon: http://res.vietnamnet.vn/vnn2013/images/favicon.ico
   channels:
       VIETNAMESE: http://www.bbc.co.uk/vietnamese/vietnam/index.xml
   timestamp_format:

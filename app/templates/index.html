@@ -6,32 +6,26 @@ Toi Doc Bao
 
 {% block content %}
 <div class="row">
-    <div class="col-md-7">
+    <div class="col-md-7" ng-controller="popularCtrl as popular">
         <h4 class="lead">Popular</h4>
         <hr>
-        {% for article in popular_articles %}
-        <div class="media" style="margin-bottom:5px; line-height:20px">
-            <a class="pull-left article-upview" href="{{article.link}}" data-id="{{article.id}}" target="_blank">
-                {% if article.thumbnail_url %}
-                <img class="media-object" width="60" height="60" src="{{article.thumbnail_url}}">
-                {% else %}
-                <img class="media-object" data-src="holder.js/60x60">
-                {% endif %}
+        <div class="media" style="margin-bottom:5px; line-height:20px" ng-repeat="article in popular.articles">
+            <a class="pull-left article-upview" href="{{article.link | angular}}" data-id="{{article.id | angular}}" target="_blank">
+                <img class="media-object" width="70" height="70" ng-src="{{article.thumbnail_url | angular}}">
             </a>
             <div class="media-body">
                 <h4 class="media-heading">
-                    <a href="{{article.link}}" class="article-upview" data-id="{{article.id}}" target="_blank">
-                        {{article.title}}
+                    <a href="{{article.link | angular}}" class="article-upview" data-id="{{article.id | angular}}" target="_blank">
+                        {{article.title | angular}}
                     </a>
                 </h4>
-                <small class="sub">Vote: ({{article.upvote}} | {{article.downvote}})</small>
-                <small class="sub">Views: {{article.views}}</small>
+                <small class="sub">Vote: ({{article.upvote | angular}} | {{article.downvote | angular}})</small>
+                <small class="sub">Views: {{article.views | angular}}</small>
                 <p>
-                    {{article.summary | truncate(60)}}
+                    {{article.summary | angular}}
                 </p>
             </div>
         </div>
-        {% endfor %}
     </div>
 
     <div class="col-md-3">

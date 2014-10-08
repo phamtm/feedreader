@@ -24,6 +24,23 @@ def get_article():
         'summary':article.summary})
 
 
+@api.route('/article/source')
+def get_source_articles():
+    source_id = request.args.get('source_id', type=int)
+    if not source_id:
+        abort(404)
+
+    articles = FeedArticle.query                        \
+        .filter_by(source_id=source_id)                 \
+        .order_by(FeedArticle.time_published.desc())    \
+        .all()
+
+    articles_json = [a.to_json() for a in articles]
+
+    return jsonify({
+        'articles':articles_json})
+
+
 @api.route('/article/popular')
 def popular_articles():
     popular_articles = get_popular_articles()
