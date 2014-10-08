@@ -3,7 +3,7 @@ PNotify.prototype.options.delay ? (function() {
 }()) : (alert('Timer is already at zero.'))
 
 var base_url = 'http://' + window.location.host;
-if (typeof(AUTH_TOKEN) == 'undefined')
+if (typeof(AUTH_TOKEN) !== 'undefined')
   var AUTH_STRING = 'Basic ' + btoa(AUTH_TOKEN + ':');
 
 var call_async = function (url, requestType, requestData, callback) {
